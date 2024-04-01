@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:taskwolf_app/net/taskwolf/app/product/home/home.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -89,6 +90,7 @@ class LoginPage extends StatelessWidget {
       }),
     );
     if (response.statusCode != 200) {
+      passwordController.text = "";
       showDialog<String>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
@@ -106,5 +108,7 @@ class LoginPage extends StatelessWidget {
     }
     final preferences = await SharedPreferences.getInstance();
     preferences.setString('token', jsonDecode(response.body)["apiKey"]);
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => HomePage()));
   }
 }
