@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taskwolf_app/net/taskwolf/app/product/home/home.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'dart:io';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -78,10 +80,11 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  void submitLogin(context) async {
+  submitLogin(context) async {
     final response = await http.post(
       Uri.parse('https://api.taskwolf.net/v1/verification/login/'),
       headers: <String, String>{
+        'WHITELIST-KEY': "tOrTylordsMeMBiTyLATONTERipLOusiNVOloRyPORKBOScoCk",
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
@@ -90,25 +93,81 @@ class LoginPage extends StatelessWidget {
       }),
     );
     if (response.statusCode != 200) {
-      passwordController.text = "";
-      showDialog<String>(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-          title: const Text('Login failed', style: TextStyle(color: Colors.red)),
-          content: const Text('The email or password you entered is incorrect. Please try again!'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.pop(context, 'OK'),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
+      loginFailed(context);
       return;
     }
+    var apiKey = jsonDecode(response.body)["apiKey"];
+    var deviceId = await sendDeviceLogin(apiKey);
     final preferences = await SharedPreferences.getInstance();
-    preferences.setString('token', jsonDecode(response.body)["apiKey"]);
+    preferences.setString('token', apiKey);
+    preferences.setString('device', deviceId);
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => HomePage()));
+  }
+
+ Future<String> sendDeviceLogin(apiKey) async {
+    final response = await http.post(
+      Uri.parse('https://api.taskwolf.net/v1/device/login/'),
+      headers: <String, String>{
+        'Authorization': "Bearer " + apiKey,
+        'WHITELIST-KEY': "tOrTylordsMeMBiTyLATONTERipLOusiNVOloRyPORKBOScoCk",
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        "device": await findMachineIdentifier(),
+        "information": await findDeviceInformation(),
+        "type": Platform.operatingSystem
+      }),
+    );
+    return jsonDecode(response.body)["id"];
+  }
+
+  Future<String> findMachineIdentifier() async {
+    String? deviceIdentifier;
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      deviceIdentifier = androidInfo.androidId;
+    } else if (Platform.isIOS) {
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      deviceIdentifier = iosInfo.identifierForVendor;
+    } else if (Platform.isLinux) {
+      LinuxDeviceInfo linuxInfo = await deviceInfo.linuxInfo;
+      deviceIdentifier = linuxInfo.machineId;
+    }
+    return deviceIdentifier ?? "";
+  }
+
+  Future<String> findDeviceInformation() async {
+    String? deviceIdentifier;
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      deviceIdentifier = androidInfo.id;
+    } else if (Platform.isIOS) {
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      deviceIdentifier = iosInfo.identifierForVendor;
+    } else if (Platform.isLinux) {
+      LinuxDeviceInfo linuxInfo = await deviceInfo.linuxInfo;
+      deviceIdentifier = linuxInfo.prettyName;
+    }
+    return deviceIdentifier ?? "";
+  }
+
+  loginFailed(context) {
+    passwordController.text = "";
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Login failed', style: TextStyle(color: Colors.red)),
+        content: const Text('The email or password you entered is incorrect. Please try again!'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'OK'),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 }
