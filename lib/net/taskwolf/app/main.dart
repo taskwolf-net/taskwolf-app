@@ -1,9 +1,23 @@
+import 'dart:io';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:taskwolf_app/net/taskwolf/app/product/home/home.dart';
 import 'package:taskwolf_app/net/taskwolf/app/login/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:taskwolf_app/net/taskwolf/app/product/notification/notification-schedule.dart';
 
-void main() {
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    await NotificationSchedule().start();
+  } else {
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  }
   runApp(const TaskwolfApp());
 }
 
