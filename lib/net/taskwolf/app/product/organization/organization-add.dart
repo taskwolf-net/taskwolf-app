@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:taskwolf_app/net/taskwolf/app/product/base/header.dart';
 import 'package:http/http.dart' as http;
@@ -79,7 +78,7 @@ class OrganizationAddPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(5),
       ),
       onTap: () async => {
-        addTrustedOrganization(organization),
+        await addTrustedOrganization(organization),
         Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => OrganizationPage()))
       },

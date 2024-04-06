@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:taskwolf_app/net/taskwolf/app/product/base/page.dart';
 import 'package:taskwolf_app/net/taskwolf/app/product/organization/organization-add.dart';
@@ -109,7 +107,7 @@ class OrganizationPage extends StatelessWidget {
 
   clickOrganizationSettings(organization, value, context) async {
     if (value == "Remove") {
-      removeTrustedOrganization(organization);
+      await removeTrustedOrganization(organization);
       Navigator.pushReplacement(context, PageRouteBuilder(
         pageBuilder: (context, animation1, animation2) => OrganizationPage(),
         transitionDuration: Duration.zero,
