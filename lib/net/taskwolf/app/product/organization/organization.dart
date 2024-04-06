@@ -11,35 +11,35 @@ class OrganizationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<dynamic>(
-        future: findTrustedOrganizations(),
-        builder: (context, AsyncSnapshot<dynamic> snapshot) {
-          return ProductPage(name: "Organizations", content: Scaffold(
-            body: Center(
-              child: Column(
-                children: [
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 20),
-                    child: const Text("Trusted Organizations",
-                      textAlign: TextAlign.center, style:
-                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
-                  ),
-                  createOrganizationList(List<Map<String, dynamic>>.from(snapshot.data ?? []),
-                    snapshot.data, context)
-                ]
-              ),
+      future: findTrustedOrganizations(),
+      builder: (context, AsyncSnapshot<dynamic> snapshot) {
+        return ProductPage(name: "Organizations", content: Scaffold(
+          body: Center(
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 20),
+                  child: const Text("Trusted Organizations",
+                    textAlign: TextAlign.center, style:
+                    TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
+                ),
+                createOrganizationList(List<Map<String, dynamic>>.from(snapshot.data ?? []),
+                  snapshot.data, context)
+              ]
             ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => OrganizationAddPage()));
-              },
-              foregroundColor: Colors.white,
-              backgroundColor: Color(0x33FFFFFF),
-              child: const Icon(Icons.add),
-              tooltip: "Add Organization",
-            ),
-          ));
-        }
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(context,
+                MaterialPageRoute(builder: (context) => OrganizationAddPage()));
+            },
+            foregroundColor: Colors.white,
+            backgroundColor: Color(0x33FFFFFF),
+            child: const Icon(Icons.add),
+            tooltip: "Add Organization",
+          ),
+        ));
+      }
     );
   }
 

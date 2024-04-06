@@ -11,26 +11,26 @@ class OrganizationAddPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<dynamic>(
-        future: findAvailableOrganizations(),
-        builder: (context, AsyncSnapshot<dynamic> snapshot) {
-          return Scaffold(
-            appBar: ProductHeader(page: "Add Organization"),
-            body: Center(
-              child: Column(
-                children: [
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 20),
-                    child: const Text("Available Organizations",
-                      textAlign: TextAlign.center, style:
-                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
-                  ),
-                  createOrganizationList(List<Map<String, dynamic>>.from(snapshot.data ?? []),
-                    snapshot.data, context)
-                ]
-              ),
+      future: findAvailableOrganizations(),
+      builder: (context, AsyncSnapshot<dynamic> snapshot) {
+        return Scaffold(
+          appBar: ProductHeader(page: "Add Organization"),
+          body: Center(
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 20),
+                  child: const Text("Available Organizations",
+                    textAlign: TextAlign.center, style:
+                    TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
+                ),
+                createOrganizationList(List<Map<String, dynamic>>.from(snapshot.data ?? []),
+                  snapshot.data, context)
+              ]
             ),
-          );
-        }
+          ),
+        );
+      }
     );
   }
 
@@ -40,15 +40,15 @@ class OrganizationAddPage extends StatelessWidget {
     }
     if (organizations.isEmpty) {
       return Container(
-          margin: EdgeInsets.symmetric(vertical: 40),
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          width: 500,
-          child: const Text("There is no organization available to which you "
-              "can still make the device available. Either you have already "
-              "integrated all organizations or you are not yet a member of an "
-              "organization",
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),)
+        margin: EdgeInsets.symmetric(vertical: 40),
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        width: 500,
+        child: const Text("There is no organization available to which you "
+            "can still make the device available. Either you have already "
+            "integrated all organizations or you are not yet a member of an "
+            "organization",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))
       );
     }
     return Expanded(
