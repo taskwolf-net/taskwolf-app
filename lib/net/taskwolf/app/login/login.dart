@@ -1,9 +1,12 @@
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:taskwolf_app/firebase_options.dart';
 import 'package:taskwolf_app/net/taskwolf/app/product/home/home.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'dart:io';
 
 class LoginPage extends StatelessWidget {
@@ -106,6 +109,15 @@ class LoginPage extends StatelessWidget {
   }
 
  Future<String> sendDeviceLogin(apiKey) async {
+    var body = <String, String>{
+      "device": await findMachineIdentifier(),
+      "information": await findDeviceInformation(),
+      "platform": Platform.operatingSystem
+    };
+    if (Platform.isAndroid || Platform.isIOS) {
+      var token = await findFirebaseToken();
+      body.putIfAbsent("firebaseToken", () => token);
+    }
     final response = await http.post(
       Uri.parse('https://api.taskwolf.net/v1/device/login/'),
       headers: <String, String>{
@@ -113,13 +125,17 @@ class LoginPage extends StatelessWidget {
         'WHITELIST-KEY': "tOrTylordsMeMBiTyLATONTERipLOusiNVOloRyPORKBOScoCk",
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{
-        "device": await findMachineIdentifier(),
-        "information": await findDeviceInformation(),
-        "type": Platform.operatingSystem
-      }),
+      body: jsonEncode(body),
     );
     return jsonDecode(response.body)["id"];
+  }
+
+  Future<String> findFirebaseToken() async {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    var instance = FirebaseMessaging.instance;
+    await instance.requestPermission();
+    var token = await instance.getToken();
+    return token ?? "";
   }
 
   Future<String> findMachineIdentifier() async {
