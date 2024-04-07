@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_locales/flutter_locales.dart';
 import 'package:taskwolf_app/net/taskwolf/app/product/home/home.dart';
 import 'package:taskwolf_app/net/taskwolf/app/login/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,6 +14,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Locales.init(["en", "de"]);
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     await NotificationSchedule().start();
   } else {
@@ -30,15 +32,19 @@ class TaskwolfApp extends StatelessWidget {
       future: checkTokenExistence(),
       builder: (context, AsyncSnapshot<bool> snapshot) {
         var home = snapshot.data == true ? HomePage() : LoginPage();
-        return MaterialApp(
-          title: 'Taskwolf App',
-          darkTheme: ThemeData(
-            useMaterial3: true,
-            colorScheme: ColorScheme.dark(primary: Color(0xFF2196F3))
+        return LocaleBuilder(
+          builder: (locale) => MaterialApp( title: 'Taskwolf App',
+            darkTheme: ThemeData(
+              useMaterial3: true,
+              colorScheme: ColorScheme.dark(primary: Color(0xFF2196F3))
+            ),
+            themeMode: ThemeMode.dark,
+            home: home,
+            debugShowCheckedModeBanner: false,
+            localizationsDelegates: Locales.delegates,
+            supportedLocales: Locales.supportedLocales,
+            locale: locale,
           ),
-          themeMode: ThemeMode.dark,
-          home: home,
-          debugShowCheckedModeBanner: false,
         );
       }
     );

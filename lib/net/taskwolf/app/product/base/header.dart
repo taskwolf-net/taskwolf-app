@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_locales/flutter_locales.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taskwolf_app/net/taskwolf/app/login/login.dart';
 
@@ -21,7 +22,7 @@ class ProductHeader extends StatelessWidget implements PreferredSizeWidget {
           offset: Offset(0, 50),
           color: Color(0xFF545454),
           itemBuilder: (BuildContext context) {
-            return ["Logout"].map((String choice) {
+            return [Locales.string(context, "neutral.header.logout")].map((String choice) {
               return PopupMenuItem<String>(
                 value: choice,
                 child: Text(choice),
@@ -34,7 +35,7 @@ class ProductHeader extends StatelessWidget implements PreferredSizeWidget {
   }
 
   clickMenuButton(context, value) async {
-    if (value == "Logout") {
+    if (value == Locales.string(context, "neutral.header.logout")) {
       final preferences = await SharedPreferences.getInstance();
       preferences.remove("token");
       Navigator.pushReplacement(context,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_locales/flutter_locales.dart';
 import 'package:taskwolf_app/net/taskwolf/app/product/base/header.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -14,13 +15,13 @@ class OrganizationAddPage extends StatelessWidget {
       future: findAvailableOrganizations(),
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
         return Scaffold(
-          appBar: ProductHeader(page: "Add Organization"),
+          appBar: ProductHeader(page: Locales.string(context, "product.organization.add.title")),
           body: Center(
             child: Column(
               children: [
                 Container(
                   margin: EdgeInsets.symmetric(vertical: 20),
-                  child: const Text("Available Organizations",
+                  child: const LocaleText("product.organization.add.available.organizations",
                     textAlign: TextAlign.center, style:
                     TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
                 ),
@@ -43,10 +44,7 @@ class OrganizationAddPage extends StatelessWidget {
         margin: EdgeInsets.symmetric(vertical: 40),
         padding: EdgeInsets.symmetric(horizontal: 20),
         width: 500,
-        child: const Text("There is no organization available to which you "
-            "can still make the device available. Either you have already "
-            "integrated all organizations or you are not yet a member of an "
-            "organization",
+        child: const LocaleText("product.organization.add.empty",
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))
       );
@@ -71,7 +69,7 @@ class OrganizationAddPage extends StatelessWidget {
   createOrganizationEntry(organization, context) {
     return ListTile(
       title: Text(organization["name"]),
-      subtitle: Text("Owner: " + organization["owner"]),
+      subtitle: Text(Locales.string(context, "product.organization.owner") + ": " + organization["owner"]),
       tileColor: Color(0xFF333333),
       shape: RoundedRectangleBorder(
         side: BorderSide(color: Color(0xFF5D5D5D), width: 1),

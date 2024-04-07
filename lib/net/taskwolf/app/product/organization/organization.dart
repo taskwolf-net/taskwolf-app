@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_locales/flutter_locales.dart';
 import 'package:taskwolf_app/net/taskwolf/app/product/base/page.dart';
 import 'package:taskwolf_app/net/taskwolf/app/product/organization/organization-add.dart';
 import 'package:http/http.dart' as http;
@@ -13,32 +14,34 @@ class OrganizationPage extends StatelessWidget {
     return FutureBuilder<dynamic>(
       future: findTrustedOrganizations(),
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
-        return ProductPage(name: "Organizations", content: Scaffold(
-          body: Center(
-            child: Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 20),
-                  child: const Text("Trusted Organizations",
-                    textAlign: TextAlign.center, style:
-                    TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
-                ),
-                createOrganizationList(List<Map<String, dynamic>>.from(snapshot.data ?? []),
-                  snapshot.data, context)
-              ]
+        return ProductPage(name: Locales.string(context, "product.organizations.title"),
+          content: Scaffold(
+            body: Center(
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 20),
+                    child: const LocaleText("product.organizations.trusted.organizations",
+                      textAlign: TextAlign.center, style:
+                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
+                  ),
+                  createOrganizationList(List<Map<String, dynamic>>.from(snapshot.data ?? []),
+                    snapshot.data, context)
+                ]
+              ),
             ),
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              Navigator.push(context,
-                MaterialPageRoute(builder: (context) => OrganizationAddPage()));
-            },
-            foregroundColor: Colors.white,
-            backgroundColor: Color(0x33FFFFFF),
-            child: const Icon(Icons.add),
-            tooltip: "Add Organization",
-          ),
-        ));
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => OrganizationAddPage()));
+              },
+              foregroundColor: Colors.white,
+              backgroundColor: Color(0x33FFFFFF),
+              child: const Icon(Icons.add),
+              tooltip: Locales.string(context, "product.organizations.add"),
+            ),
+          )
+        );
       }
     );
   }
@@ -52,9 +55,7 @@ class OrganizationPage extends StatelessWidget {
           margin: EdgeInsets.symmetric(vertical: 40),
           padding: EdgeInsets.symmetric(horizontal: 20),
           width: 500,
-          child: const Text("So far, no organization has access to this device. "
-              "You can add an organization at any time by clicking on the button "
-              "in the bottom right corner",
+          child: const LocaleText("product.organizations.empty",
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),)
       );
@@ -79,7 +80,7 @@ class OrganizationPage extends StatelessWidget {
   createOrganizationEntry(organization, context) {
     return ListTile(
       title: Text(organization["name"]),
-      subtitle: Text("Owner: " + organization["owner"]),
+      subtitle: Text(Locales.string(context, "product.organizations.owner") + ": " + organization["owner"]),
       tileColor: Color(0xFF333333),
       shape: RoundedRectangleBorder(
         side: BorderSide(color: Color(0xFF5D5D5D), width: 1),
@@ -92,9 +93,9 @@ class OrganizationPage extends StatelessWidget {
         },
         offset: Offset(0, 30),
         color: Color(0xFF545454),
-        tooltip: "Organization Settings",
+        tooltip: Locales.string(context, "product.organizations.settings"),
         itemBuilder: (BuildContext context) {
-          return ["Remove"].map((String choice) {
+          return [Locales.string(context, "product.organizations.remove")].map((String choice) {
             return PopupMenuItem<String>(
               value: choice,
               child: Text(choice),
@@ -106,7 +107,7 @@ class OrganizationPage extends StatelessWidget {
   }
 
   clickOrganizationSettings(organization, value, context) async {
-    if (value == "Remove") {
+    if (value == Locales.string(context, "product.organizations.remove")) {
       await removeTrustedOrganization(organization);
       Navigator.pushReplacement(context, PageRouteBuilder(
         pageBuilder: (context, animation1, animation2) => OrganizationPage(),

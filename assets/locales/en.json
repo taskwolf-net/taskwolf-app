@@ -1,0 +1,28 @@
+{
+  "neutral.header.logout": "Logout",
+
+  "product.home.title": "Home",
+
+  "product.organizations.title": "Organisationen",
+  "product.organizations.trusted.organizations": "Trusted Organizations",
+  "product.organizations.empty": "So far, no organization has access to this device. You can add an organization at any time by clicking on the button in the bottom right corner",
+  "product.organizations.owner": "Owner",
+  "product.organizations.settings": "Organization Settings",
+  "product.organizations.remove": "Remove",
+  "product.organizations.add": "Add Organization",
+
+  "product.organization.add.title": "Add Organization",
+  "product.organization.add.available.organizations": "Available Organizations",
+  "product.organization.add.empty": "There is no organization available to which you can still make the device available. Either you have already integrated all organizations or you are not yet a member of an organization",
+  "product.organization.owner": "Owner",
+
+  "product.notifications.title": "Notifications",
+  "product.notifications.settings": "Notification Settings",
+  "product.notifications.workflows": "Receive notifications through workflows",
+  "product.notifications.errors": "Receive notifications in the event of errors",
+  "product.notifications.news": "Receive notifications when new features are available",
+
+  "product.files.title": "Files",
+
+  "product.help.title": "Help"
+}

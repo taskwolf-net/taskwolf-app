@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_locales/flutter_locales.dart';
 import 'package:taskwolf_app/net/taskwolf/app/product/organization/organization.dart';
 import 'package:taskwolf_app/net/taskwolf/app/product/file/file.dart';
 import 'package:taskwolf_app/net/taskwolf/app/product/help/help.dart';
@@ -30,11 +31,11 @@ class ProductSidebar extends StatelessWidget {
               ],
             ),
           ),
-          createSidebarEntry("Home", HomePage(), Icons.home, context),
-          createSidebarEntry("Organizations", OrganizationPage(), Icons.groups, context),
-          createSidebarEntry("Notifications", NotificationPage(), Icons.notifications, context),
-          createSidebarEntry("Files", FilePage(), Icons.file_copy_sharp, context),
-          createSidebarEntry("Help", HelpPage(), Icons.help, context),
+          createSidebarEntry("product.home.title", HomePage(), Icons.home, context),
+          createSidebarEntry("product.organizations.title", OrganizationPage(), Icons.groups, context),
+          createSidebarEntry("product.notifications.title", NotificationPage(), Icons.notifications, context),
+          createSidebarEntry("product.files.title", FilePage(), Icons.file_copy_sharp, context),
+          createSidebarEntry("product.help.title", HelpPage(), Icons.help, context),
         ],
       ),
     );
@@ -46,7 +47,7 @@ class ProductSidebar extends StatelessWidget {
 
   Widget createSidebarEntry(title, page, icon, context) {
     return ListTile(
-      title: Text(title),
+      title: LocaleText(title),
       selected: this.page == page,
       leading: Icon(icon),
       onTap: () {

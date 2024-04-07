@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_locales/flutter_locales.dart';
 import 'package:taskwolf_app/net/taskwolf/app/product/base/page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -14,32 +15,34 @@ class NotificationPage extends StatelessWidget {
       future: createNotificationSettingEntries(),
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
         var entries = List<NotificationSettingEntry>.from(snapshot.data ?? []);
-        return ProductPage(name: "Notifications", content: SizedBox(
-          child: Center(
-            child: Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 20),
-                  child: const Text("Notification Settings",
-                    textAlign: TextAlign.center, style:
-                    TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
-                ),
-                Expanded(
-                  child: Container(
-                    margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                    width: 750,
-                    child: ListView.builder(
-                      itemBuilder: (builder, index) {
-                        return ListTile(title: entries[index]);
-                      },
-                      itemCount: entries.length,
+        return ProductPage(name: Locales.string(context, "product.notifications.title"),
+          content: SizedBox(
+            child: Center(
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 20),
+                    child: const LocaleText("product.notifications.settings",
+                      textAlign: TextAlign.center, style:
+                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
+                  ),
+                  Expanded(
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                      width: 600,
+                      child: ListView.builder(
+                        itemBuilder: (builder, index) {
+                          return ListTile(title: entries[index]);
+                        },
+                        itemCount: entries.length,
+                      ),
                     ),
                   ),
-                ),
-              ]
+                ]
+              ),
             ),
-          ),
-        ));
+          )
+        );
       }
     );
   }
@@ -62,13 +65,13 @@ class NotificationPage extends StatelessWidget {
     final body = jsonDecode(response.body);
     var entries = <NotificationSettingEntry>[];
     entries.add(NotificationSettingEntry(
-      title: "Receive notifications through workflows",
+      title: "product.notifications.workflows",
       state: body["workflowNotifications"], entries: entries));
     entries.add(NotificationSettingEntry(
-      title: "Receive notifications in the event of errors",
+      title: "product.notifications.errors",
       state: body["errorNotifications"], entries: entries));
     entries.add(NotificationSettingEntry(
-      title: "Receive notifications when new features are available",
+      title: "product.notifications.news",
       state: body["newsNotifications"], entries: entries));
     return entries;
   }
@@ -99,7 +102,7 @@ class NotificationSettingEntryState extends State<NotificationSettingEntry> {
         Flexible(
           child: Container(
             margin: EdgeInsets.only(right: 20),
-            child: new Text(entry.title))),
+            child: new LocaleText(entry.title))),
         Switch(
           value: entry.state,
           thumbColor: const MaterialStatePropertyAll<Color>(Colors.white),
