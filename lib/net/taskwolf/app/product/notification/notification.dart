@@ -29,7 +29,7 @@ class NotificationPage extends StatelessWidget {
                   Expanded(
                     child: Container(
                       margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                      width: 600,
+                      width: 750,
                       child: ListView.builder(
                         itemBuilder: (builder, index) {
                           return ListTile(title: entries[index]);

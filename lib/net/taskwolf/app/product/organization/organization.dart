@@ -52,18 +52,18 @@ class OrganizationPage extends StatelessWidget {
     }
     if (organizations.isEmpty) {
       return Container(
-          margin: EdgeInsets.symmetric(vertical: 40),
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          width: 500,
-          child: const LocaleText("product.organizations.empty",
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),)
+        margin: EdgeInsets.symmetric(vertical: 40),
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        width: 750,
+        child: const LocaleText("product.organizations.empty",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),)
       );
     }
     return Expanded(
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-        width: 500,
+        width: 750,
         child: ListView.separated(
           itemBuilder: (builder, index) {
             return createOrganizationEntry(organizations[index], context);
