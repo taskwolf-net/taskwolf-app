@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taskwolf_app/net/taskwolf/app/product/base/page.dart';
 import 'package:http/http.dart' as http;
@@ -95,7 +96,10 @@ class NotificationSettingEntryState extends State<NotificationSettingEntry> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(entry.title),
+        Flexible(
+          child: Container(
+            margin: EdgeInsets.only(right: 20),
+            child: new Text(entry.title))),
         Switch(
           value: entry.state,
           thumbColor: const MaterialStatePropertyAll<Color>(Colors.white),
