@@ -24,6 +24,11 @@
 
   "product.files.title": "Files",
 
+  "product.commands.title": "Commands",
+  "product.commands.settings": "Command Settings",
+  "product.commands.enabled": "Allow commands to be executed on this device",
+  "product.commands.history": "Command History",
+
   "product.help.title": "Help",
   "product.help.frequently.questions": "Frequently asked questions",
   "product.help.question.support.question": "Where and how can I get support?",

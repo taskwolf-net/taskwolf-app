@@ -24,6 +24,11 @@
 
   "product.files.title": "Dateien",
 
+  "product.commands.title": "Befehle",
+  "product.commands.settings": "Befehlseinstellungen",
+  "product.commands.enabled": "Ausführen von Befehlen auf diesem Gerät zulassen",
+  "product.commands.history": "Befehlsverlauf",
+
   "product.help.title": "Hilfe",
   "product.help.frequently.questions": "Häufig gestellte Fragen",
   "product.help.question.support.question": "Wo und wie kann ich Unterstützung erhalten?",
