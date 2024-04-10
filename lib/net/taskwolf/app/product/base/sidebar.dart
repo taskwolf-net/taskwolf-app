@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:taskwolf_app/net/taskwolf/app/product/command/command.dart';
 import 'package:taskwolf_app/net/taskwolf/app/product/organization/organization.dart';
 import 'package:taskwolf_app/net/taskwolf/app/product/file/file.dart';
 import 'package:taskwolf_app/net/taskwolf/app/product/help/help.dart';
@@ -35,6 +36,7 @@ class ProductSidebar extends StatelessWidget {
           createSidebarEntry("product.organizations.title", OrganizationPage(), Icons.groups, context),
           createSidebarEntry("product.notifications.title", NotificationPage(), Icons.notifications, context),
           createSidebarEntry("product.files.title", FilePage(), Icons.file_copy_sharp, context),
+          createSidebarEntry("product.commands.title", CommandPage(), Icons.terminal, context),
           createSidebarEntry("product.help.title", HelpPage(), Icons.help, context),
         ],
       ),
