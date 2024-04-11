@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:taskwolf_app/net/taskwolf/app/login/login.dart';
+import 'package:taskwolf_app/login/login.dart';
 
 class ProductHeader extends StatelessWidget implements PreferredSizeWidget {
   ProductHeader({super.key, required this.page});

@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taskwolf_app/firebase_options.dart';
-import 'package:taskwolf_app/net/taskwolf/app/product/home/home.dart';
+import 'package:taskwolf_app/product/home/home.dart';
 import 'dart:io';
 
 class LoginPage extends StatelessWidget {

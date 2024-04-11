@@ -3,7 +3,7 @@ import 'package:flutter_locales/flutter_locales.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:taskwolf_app/net/taskwolf/app/product/base/page.dart';
+import 'package:taskwolf_app/product/base/page.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});

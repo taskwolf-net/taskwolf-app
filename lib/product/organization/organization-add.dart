@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
-import 'package:taskwolf_app/net/taskwolf/app/product/base/header.dart';
+import 'package:taskwolf_app/product/base/header.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:taskwolf_app/net/taskwolf/app/product/organization/organization.dart';
+import 'package:taskwolf_app/product/organization/organization.dart';
 
 class OrganizationAddPage extends StatelessWidget {
   OrganizationAddPage({super.key});

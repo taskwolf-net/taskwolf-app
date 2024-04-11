@@ -4,10 +4,10 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
-import 'package:taskwolf_app/net/taskwolf/app/product/home/home.dart';
-import 'package:taskwolf_app/net/taskwolf/app/login/login.dart';
+import 'package:taskwolf_app/product/home/home.dart';
+import 'package:taskwolf_app/login/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:taskwolf_app/net/taskwolf/app/product/notification/notification-schedule.dart';
+import 'package:taskwolf_app/product/notification/notification-schedule.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 

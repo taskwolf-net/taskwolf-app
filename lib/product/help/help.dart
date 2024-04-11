@@ -2,7 +2,7 @@ import 'package:accordion/accordion.dart';
 import 'package:accordion/controllers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
-import 'package:taskwolf_app/net/taskwolf/app/product/base/page.dart';
+import 'package:taskwolf_app/product/base/page.dart';
 
 class HelpPage extends StatelessWidget {
   HelpPage({super.key});
