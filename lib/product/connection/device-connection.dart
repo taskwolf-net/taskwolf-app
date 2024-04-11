@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:core';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:local_notifier/local_notifier.dart';
@@ -38,9 +39,9 @@ class DeviceConnection {
   }
 
   interpret(message) {
-    if (message.startWith("Notification")) {
+    if (message.startsWith("Notification")) {
       interpretNotification(message);
-    } else if (message.startWith("Command")) {
+    } else if (message.startsWith("Command")) {
       interpretCommand(message);
     }
   }
