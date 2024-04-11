@@ -1,15 +1,12 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:taskwolf_app/product/connection/device-connection.dart';
 import 'package:taskwolf_app/product/home/home.dart';
 import 'package:taskwolf_app/login/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:taskwolf_app/product/notification/notification-schedule.dart';
-import 'package:web_socket_channel/io.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
@@ -19,25 +16,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Locales.init(["en", "de"]);
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-    //await NotificationSchedule().start();
-    final channel = WebSocketChannel.connect(
-      Uri.parse('wss://api.taskwolf.net/device/connect/'),
-    );
-    await channel.ready;
-    channel.stream.listen((message) {
-      log("$message");
-    });
+    await DeviceConnection().establish();
   } else {
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   }
   runApp(const TaskwolfApp());
-  /*var result = await Process.run('/home/lukas/Downloads/test.sh', []);
-  var a = result.stdout;
-  log("$a");
-  var b = result.stderr;
-  log("$b");
-  var c = result.exitCode;
-  log("$c");*/
 }
 
 class TaskwolfApp extends StatelessWidget {
