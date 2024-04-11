@@ -1,0 +1,72 @@
+import 'dart:io';
+
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:local_notifier/local_notifier.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+
+class DeviceConnection {
+  DeviceConnection();
+
+  var channel;
+
+  establish() async {
+    if (Platform.isAndroid || Platform.isIOS) {
+      return;
+    }
+    setupNotifications();
+    connect();
+  }
+
+  setupNotifications() async {
+    await localNotifier.setup(
+      appName: 'Taskwolf',
+      shortcutPolicy: ShortcutPolicy.requireCreate,
+    );
+  }
+
+  connect() async {
+    final preferences = await SharedPreferences.getInstance();
+    final token = preferences.getString('token') ?? "";
+    final device = preferences.getString('device') ?? "";
+    var url = "wss://api.taskwolf.net/device/connect/?token=" + token +
+      "&device=" + device;
+    channel = WebSocketChannel.connect(Uri.parse(url));
+    await channel.ready;
+    channel.stream.listen((message) {
+      interpret(message);
+    });
+  }
+
+  interpret(message) {
+    if (message.startWith("Notification")) {
+      interpretNotification(message);
+    } else if (message.startWith("Command")) {
+      interpretCommand(message);
+    }
+  }
+
+  interpretNotification(message) {
+    var split = message.replaceAll("Notification ", "").split(" ");
+    sendNotification(split[0], split[1]);
+  }
+
+  interpretCommand(message) {
+    var split = message.replaceAll("Command ", "").split(" ");
+    executeCommand(split[0], split[1]);
+  }
+
+  sendNotification(title, body) async {
+    LocalNotification notification = LocalNotification(
+      title: title,
+      body: body,
+    );
+    await notification.show();
+  }
+
+  executeCommand(commandId, command) async {
+    var result = await Process.run(command, []);
+    var exitCode = result.exitCode;
+    channel.sink.add("Command Response " + commandId + " " +
+      result.stdout + " " + result.stderr + " $exitCode");
+  }
+}
