@@ -26,7 +26,7 @@ class ProductSidebar extends StatelessWidget {
               children: [
                 SizedBox(
                   width: 100,
-                  child: Image.network('https://taskwolf.net/static/img/logo.png'),
+                  child: Image.asset("assets/images/logo.png"),
                 ),
                 Text("Taskwolf"),
               ],

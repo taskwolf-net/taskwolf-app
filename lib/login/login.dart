@@ -24,7 +24,7 @@ class LoginPage extends StatelessWidget {
           children: <Widget>[
             SizedBox(
               width: 300,
-              child: Image.network('https://taskwolf.net/static/img/logo.png'),
+              child: Image.asset("assets/images/logo.png"),
             ),
             ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 500),
