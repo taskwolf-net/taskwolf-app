@@ -67,7 +67,8 @@ class DeviceConnection {
   executeCommand(commandId, command) async {
     var result = await Process.run(command, []);
     var exitCode = result.exitCode;
-    channel.sink.add("Command Response " + commandId + " " +
-      result.stdout + " " + result.stderr + " $exitCode");
+    channel.sink.add("Command Response " + commandId + " '" +
+      result.stdout.replaceAll("\n", " ") + "' '" +
+        result.stderr.replaceAll("\n", " ") + "' $exitCode");
   }
 }
