@@ -28,6 +28,10 @@
   "product.commands.settings": "Befehlseinstellungen",
   "product.commands.enabled": "Ausführen von Befehlen auf diesem Gerät zulassen",
   "product.commands.history": "Befehlsverlauf",
+  "product.commands.history.empty": "Die Befehlshistorie ist leer.",
+  "product.commands.history.command": "Befehl",
+  "product.commands.history.output": "Ausgabe",
+  "product.commands.history.exit.code": "Exit Code",
 
   "product.help.title": "Hilfe",
   "product.help.frequently.questions": "Häufig gestellte Fragen",

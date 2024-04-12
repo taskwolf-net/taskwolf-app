@@ -28,6 +28,10 @@
   "product.commands.settings": "Command Settings",
   "product.commands.enabled": "Allow commands to be executed on this device",
   "product.commands.history": "Command History",
+  "product.commands.history.empty": "The command history is empty.",
+  "product.commands.history.command": "Command",
+  "product.commands.history.output": "Output",
+  "product.commands.history.exit.code": "Exit Code",
 
   "product.help.title": "Help",
   "product.help.frequently.questions": "Frequently asked questions",
