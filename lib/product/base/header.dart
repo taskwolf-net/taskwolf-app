@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taskwolf_app/login/login.dart';
+import 'package:taskwolf_app/settings/device/device.dart';
+import 'package:taskwolf_app/settings/theme/theme-state.dart';
 
 class ProductHeader extends StatelessWidget implements PreferredSizeWidget {
   ProductHeader({super.key, required this.page});
 
   final page;
+  List<String> entries = [];
 
   @override
   Widget build(BuildContext context) {
+    var isLight = Provider.of<ThemeState>(context).getTheme == ThemeMode.light;
+    entries = [Locales.string(context, "neutral.header.settings"),
+      Locales.string(context, "neutral.header.logout")];
     return AppBar(
       title: Text(page),
-      backgroundColor: Color(0xFF313131),
+      backgroundColor: isLight ? Color(0xFFFFFFFF) : Color(0xFF313131),
       surfaceTintColor: Colors.transparent,
       actions: <Widget>[
         PopupMenuButton<String>(
@@ -21,9 +28,9 @@ class ProductHeader extends StatelessWidget implements PreferredSizeWidget {
             clickMenuButton(context, value);
           },
           offset: Offset(0, 50),
-          color: Color(0xFF545454),
+          color: isLight ? Color(0xFFEDEDED) : Color(0xFF545454),
           itemBuilder: (BuildContext context) {
-            return [Locales.string(context, "neutral.header.logout")].map((String choice) {
+            return entries.map((String choice) {
               return PopupMenuItem<String>(
                 value: choice,
                 child: Text(choice),
@@ -36,12 +43,13 @@ class ProductHeader extends StatelessWidget implements PreferredSizeWidget {
   }
 
   clickMenuButton(context, value) async {
-    if (value == Locales.string(context, "neutral.header.logout")) {
+    if (value == entries[0]) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => DevicePage()));
+    } else if (value == entries[1]) {
       final preferences = await SharedPreferences.getInstance();
       preferences.remove("token");
       Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => LoginPage()));
-      return;
     }
   }
 

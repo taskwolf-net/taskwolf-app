@@ -2,13 +2,16 @@ import 'package:accordion/accordion.dart';
 import 'package:accordion/controllers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:provider/provider.dart';
 import 'package:taskwolf_app/product/base/page.dart';
+import 'package:taskwolf_app/settings/theme/theme-state.dart';
 
 class HelpPage extends StatelessWidget {
   HelpPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var isLight = Provider.of<ThemeState>(context).getTheme == ThemeMode.light;
     return ProductPage(name: Locales.string(context, "product.help.title"),
       content: Center(
         child: Container(
@@ -26,7 +29,8 @@ class HelpPage extends StatelessWidget {
                 headerBorderColor: Colors.blueGrey,
                 headerBorderColorOpened: Colors.transparent,
                 headerBackgroundColor: Colors.blue,
-                contentBackgroundColor: Color(0xFF121212),
+                contentBackgroundColor: isLight ? Color(0xFFE8E8E8) :
+                  Color(0xFF121212),
                 contentBorderColor: Colors.blue,
                 contentBorderWidth: 3,
                 contentHorizontalPadding: 20,

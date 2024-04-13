@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:provider/provider.dart';
 import 'package:taskwolf_app/product/base/page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:taskwolf_app/settings/theme/theme-state.dart';
 
 class CommandPage extends StatelessWidget {
   CommandPage({super.key});
@@ -87,13 +89,15 @@ class CommandPage extends StatelessWidget {
           style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),)
       );
     }
+    var isLight = Provider.of<ThemeState>(context).getTheme == ThemeMode.light;
     return Expanded(
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         width: 750,
         child: ListView.separated(
           itemBuilder: (builder, index) {
-            return Card(child: createCommandHistoryEntry(history[index], context));
+            return Card(child: createCommandHistoryEntry(history[index], isLight,
+              context));
           },
           separatorBuilder: (context, index) => SizedBox(
             height: 20,
@@ -104,7 +108,7 @@ class CommandPage extends StatelessWidget {
     );
   }
 
-  createCommandHistoryEntry(command, context) {
+  createCommandHistoryEntry(command, isLight, context) {
     var exitCode = command["exitCode"];
     return ListTile(
       title: Text(Locales.string(context, "product.commands.history.command") +
@@ -112,9 +116,10 @@ class CommandPage extends StatelessWidget {
       subtitle: Text(Locales.string(context, "product.commands.history.output") +
         ": \"" + command["output"] + command["errorMessage"] + "\"\n" +
         Locales.string(context, "product.commands.history.exit.code") + ": $exitCode"),
-      tileColor: Color(0xFF333333),
+      tileColor: isLight ? Color(0xFFDCDCDC) : Color(0xFF333333),
       shape: RoundedRectangleBorder(
-        side: BorderSide(color: Color(0xFF5D5D5D), width: 1),
+        side: BorderSide(color: isLight ? Color(0xFFA9A9A9) : Color(0xFF5D5D5D),
+            width: 1),
         borderRadius: BorderRadius.circular(5),
       )
     );
@@ -214,7 +219,9 @@ class CommandSettingEntryState extends State<CommandSettingEntry> {
             child: new LocaleText(entry.title))),
         Switch(
           value: entry.state,
-          thumbColor: const MaterialStatePropertyAll<Color>(Colors.white),
+          thumbColor: MaterialStatePropertyAll<Color>(Theme.of(context).primaryColor),
+          activeColor: Colors.blue,
+          activeTrackColor: Colors.blue,
           onChanged: (bool value) {
             setState(() {
               entry.state = value;

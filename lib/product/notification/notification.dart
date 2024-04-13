@@ -105,7 +105,9 @@ class NotificationSettingEntryState extends State<NotificationSettingEntry> {
             child: new LocaleText(entry.title))),
         Switch(
           value: entry.state,
-          thumbColor: const MaterialStatePropertyAll<Color>(Colors.white),
+          thumbColor: MaterialStatePropertyAll<Color>(Theme.of(context).primaryColor),
+          activeColor: Colors.blue,
+          activeTrackColor: Colors.blue,
           onChanged: (bool value) {
             setState(() {
               entry.state = value;

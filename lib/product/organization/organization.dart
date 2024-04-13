@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:provider/provider.dart';
 import 'package:taskwolf_app/product/base/page.dart';
 import 'package:taskwolf_app/product/organization/organization-add.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:taskwolf_app/settings/theme/theme-state.dart';
 
 class OrganizationPage extends StatelessWidget {
   OrganizationPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var isLight = Provider.of<ThemeState>(context).getTheme == ThemeMode.light;
     return FutureBuilder<dynamic>(
       future: findTrustedOrganizations(),
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
@@ -26,7 +29,7 @@ class OrganizationPage extends StatelessWidget {
                       TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
                   ),
                   createOrganizationList(List<Map<String, dynamic>>.from(snapshot.data ?? []),
-                    snapshot.data, context)
+                    snapshot.data, isLight, context)
                 ]
               ),
             ),
@@ -35,8 +38,8 @@ class OrganizationPage extends StatelessWidget {
                 Navigator.push(context,
                   MaterialPageRoute(builder: (context) => OrganizationAddPage()));
               },
-              foregroundColor: Colors.white,
-              backgroundColor: Color(0x33FFFFFF),
+              foregroundColor: Theme.of(context).primaryColor,
+              backgroundColor: isLight ? Color(0xFFFFFFFF) : Color(0x33FFFFFF),
               child: const Icon(Icons.add),
               tooltip: Locales.string(context, "product.organizations.add"),
             ),
@@ -46,7 +49,9 @@ class OrganizationPage extends StatelessWidget {
     );
   }
 
-  createOrganizationList(List<Map<String, dynamic>> organizations, raw, context) {
+  createOrganizationList(
+    List<Map<String, dynamic>> organizations, raw, isLight, context)
+  {
     if (raw == null) {
       return Container();
     }
@@ -67,7 +72,7 @@ class OrganizationPage extends StatelessWidget {
         child: ListView.separated(
           itemBuilder: (builder, index) {
             return Card(child: createOrganizationEntry(organizations[index],
-              context));
+              isLight, context));
           },
           separatorBuilder: (context, index) => SizedBox(
             height: 20,
@@ -78,13 +83,14 @@ class OrganizationPage extends StatelessWidget {
     );
   }
 
-  createOrganizationEntry(organization, context) {
+  createOrganizationEntry(organization, isLight, context) {
     return ListTile(
       title: Text(organization["name"]),
       subtitle: Text(Locales.string(context, "product.organizations.owner") + ": " + organization["owner"]),
-      tileColor: Color(0xFF333333),
+      tileColor: isLight ? Color(0xFFDCDCDC) : Color(0xFF333333),
       shape: RoundedRectangleBorder(
-        side: BorderSide(color: Color(0xFF5D5D5D), width: 1),
+        side: BorderSide(color: isLight ? Color(0xFFA9A9A9) : Color(0xFF5D5D5D),
+          width: 1),
         borderRadius: BorderRadius.circular(5),
       ),
       trailing: PopupMenuButton<String>(
@@ -93,7 +99,7 @@ class OrganizationPage extends StatelessWidget {
           clickOrganizationSettings(organization, value, context);
         },
         offset: Offset(0, 30),
-        color: Color(0xFF545454),
+        color: isLight ? Color(0xFFEDEDED) : Color(0xFF545454),
         tooltip: Locales.string(context, "product.organizations.settings"),
         itemBuilder: (BuildContext context) {
           return [Locales.string(context, "product.organizations.remove")].map((String choice) {
