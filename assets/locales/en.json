@@ -1,4 +1,5 @@
 {
+  "neutral.header.settings": "Settings",
   "neutral.header.logout": "Logout",
 
   "product.home.title": "Home",
@@ -43,5 +44,17 @@
   "product.help.question.required.question": "Do I really need this app?",
   "product.help.question.required.answer": "We offer this app as an extension of the existing Taskwolf functions. You can also use Taskwolf without this app, but many of the app's functions are very useful for using Taskwolf.",
   "product.help.question.delete.question": "How can I remove the device from Taskwolf?",
-  "product.help.question.delete.answer": "To remove the device from Taskwolf, click on the banner at the top right, then select \"Settings\" and go to \"Device\". There you will find the option to remove the device from Taskwolf."
+  "product.help.question.delete.answer": "To remove the device from Taskwolf, click on the banner at the top right, then select \"Settings\" and go to \"Device\". There you will find the option to remove the device from Taskwolf.",
+
+  "settings": "Settings",
+
+  "settings.device.title": "Device",
+
+  "settings.language.title": "Language",
+  "settings.language.german": "German",
+  "settings.language.english": "English",
+
+  "settings.theme.title": "Theme",
+  "settings.theme.dark": "Dark",
+  "settings.theme.light": "Light"
 }
