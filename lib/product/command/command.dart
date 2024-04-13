@@ -54,18 +54,14 @@ class CommandPage extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFFFF2A2A),
                             foregroundColor: const Color(0xFFFFFFFF)),
-                          onPressed: () async {
-                            await resetCommandHistory();
-                            Navigator.pushReplacement(context, PageRouteBuilder(
-                              pageBuilder: (context, animation1, animation2) => CommandPage(),
-                              transitionDuration: Duration.zero,
-                              reverseTransitionDuration: Duration.zero));
+                          onPressed: () {
+                            clickCommandResetButton(context);
                           },
                           child: const LocaleText("product.commands.history.reset"),
                         ),
                       ),
                       createCommandHistory(historyEntries, historySnapshot.data,
-                          context),
+                        context),
                     ]
                   ),
                 )
@@ -76,7 +72,6 @@ class CommandPage extends StatelessWidget {
       }
     );
   }
-
 
   createCommandHistory(List<Map<String, dynamic>> history, raw, context) {
     if (raw == null) {
@@ -163,6 +158,14 @@ class CommandPage extends StatelessWidget {
     entries.add(CommandSettingEntry(title: "product.commands.enabled",
       state: body["commandExecution"], entries: entries));
     return entries;
+  }
+
+  clickCommandResetButton(context) async {
+    await resetCommandHistory();
+    Navigator.pushReplacement(context, PageRouteBuilder(
+      pageBuilder: (context, animation1, animation2) => CommandPage(),
+      transitionDuration: Duration.zero,
+      reverseTransitionDuration: Duration.zero));
   }
 
   resetCommandHistory() async {
