@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:taskwolf_app/settings/device/device.dart';
+import 'package:taskwolf_app/settings/language/language.dart';
 import 'package:taskwolf_app/settings/theme/theme.dart';
 
 class ProductSidebar extends StatelessWidget {
@@ -29,6 +30,7 @@ class ProductSidebar extends StatelessWidget {
             ),
           ),
           createSidebarEntry("settings.device.title", DevicePage(), Icons.devices_sharp, context),
+          createSidebarEntry("settings.language.title", LanguagePage(), Icons.language, context),
           createSidebarEntry("settings.theme.title", ThemePage(), Icons.brush, context),
         ],
       ),

@@ -23,13 +23,17 @@ class HomePage extends StatelessWidget {
   Future<String> applyUserLanguage(context) async {
     final preferences = await SharedPreferences.getInstance();
     final token = preferences.getString('token') ?? "";
-    final response = await http.get(
-      Uri.parse('https://api.taskwolf.net/v1/settings/language/'),
+    final device = preferences.getString('device') ?? "";
+    final response = await http.post(
+      Uri.parse('https://api.taskwolf.net/v1/device/language/find/'),
       headers: <String, String>{
         'Authorization': "Bearer " + token,
         'WHITELIST-KEY': "tOrTylordsMeMBiTyLATONTERipLOusiNVOloRyPORKBOScoCk",
         'Content-Type': 'application/json; charset=UTF-8',
       },
+      body: jsonEncode(<String, String>{
+        "device": device
+      }),
     );
     var language = await jsonDecode(response.body)["language"];
     await Locales.change(context, language);
