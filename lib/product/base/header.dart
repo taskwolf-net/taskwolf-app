@@ -13,6 +13,7 @@ class ProductHeader extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: Text(page),
       backgroundColor: Color(0xFF313131),
+      surfaceTintColor: Colors.transparent,
       actions: <Widget>[
         PopupMenuButton<String>(
           icon: const Icon(Icons.account_circle, size: 40),
