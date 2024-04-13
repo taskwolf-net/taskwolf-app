@@ -26,16 +26,34 @@ class DeviceConnection {
   }
 
   connect() async {
+    try {
+      var uri = await createUri();
+      channel = WebSocketChannel.connect(uri);
+      await channel.ready;
+      channel.stream.listen(
+        (message) {
+          interpret(message);
+        },
+        onDone: () {
+          connect();
+        },
+      );
+    } on Exception {
+      reconnect();
+    }
+  }
+
+  createUri() async {
     final preferences = await SharedPreferences.getInstance();
     final token = preferences.getString('token') ?? "";
     final device = preferences.getString('device') ?? "";
-    var url = "wss://api.taskwolf.net/device/connect/?token=" + token +
+    var uri = "wss://api.taskwolf.net/device/connect/?token=" + token +
       "&device=" + device;
-    channel = WebSocketChannel.connect(Uri.parse(url));
-    await channel.ready;
-    channel.stream.listen((message) {
-      interpret(message);
-    });
+    return Uri.parse(uri);
+  }
+
+  reconnect() {
+    Future.delayed(const Duration(seconds: 10), () => connect());
   }
 
   interpret(message) {
