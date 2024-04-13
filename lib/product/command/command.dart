@@ -18,6 +18,8 @@ class CommandPage extends StatelessWidget {
           builder: (context, AsyncSnapshot<dynamic> historySnapshot) {
             var settingsEntries = List<CommandSettingEntry>.from(
               settingsSnapshot.data ?? []);
+            var historyEntries = List<Map<String, dynamic>>.from(
+                historySnapshot.data ?? []);
             return ProductPage(name: Locales.string(context, "product.commands.title"),
               content: SizedBox(
                 child: Center(
@@ -46,8 +48,24 @@ class CommandPage extends StatelessWidget {
                           textAlign: TextAlign.center, style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
                       ),
-                      createCommandHistory(List<Map<String, dynamic>>.from(
-                        historySnapshot.data ?? []), historySnapshot.data, context),
+                      if (historyEntries.isNotEmpty) Container(
+                        margin: EdgeInsets.symmetric(vertical: 20),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFF2A2A),
+                            foregroundColor: const Color(0xFFFFFFFF)),
+                          onPressed: () async {
+                            await resetCommandHistory();
+                            Navigator.pushReplacement(context, PageRouteBuilder(
+                              pageBuilder: (context, animation1, animation2) => CommandPage(),
+                              transitionDuration: Duration.zero,
+                              reverseTransitionDuration: Duration.zero));
+                          },
+                          child: const LocaleText("product.commands.history.reset"),
+                        ),
+                      ),
+                      createCommandHistory(historyEntries, historySnapshot.data,
+                          context),
                     ]
                   ),
                 )
@@ -76,7 +94,7 @@ class CommandPage extends StatelessWidget {
     }
     return Expanded(
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+        margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         width: 750,
         child: ListView.separated(
           itemBuilder: (builder, index) {
@@ -145,6 +163,23 @@ class CommandPage extends StatelessWidget {
     entries.add(CommandSettingEntry(title: "product.commands.enabled",
       state: body["commandExecution"], entries: entries));
     return entries;
+  }
+
+  resetCommandHistory() async {
+    final preferences = await SharedPreferences.getInstance();
+    final token = preferences.getString('token') ?? "";
+    final device = preferences.getString('device') ?? "";
+    await http.post(
+      Uri.parse('https://api.taskwolf.net/v1/device/command/history/reset/'),
+      headers: <String, String>{
+        'Authorization': "Bearer " + token,
+        'WHITELIST-KEY': "tOrTylordsMeMBiTyLATONTERipLOusiNVOloRyPORKBOScoCk",
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        "device": device
+      }),
+    );
   }
 }
 

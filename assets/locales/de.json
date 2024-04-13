@@ -32,6 +32,7 @@
   "product.commands.history.command": "Befehl",
   "product.commands.history.output": "Ausgabe",
   "product.commands.history.exit.code": "Exit Code",
+  "product.commands.history.reset": "ZURÜCKSETZEN",
 
   "product.help.title": "Hilfe",
   "product.help.frequently.questions": "Häufig gestellte Fragen",
