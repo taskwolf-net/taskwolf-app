@@ -66,7 +66,8 @@ class OrganizationPage extends StatelessWidget {
         width: 750,
         child: ListView.separated(
           itemBuilder: (builder, index) {
-            return createOrganizationEntry(organizations[index], context);
+            return Card(child: createOrganizationEntry(organizations[index],
+              context));
           },
           separatorBuilder: (context, index) => SizedBox(
             height: 20,

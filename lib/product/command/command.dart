@@ -80,7 +80,7 @@ class CommandPage extends StatelessWidget {
         width: 750,
         child: ListView.separated(
           itemBuilder: (builder, index) {
-            return createCommandHistoryEntry(history[index], context);
+            return Card(child: createCommandHistoryEntry(history[index], context));
           },
           separatorBuilder: (context, index) => SizedBox(
             height: 20,
