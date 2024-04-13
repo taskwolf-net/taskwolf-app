@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_locales/flutter_locales.dart';
 import 'package:taskwolf_app/product/connection/device-connection.dart';
 import 'package:taskwolf_app/product/home/home.dart';
 import 'package:taskwolf_app/login/login.dart';
+import 'package:taskwolf_app/settings/theme/theme-state.dart';
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   var data = message.data;
@@ -57,26 +59,54 @@ class TaskwolfApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
-      future: checkTokenExistence(),
-      builder: (context, AsyncSnapshot<bool> snapshot) {
-        var home = snapshot.data == true ? HomePage() : LoginPage();
-        return LocaleBuilder(
-          builder: (locale) => MaterialApp( title: 'Taskwolf App',
-            darkTheme: ThemeData(
-              useMaterial3: true,
-              colorScheme: ColorScheme.dark(primary: Color(0xFF2196F3))
-            ),
-            themeMode: ThemeMode.dark,
-            home: home,
-            debugShowCheckedModeBanner: false,
-            localizationsDelegates: Locales.delegates,
-            supportedLocales: Locales.supportedLocales,
-            locale: locale,
-          ),
+    return FutureBuilder<ThemeMode>(
+      future: findTheme(),
+      builder: (context, AsyncSnapshot<ThemeMode> themeSnapshot) {
+        if (themeSnapshot.data == null) {
+          return Container();
+        }
+        return MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => ThemeState(themeSnapshot.data ??
+              ThemeMode.light)),
+          ],
+          child: FutureBuilder<bool>(
+            future: checkTokenExistence(),
+            builder: (context, AsyncSnapshot<bool> tokenSnapshot) {
+              var home = tokenSnapshot.data == true ? HomePage() : LoginPage();
+              return LocaleBuilder(
+                builder: (locale) => MaterialApp( title: 'Taskwolf App',
+                  theme: ThemeData(
+                    useMaterial3: true,
+                    primaryColor: Colors.black,
+                    colorScheme: ColorScheme.light(primary: Color(0xFFFFFFFF),
+                      background: Color(0xFFE8E8E8)),
+                  ),
+                  darkTheme: ThemeData(
+                    useMaterial3: true,
+                    primaryColor: Colors.white,
+                    colorScheme: ColorScheme.dark(primary: Color(0xFF2196F3),
+                      background: Color(0xFF121212)),
+                  ),
+                  themeMode: Provider.of<ThemeState>(context).getTheme,
+                  home: home,
+                  debugShowCheckedModeBanner: false,
+                  localizationsDelegates: Locales.delegates,
+                  supportedLocales: Locales.supportedLocales,
+                  locale: locale,
+                )
+              );
+            }
+          )
         );
       }
     );
+  }
+
+  Future<ThemeMode> findTheme() async {
+    final preferences = await SharedPreferences.getInstance();
+    final theme = preferences.getString('theme') ?? "";
+    return theme == "light" ? ThemeMode.light : ThemeMode.dark;
   }
 
   Future<bool> checkTokenExistence() async {
