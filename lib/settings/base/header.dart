@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:provider/provider.dart';
+import 'package:taskwolf_app/product/home/home.dart';
 import 'package:taskwolf_app/settings/theme/theme-state.dart';
 
 class ProductHeader extends StatelessWidget implements PreferredSizeWidget {
@@ -22,7 +23,8 @@ class ProductHeader extends StatelessWidget implements PreferredSizeWidget {
             backgroundColor: Theme.of(context).primaryColor,
             child: IconButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pushReplacement(context, MaterialPageRoute(builder:
+                  (context) => HomePage()));
               },
               icon: const Icon(Icons.close),
             )

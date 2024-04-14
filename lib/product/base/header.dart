@@ -44,7 +44,8 @@ class ProductHeader extends StatelessWidget implements PreferredSizeWidget {
 
   clickMenuButton(context, value) async {
     if (value == entries[0]) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => DevicePage()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder:
+        (context) => DevicePage()));
     } else if (value == entries[1]) {
       final preferences = await SharedPreferences.getInstance();
       preferences.remove("token");
