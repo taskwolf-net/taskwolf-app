@@ -79,7 +79,7 @@ class TaskwolfApp extends StatelessWidget {
                   theme: ThemeData(
                     useMaterial3: true,
                     primaryColor: Colors.black,
-                    colorScheme: ColorScheme.light(primary: Color(0xFFFFFFFF),
+                    colorScheme: ColorScheme.light(primary: Color(0xFF2196F3),
                       background: Color(0xFFE8E8E8)),
                   ),
                   darkTheme: ThemeData(
