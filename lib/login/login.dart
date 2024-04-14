@@ -3,11 +3,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taskwolf_app/firebase_options.dart';
 import 'package:taskwolf_app/product/home/home.dart';
 import 'dart:io';
+
+import 'package:taskwolf_app/settings/theme/theme-state.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -17,6 +21,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var isLight = Provider.of<ThemeState>(context).getTheme == ThemeMode.light;
     return Scaffold(
       body: Center(
         child: Column(
@@ -52,7 +57,7 @@ class LoginPage extends StatelessWidget {
                           labelText: 'Password'),
                         obscureText: true,
                         onSubmitted: (value) {
-                          submitLogin(context);
+                          submitLogin(isLight, context);
                         }
                       ),
                     ),
@@ -65,7 +70,7 @@ class LoginPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20)),
                       child: TextButton(
                         onPressed: () {
-                          submitLogin(context);
+                          submitLogin(isLight, context);
                         },
                         child: const Text(
                           'Login',
@@ -83,7 +88,7 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  submitLogin(context) async {
+  submitLogin(isLight, context) async {
     final response = await http.post(
       Uri.parse('https://api.taskwolf.net/v1/verification/login/'),
       headers: <String, String>{
@@ -96,7 +101,7 @@ class LoginPage extends StatelessWidget {
       }),
     );
     if (response.statusCode != 200) {
-      loginFailed(context);
+      loginFailed(isLight, context);
       return;
     }
     var apiKey = jsonDecode(response.body)["apiKey"];
@@ -170,20 +175,23 @@ class LoginPage extends StatelessWidget {
     return deviceIdentifier ?? "";
   }
 
-  loginFailed(context) {
+  loginFailed(isLight, context) {
     passwordController.text = "";
-    showDialog<String>(
+    Alert(
       context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: const Text('Login failed', style: TextStyle(color: Colors.red)),
-        content: const Text('The email or password you entered is incorrect. Please try again!'),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.pop(context, 'OK'),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
+      type: AlertType.error,
+      style: AlertStyle(
+          titleStyle: TextStyle(color: isLight ? Colors.black : Colors.white),
+          descStyle: TextStyle(color: isLight ? Colors.black : Colors.white)),
+      title: "Login failed",
+      desc: "The email or password you entered is incorrect. Please try again!",
+      buttons: [
+        DialogButton(
+          child: Text("OK", style: TextStyle(color: Colors.white, fontSize: 20)),
+          onPressed: () => Navigator.pop(context),
+          color: Colors.grey,
+        ),
+      ],
+    ).show();
   }
 }
