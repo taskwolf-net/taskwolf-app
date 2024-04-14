@@ -134,17 +134,25 @@ class DevicePage extends StatelessWidget {
     );
     var success = await jsonDecode(response.body)["success"];
     if (success) {
-      await changeToken();
-      changeEmailController.text = "";
-      changePasswordController.text = "";
-      alert("settings.device.account.successful.title",
-        "settings.device.account.successful.body",
-        AlertType.success, "settings.device.account.successful.acknowledged",
-        isLight, context);
+      deviceAccountChangeSuccessful(isLight, context);
       return;
     }
+    deviceAccountChangeFailure(await jsonDecode(response.body)["errorCode"],
+      isLight, context);
+  }
+
+  deviceAccountChangeSuccessful(isLight, context) async {
+    await changeToken();
+    changeEmailController.text = "";
     changePasswordController.text = "";
-    var errorCode = await jsonDecode(response.body)["errorCode"];
+    alert("settings.device.account.successful.title",
+      "settings.device.account.successful.body",
+      AlertType.success, "settings.device.account.successful.acknowledged",
+      isLight, context);
+  }
+
+  deviceAccountChangeFailure(errorCode, isLight, context) {
+    changePasswordController.text = "";
     if (errorCode == 1000) {
       failure("settings.device.account.failed.title",
         "settings.device.account.failed.current.password", isLight, context);
