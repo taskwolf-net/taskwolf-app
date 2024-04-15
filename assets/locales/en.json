@@ -24,6 +24,9 @@
   "product.notifications.news": "Receive notifications when new features are available",
 
   "product.files.title": "Files",
+  "product.files.settings": "File settings",
+  "product.files.storage": "Files can be created on this device",
+  "product.files.info": "The content of files can be read out",
 
   "product.commands.title": "Commands",
   "product.commands.settings": "Command Settings",

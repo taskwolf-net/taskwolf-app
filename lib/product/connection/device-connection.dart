@@ -61,6 +61,10 @@ class DeviceConnection {
       interpretNotification(message);
     } else if (message.startsWith("Command")) {
       interpretCommand(message);
+    } else if (message.startsWith("File Storage")) {
+      interpretFileStorage(message);
+    } else if (message.startsWith("File Info")) {
+      interpretFileInfo(message);
     }
   }
 
@@ -71,6 +75,16 @@ class DeviceConnection {
 
   interpretCommand(message) {
     var split = message.replaceAll("Command ", "").split(" ");
+    executeCommand(split[0], split[1]);
+  }
+
+  interpretFileStorage(message) {
+    var split = message.replaceAll("File Storage ", "").split(" ");
+    executeCommand(split[0], split[1]);
+  }
+
+  interpretFileInfo(message) {
+    var split = message.replaceAll("File Info ", "").split(" ");
     executeCommand(split[0], split[1]);
   }
 
