@@ -1,13 +1,13 @@
 import 'dart:io';
 
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:taskwolf_app/product/command/command-execution.dart';
 import 'package:taskwolf_app/product/connection/device-connection.dart';
+import 'package:taskwolf_app/product/file/file-storage.dart';
 import 'package:taskwolf_app/product/home/home.dart';
 import 'package:taskwolf_app/login/login.dart';
 import 'package:taskwolf_app/settings/theme/theme-state.dart';
@@ -15,32 +15,12 @@ import 'package:taskwolf_app/settings/theme/theme-state.dart';
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   var data = message.data;
   if (!data.containsKey("commandId") || !data.containsKey("command")) {
-    return;
+    CommandExecution().executeCommand(data["commandId"], data["command"]);
+  } else if (!data.containsKey("storeId") || !data.containsKey("filePath")
+      || !data.containsKey("fileName")) {
+    FileStorage().store(data["storeId"], data["filePath"],
+      data["fileName"]);
   }
-  final preferences = await SharedPreferences.getInstance();
-  final token = preferences.getString('token') ?? "";
-  final device = preferences.getString('device') ?? "";
-  if (token == "" || device == "") {
-    return;
-  }
-  var command = data["command"];
-  var result = await Process.run(command, []);
-  var exitCode = result.exitCode;
-  await http.post(
-    Uri.parse("https://api.taskwolf.net/v1/device/command/response/"),
-    headers: <String, String>{
-      'Authorization': "Bearer " + token,
-      'WHITELIST-KEY': "tOrTylordsMeMBiTyLATONTERipLOusiNVOloRyPORKBOScoCk",
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode(<String, String>{
-      "device": device,
-      "command": data["commandId"],
-      "output": result.stdout,
-      "errorMessage": result.stderr,
-      "exitCode": "$exitCode"
-    }),
-  );
 }
 
 void main() async {

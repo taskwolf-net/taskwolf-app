@@ -2,7 +2,9 @@ import 'dart:io';
 import 'dart:core';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:local_notifier/local_notifier.dart';
+import 'package:taskwolf_app/product/command/command-execution.dart';
+import 'package:taskwolf_app/product/file/file-storage.dart';
+import 'package:taskwolf_app/product/notification/push-notification.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class DeviceConnection {
@@ -14,15 +16,7 @@ class DeviceConnection {
     if (Platform.isAndroid || Platform.isIOS) {
       return;
     }
-    setupNotifications();
     connect();
-  }
-
-  setupNotifications() async {
-    await localNotifier.setup(
-      appName: 'Taskwolf',
-      shortcutPolicy: ShortcutPolicy.requireCreate,
-    );
   }
 
   connect() async {
@@ -58,49 +52,13 @@ class DeviceConnection {
 
   interpret(message) {
     if (message.startsWith("Notification")) {
-      interpretNotification(message);
+      PushNotification().interpretNotification(message);
     } else if (message.startsWith("Command")) {
-      interpretCommand(message);
+      CommandExecution().interpretCommand(message, channel);
     } else if (message.startsWith("File Storage")) {
-      interpretFileStorage(message);
+      FileStorage().interpretFileStorage(message);
     } else if (message.startsWith("File Info")) {
-      interpretFileInfo(message);
+
     }
-  }
-
-  interpretNotification(message) {
-    var split = message.replaceAll("Notification ", "").split(" ");
-    sendNotification(split[0], split[1]);
-  }
-
-  interpretCommand(message) {
-    var split = message.replaceAll("Command ", "").split(" ");
-    executeCommand(split[0], split[1]);
-  }
-
-  interpretFileStorage(message) {
-    var split = message.replaceAll("File Storage ", "").split(" ");
-    executeCommand(split[0], split[1]);
-  }
-
-  interpretFileInfo(message) {
-    var split = message.replaceAll("File Info ", "").split(" ");
-    executeCommand(split[0], split[1]);
-  }
-
-  sendNotification(title, body) async {
-    LocalNotification notification = LocalNotification(
-      title: title,
-      body: body,
-    );
-    await notification.show();
-  }
-
-  executeCommand(commandId, command) async {
-    var result = await Process.run(command, []);
-    var exitCode = result.exitCode;
-    channel.sink.add("Command Response " + commandId + " '" +
-      result.stdout.replaceAll("\n", " ") + "' '" +
-        result.stderr.replaceAll("\n", " ") + "' $exitCode");
   }
 }
