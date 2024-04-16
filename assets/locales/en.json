@@ -27,6 +27,19 @@
   "product.files.settings": "File settings",
   "product.files.storage": "Files can be created on this device",
   "product.files.info": "The content of files can be read out",
+  "product.files.history": "File History",
+
+  "product.files.storage.history": "Storage History",
+  "product.files.storage.history.file": "File",
+  "product.files.storage.history.time": "Time",
+  "product.files.storage.history.empty": "The storage history is empty. Either you have not yet stored a file on this device or you have recently reset the history",
+  "product.files.storage.history.reset": "RESET",
+
+  "product.files.info.history": "Info History",
+  "product.files.info.history.file": "File",
+  "product.files.info.history.time": "Time",
+  "product.files.storage.history.empty": "The info history is empty. Either you have not yet requested a file info on this device or you have recently reset the history",
+  "product.files.info.history.reset": "RESET",
 
   "product.commands.title": "Commands",
   "product.commands.settings": "Command Settings",

@@ -4,6 +4,8 @@ import 'package:taskwolf_app/product/base/page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:taskwolf_app/product/file/file-info-history.dart';
+import 'package:taskwolf_app/product/file/file-storage-history.dart';
 
 class FilePage extends StatelessWidget {
   FilePage({super.key});
@@ -37,12 +39,57 @@ class FilePage extends StatelessWidget {
                       itemCount: settingsEntries.length,
                     ),
                   ),
+                  Container(
+                    margin: EdgeInsets.only(top: 20),
+                    child: const LocaleText("product.files.history",
+                      textAlign: TextAlign.center, style:
+                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
+                  ),
+                  OverflowBar(
+                    alignment: MainAxisAlignment.spaceEvenly,
+                    overflowAlignment: OverflowBarAlignment.center,
+                    children: [
+                      createFileHistoryButton(Icons.download, "product.files.storage.history",
+                        FileStorageHistoryPage(), context),
+                      createFileHistoryButton(Icons.upload, "product.files.info.history",
+                        FileInfoHistoryPage(), context)
+                    ],
+                  )
                 ]
               ),
             )
           )
         );
       }
+    );
+  }
+
+  createFileHistoryButton(icon, text, page, context) {
+    return Container(
+      margin: EdgeInsets.all(20),
+      child: ElevatedButton(
+        child: Container(
+          width: 200,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 80,),
+              SizedBox(height: 10),
+              LocaleText(text, style: TextStyle(fontSize: 25),)
+            ],
+          )
+        ),
+        style: ElevatedButton.styleFrom(
+          foregroundColor: Theme.of(context).primaryColor,
+          padding: EdgeInsets.all(20),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0))
+        ),
+        onPressed: () async {
+          Navigator.push(context,
+            MaterialPageRoute(builder: (context) => page));
+        },
+      )
     );
   }
 

@@ -27,6 +27,19 @@
   "product.files.settings": "Dateieinstellungen",
   "product.files.storage": "Dateien können auf diesem Gerät erstellt werden",
   "product.files.info": "Der Inhalt von Dateien kann ausgelesen werden",
+  "product.files.history": "Dateiverlauf",
+
+  "product.files.storage.history": "Speicherverlauf",
+  "product.files.storage.history.file": "Datei",
+  "product.files.storage.history.time": "Zeit",
+  "product.files.storage.history.empty": "Der Speicherverlauf ist leer. Entweder haben Sie noch keine Datei auf diesem Gerät gespeichert oder Sie haben den Verlauf kürzlich zurückgesetzt",
+  "product.files.storage.history.reset": "ZURÜCKSETZEN",
+
+  "product.files.info.history": "Infoverlauf",
+  "product.files.info.history.file": "Datei",
+  "product.files.info.history.time": "Zeit",
+  "product.files.info.history.empty": "Der Infoverlauf ist leer. Entweder haben Sie noch keine Dateiinfo zu diesem Gerät angefordert oder Sie haben den Verlauf kürzlich zurückgesetzt",
+  "product.files.info.history.reset": "ZURÜCKSETZEN",
 
   "product.commands.title": "Befehle",
   "product.commands.settings": "Befehlseinstellungen",
