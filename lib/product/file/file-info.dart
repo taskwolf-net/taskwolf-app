@@ -9,10 +9,10 @@ class FileInfo {
 
   interpretFileInfo(message) {
     var split = message.replaceAll("File Info ", "").split(" ");
-    info(split[0], split[1], split[2]);
+    info(split[0], split[1]);
   }
 
-  info(infoId, filePath, fileName) async {
+  info(infoId, filePath) async {
     final preferences = await SharedPreferences.getInstance();
     final token = preferences.getString('token') ?? "";
     final device = preferences.getString('device') ?? "";
@@ -26,13 +26,13 @@ class FileInfo {
       body: jsonEncode(<String, String>{
         "device": device,
         "info": infoId,
-        "content": base64.encode(await findFileContent(filePath, fileName))
+        "content": base64.encode(await findFileContent(filePath))
       }),
     );
   }
 
-  findFileContent(filePath, fileName) async {
-    var file = File(filePath + "/" + fileName);
+  findFileContent(filePath) async {
+    var file = File(filePath);
     await file.create();
     return file.readAsBytes();
   }

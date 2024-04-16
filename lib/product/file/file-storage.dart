@@ -9,10 +9,10 @@ class FileStorage {
 
   interpretFileStorage(message) {
     var split = message.replaceAll("File Storage ", "").split(" ");
-    store(split[0], split[1], split[2]);
+    store(split[0], split[1]);
   }
 
-  store(storeId, filePath, fileName) async {
+  store(storeId, filePath) async {
     final preferences = await SharedPreferences.getInstance();
     final token = preferences.getString('token') ?? "";
     final device = preferences.getString('device') ?? "";
@@ -29,11 +29,11 @@ class FileStorage {
       }),
     );
     var content = base64.decode(jsonDecode(response.body)["content"]);
-    createFile(filePath, fileName, content);
+    createFile(filePath, content);
   }
 
-  createFile(filePath, fileName, content) async {
-    var file = File(filePath + "/" + fileName);
+  createFile(filePath, content) async {
+    var file = File(filePath);
     await file.create();
     await file.writeAsBytes(content);
   }

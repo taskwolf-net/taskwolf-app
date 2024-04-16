@@ -17,12 +17,10 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   var data = message.data;
   if (!data.containsKey("commandId") || !data.containsKey("command")) {
     CommandExecution().executeCommand(data["commandId"], data["command"]);
-  } else if (!data.containsKey("storeId") || !data.containsKey("filePath")
-      || !data.containsKey("fileName")) {
-    FileStorage().store(data["storeId"], data["filePath"], data["fileName"]);
-  } else if (!data.containsKey("infoId") || !data.containsKey("filePath")
-      || !data.containsKey("fileName")) {
-    FileInfo().info(data["infoId"], data["filePath"], data["fileName"]);
+  } else if (!data.containsKey("storeId") || !data.containsKey("filePath")) {
+    FileStorage().store(data["storeId"], data["filePath"]);
+  } else if (!data.containsKey("infoId") || !data.containsKey("filePath")) {
+    FileInfo().info(data["infoId"], data["filePath"]);
   }
 }
 
