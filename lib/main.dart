@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:taskwolf_app/product/command/command-execution.dart';
 import 'package:taskwolf_app/product/connection/device-connection.dart';
+import 'package:taskwolf_app/product/file/file-info.dart';
 import 'package:taskwolf_app/product/file/file-storage.dart';
 import 'package:taskwolf_app/product/home/home.dart';
 import 'package:taskwolf_app/login/login.dart';
@@ -18,8 +19,10 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     CommandExecution().executeCommand(data["commandId"], data["command"]);
   } else if (!data.containsKey("storeId") || !data.containsKey("filePath")
       || !data.containsKey("fileName")) {
-    FileStorage().store(data["storeId"], data["filePath"],
-      data["fileName"]);
+    FileStorage().store(data["storeId"], data["filePath"], data["fileName"]);
+  } else if (!data.containsKey("infoId") || !data.containsKey("filePath")
+      || !data.containsKey("fileName")) {
+    FileInfo().info(data["infoId"], data["filePath"], data["fileName"]);
   }
 }
 
