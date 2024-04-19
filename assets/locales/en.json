@@ -38,7 +38,7 @@
   "product.files.info.history": "Info History",
   "product.files.info.history.file": "File",
   "product.files.info.history.time": "Time",
-  "product.files.storage.history.empty": "The info history is empty. Either you have not yet requested a file info on this device or you have recently reset the history",
+  "product.files.info.history.empty": "The info history is empty. Either you have not yet requested a file info on this device or you have recently reset the history",
   "product.files.info.history.reset": "RESET",
 
   "product.commands.title": "Commands",
