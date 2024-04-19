@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:taskwolf_app/product/base/page.dart';
@@ -116,7 +114,6 @@ class FilePage extends StatelessWidget {
       state: body["fileStorage"], entries: entries));
     entries.add(FileSettingEntry(title: "product.files.info",
       state: body["fileInfo"], entries: entries));
-    log("$body");
     entries.add(FileSettingEntry(title: "product.files.delete",
       state: body["fileDelete"], entries: entries));
     entries.add(FileSettingEntry(title: "product.files.folder.create",
