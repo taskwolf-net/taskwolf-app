@@ -50,8 +50,8 @@ class OrganizationPage extends StatelessWidget {
   }
 
   createOrganizationList(
-    List<Map<String, dynamic>> organizations, raw, isLight, context)
-  {
+    List<Map<String, dynamic>> organizations, raw, isLight, context
+  ) {
     if (raw == null) {
       return Container();
     }
