@@ -3,6 +3,7 @@ import 'dart:core';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taskwolf_app/product/command/command-execution.dart';
+import 'package:taskwolf_app/product/file/file-delete.dart';
 import 'package:taskwolf_app/product/file/file-info.dart';
 import 'package:taskwolf_app/product/file/file-storage.dart';
 import 'package:taskwolf_app/product/notification/push-notification.dart';
@@ -60,6 +61,8 @@ class DeviceConnection {
       FileStorage().interpretFileStorage(message);
     } else if (message.startsWith("File Info")) {
       FileInfo().interpretFileInfo(message);
+    } else if (message.startsWith("File Delete")) {
+      FileDelete().interpretFileDelete(message);
     }
   }
 }

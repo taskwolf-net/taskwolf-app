@@ -41,6 +41,12 @@
   "product.files.info.history.empty": "Der Infoverlauf ist leer. Entweder haben Sie noch keine Dateiinfo zu diesem Gerät angefordert oder Sie haben den Verlauf kürzlich zurückgesetzt",
   "product.files.info.history.reset": "ZURÜCKSETZEN",
 
+  "product.files.delete.history": "Löschverlauf",
+  "product.files.delete.history.file": "Datei",
+  "product.files.delete.history.time": "Zeit",
+  "product.files.delete.history.empty": "Der Löschverlauf ist leer. Entweder haben Sie noch keine Datei auf diesem Gerät gelöscht oder Sie haben den Verlauf kürzlich zurückgesetzt",
+  "product.files.delete.history.reset": "ZURÜCKSETZEN",
+
   "product.commands.title": "Befehle",
   "product.commands.settings": "Befehlseinstellungen",
   "product.commands.enabled": "Ausführen von Befehlen auf diesem Gerät zulassen",
