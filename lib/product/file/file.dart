@@ -1,11 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:taskwolf_app/product/base/page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:taskwolf_app/product/file/file-info-history.dart';
-import 'package:taskwolf_app/product/file/file-storage-history.dart';
+import 'package:taskwolf_app/product/file/file-history.dart';
+import 'package:taskwolf_app/product/file/file-workspace.dart';
 
 class FilePage extends StatelessWidget {
   FilePage({super.key});
@@ -18,7 +20,7 @@ class FilePage extends StatelessWidget {
         var settingsEntries = List<FileSettingEntry>.from(
           settingsSnapshot.data ?? []);
         return ProductPage(name: Locales.string(context, "product.files.title"),
-          content: SizedBox(
+          content: SingleChildScrollView(
             child: Center(
               child: Column(
                 children: [
@@ -41,7 +43,7 @@ class FilePage extends StatelessWidget {
                   ),
                   Container(
                     margin: EdgeInsets.only(top: 20),
-                    child: const LocaleText("product.files.history",
+                    child: const LocaleText("product.files.options",
                       textAlign: TextAlign.center, style:
                       TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
                   ),
@@ -49,10 +51,10 @@ class FilePage extends StatelessWidget {
                     alignment: MainAxisAlignment.spaceEvenly,
                     overflowAlignment: OverflowBarAlignment.center,
                     children: [
-                      createFileHistoryButton(Icons.download, "product.files.storage.history",
-                        FileStorageHistoryPage(), context),
-                      createFileHistoryButton(Icons.upload, "product.files.info.history",
-                        FileInfoHistoryPage(), context)
+                      createFileButton(Icons.folder, "product.files.workspaces",
+                        FileWorkspacePage(), context),
+                      createFileButton(Icons.history, "product.files.history",
+                        FileHistoryPage(), context),
                     ],
                   )
                 ]
@@ -64,7 +66,7 @@ class FilePage extends StatelessWidget {
     );
   }
 
-  createFileHistoryButton(icon, text, page, context) {
+  createFileButton(icon, text, page, context) {
     return Container(
       margin: EdgeInsets.all(20),
       child: ElevatedButton(
@@ -111,9 +113,16 @@ class FilePage extends StatelessWidget {
     final body = jsonDecode(response.body);
     var entries = <FileSettingEntry>[];
     entries.add(FileSettingEntry(title: "product.files.storage",
-        state: body["fileStorage"], entries: entries));
+      state: body["fileStorage"], entries: entries));
     entries.add(FileSettingEntry(title: "product.files.info",
-        state: body["fileInfo"], entries: entries));
+      state: body["fileInfo"], entries: entries));
+    log("$body");
+    entries.add(FileSettingEntry(title: "product.files.delete",
+      state: body["fileDelete"], entries: entries));
+    entries.add(FileSettingEntry(title: "product.files.folder.create",
+      state: body["folderCreate"], entries: entries));
+    entries.add(FileSettingEntry(title: "product.files.folder.delete",
+      state: body["folderDelete"], entries: entries));
     return entries;
   }
 }
@@ -166,6 +175,9 @@ class FileSettingEntryState extends State<FileSettingEntry> {
     final device = preferences.getString('device') ?? "";
     var fileStorage = entry.entries[0].state;
     var fileInfo = entry.entries[1].state;
+    var fileDelete = entry.entries[2].state;
+    var folderCreate = entry.entries[3].state;
+    var folderDelete = entry.entries[4].state;
     await http.post(
       Uri.parse('https://api.taskwolf.net/v1/device/file/settings/update/'),
       headers: <String, String>{
@@ -177,6 +189,9 @@ class FileSettingEntryState extends State<FileSettingEntry> {
         "device": device,
         "fileStorage": "$fileStorage",
         "fileInfo": "$fileInfo",
+        "fileDelete": "$fileDelete",
+        "folderCreate": "$folderCreate",
+        "folderDelete": "$folderDelete",
       }),
     );
   }
