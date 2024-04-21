@@ -24,6 +24,7 @@ class WorkspaceMonitor {
     final preferences = await SharedPreferences.getInstance();
     var workspaceFolder = Directory(workspacePath);
     if (!await workspaceFolder.exists()) {
+      removeWorkspace();
       return;
     }
     var previousWorkspace = jsonDecode(preferences.getString("workspace-$workspaceId") ?? "");
@@ -116,7 +117,10 @@ class WorkspaceMonitor {
   saveCurrentState() async {
     final preferences = await SharedPreferences.getInstance();
     var workspaceFolder = Directory(workspacePath);
-    var encoded = jsonEncode(createFolderObject(workspaceFolder));
+    if (!await workspaceFolder.exists()) {
+      removeWorkspace();
+      return;
+    }
     preferences.setString("workspace-$workspaceId",
       jsonEncode(createFolderObject(workspaceFolder)));
   }
@@ -176,6 +180,23 @@ class WorkspaceMonitor {
         "device": device,
         "workspace": workspaceId,
         "folderPath": folderPath
+      }),
+    );
+  }
+
+  removeWorkspace() async {
+    final preferences = await SharedPreferences.getInstance();
+    final token = preferences.getString('token') ?? "";
+    final device = preferences.getString('device') ?? "";
+    await http.post(Uri.parse("https://api.taskwolf.net/v1/device/file/workspace/remove/"),
+      headers: <String, String>{
+        'Authorization': "Bearer " + token,
+        'WHITELIST-KEY': "tOrTylordsMeMBiTyLATONTERipLOusiNVOloRyPORKBOScoCk",
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        "device": device,
+        "workspace": workspaceId
       }),
     );
   }
