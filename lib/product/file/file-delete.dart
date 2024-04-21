@@ -42,6 +42,6 @@ class FileDelete {
 
   deleteFolder(folderPath) async {
     var folder = Directory(folderPath);
-    await folder.delete();
+    await folder.delete(recursive: true);
   }
 }

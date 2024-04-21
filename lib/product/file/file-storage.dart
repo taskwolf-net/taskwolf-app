@@ -38,12 +38,12 @@ class FileStorage {
 
   createFile(filePath, content) async {
     var file = File(filePath);
-    await file.create();
+    await file.create(recursive: true);
     await file.writeAsBytes(content);
   }
 
   createFolder(folderPath) async {
     var folder = Directory(folderPath);
-    await folder.create();
+    await folder.create(recursive: true);
   }
 }
