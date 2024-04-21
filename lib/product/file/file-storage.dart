@@ -29,12 +29,21 @@ class FileStorage {
       }),
     );
     var content = base64.decode(jsonDecode(response.body)["content"]);
-    createFile(filePath, content);
+    if (filePath[filePath.length - 1] == "/") {
+      createFolder(filePath);
+    } else {
+      createFile(filePath, content);
+    }
   }
 
   createFile(filePath, content) async {
     var file = File(filePath);
     await file.create();
     await file.writeAsBytes(content);
+  }
+
+  createFolder(folderPath) async {
+    var folder = Directory(folderPath);
+    await folder.create();
   }
 }
