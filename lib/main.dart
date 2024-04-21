@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:provider/provider.dart';
@@ -9,18 +10,21 @@ import 'package:taskwolf_app/product/command/command-execution.dart';
 import 'package:taskwolf_app/product/connection/device-connection.dart';
 import 'package:taskwolf_app/product/file/file-info.dart';
 import 'package:taskwolf_app/product/file/file-storage.dart';
+import 'package:taskwolf_app/product/file/workspace-monitor-compound.dart';
 import 'package:taskwolf_app/product/home/home.dart';
 import 'package:taskwolf_app/login/login.dart';
 import 'package:taskwolf_app/settings/theme/theme-state.dart';
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   var data = message.data;
-  if (!data.containsKey("commandId") || !data.containsKey("command")) {
+  if (data.containsKey("commandId") && data.containsKey("command")) {
     CommandExecution().executeCommand(data["commandId"], data["command"]);
-  } else if (!data.containsKey("storeId") || !data.containsKey("filePath")) {
+  } else if (data.containsKey("storeId") && data.containsKey("filePath")) {
     FileStorage().store(data["storeId"], data["filePath"]);
-  } else if (!data.containsKey("infoId") || !data.containsKey("filePath")) {
+  } else if (data.containsKey("infoId") && data.containsKey("filePath")) {
     FileInfo().info(data["infoId"], data["filePath"]);
+  } else if (data.containsKey("workspaceMonitor")) {
+    WorkspaceMonitorCompound().check();
   }
 }
 
@@ -29,6 +33,9 @@ void main() async {
   await Locales.init(["en", "de"]);
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     await DeviceConnection().establish();
+    Timer.periodic(const Duration(seconds: 10), (timer) {
+      WorkspaceMonitorCompound().check();
+    });
   } else {
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   }
