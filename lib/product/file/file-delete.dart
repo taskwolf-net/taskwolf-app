@@ -28,11 +28,20 @@ class FileDelete {
         "delete": deleteId
       }),
     );
-    deleteFile(filePath);
+    if (filePath[filePath.length - 1] == "/") {
+      deleteFolder(filePath);
+    } else {
+      deleteFile(filePath);
+    }
   }
 
   deleteFile(filePath) async {
     var file = File(filePath);
     await file.delete();
+  }
+
+  deleteFolder(folderPath) async {
+    var folder = Directory(folderPath);
+    await folder.delete();
   }
 }
