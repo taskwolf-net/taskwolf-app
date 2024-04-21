@@ -48,8 +48,9 @@ class ProductHeader extends StatelessWidget implements PreferredSizeWidget {
         (context) => DevicePage()));
     } else if (value == entries[1]) {
       final preferences = await SharedPreferences.getInstance();
-      preferences.remove("token");
-      preferences.remove("device");
+      for (var key in preferences.getKeys()) {
+        preferences.remove(key);
+      }
       Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => LoginPage()));
     }

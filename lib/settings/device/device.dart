@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:provider/provider.dart';
@@ -210,9 +208,9 @@ class DevicePage extends StatelessWidget {
 
   void logout(context) async {
     final preferences = await SharedPreferences.getInstance();
-    preferences.remove("token");
-    preferences.remove("device");
-    preferences.remove("theme");
+    for (var key in preferences.getKeys()) {
+      preferences.remove(key);
+    }
     Navigator.pushReplacement(context,
       MaterialPageRoute(builder: (context) => LoginPage()));
   }
