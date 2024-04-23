@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taskwolf_app/login/login.dart';
 import 'package:taskwolf_app/settings/device/device.dart';
 import 'package:taskwolf_app/settings/theme/theme-state.dart';
@@ -47,10 +47,8 @@ class ProductHeader extends StatelessWidget implements PreferredSizeWidget {
       Navigator.pushReplacement(context, MaterialPageRoute(builder:
         (context) => DevicePage()));
     } else if (value == entries[1]) {
-      final preferences = await SharedPreferences.getInstance();
-      for (var key in preferences.getKeys()) {
-        preferences.remove(key);
-      }
+      const storage = FlutterSecureStorage();
+      await storage.deleteAll();
       Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => LoginPage()));
     }

@@ -1,16 +1,16 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taskwolf_app/firebase_options.dart';
 import 'package:taskwolf_app/product/home/home.dart';
-import 'dart:io';
-
 import 'package:taskwolf_app/settings/theme/theme-state.dart';
 
 class LoginPage extends StatelessWidget {
@@ -106,9 +106,9 @@ class LoginPage extends StatelessWidget {
     }
     var apiKey = jsonDecode(response.body)["apiKey"];
     var deviceId = await sendDeviceLogin(apiKey);
-    final preferences = await SharedPreferences.getInstance();
-    preferences.setString('token', apiKey);
-    preferences.setString('device', deviceId);
+    const storage = FlutterSecureStorage();
+    await storage.write(key: "token", value: apiKey);
+    await storage.write(key: "device", value: deviceId);
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => HomePage()));
   }

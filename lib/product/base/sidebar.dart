@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:taskwolf_app/product/command/command.dart';
-import 'package:taskwolf_app/product/organization/organization.dart';
 import 'package:taskwolf_app/product/file/file.dart';
 import 'package:taskwolf_app/product/help/help.dart';
 import 'package:taskwolf_app/product/home/home.dart';
 import 'package:taskwolf_app/product/notification/notification.dart';
+import 'package:taskwolf_app/product/organization/organization.dart';
 
 class ProductSidebar extends StatelessWidget {
   ProductSidebar({super.key, required this.page});

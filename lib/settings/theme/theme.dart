@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taskwolf_app/settings/base/page.dart';
 import 'package:taskwolf_app/settings/theme/theme-state.dart';
 
@@ -49,8 +47,8 @@ class ThemePage extends StatelessWidget {
       ),
       onPressed: () async {
         themeState.setTheme(theme);
-        final preferences = await SharedPreferences.getInstance();
-        preferences.setString("theme", theme == ThemeMode.light ? "light" :
+        const storage = FlutterSecureStorage();
+        await storage.write(key: "theme", value: theme == ThemeMode.light ? "light" :
           "dark");
       },
     );

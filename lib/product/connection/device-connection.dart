@@ -1,7 +1,7 @@
-import 'dart:io';
 import 'dart:core';
+import 'dart:io';
 
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:taskwolf_app/product/command/command-execution.dart';
 import 'package:taskwolf_app/product/file/file-delete.dart';
 import 'package:taskwolf_app/product/file/file-info.dart';
@@ -40,9 +40,9 @@ class DeviceConnection {
   }
 
   createUri() async {
-    final preferences = await SharedPreferences.getInstance();
-    final token = preferences.getString('token') ?? "";
-    final device = preferences.getString('device') ?? "";
+    const storage = FlutterSecureStorage();
+    final token = await storage.read(key: "token") ?? "";
+    final device = await storage.read(key: "device") ?? "";
     var uri = "wss://api.taskwolf.net/device/connect/?token=" + token +
       "&device=" + device;
     return Uri.parse(uri);

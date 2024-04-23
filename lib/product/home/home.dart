@@ -1,8 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taskwolf_app/product/base/page.dart';
 
 class HomePage extends StatelessWidget {
@@ -21,9 +22,9 @@ class HomePage extends StatelessWidget {
   }
 
   Future<String> applyUserLanguage(context) async {
-    final preferences = await SharedPreferences.getInstance();
-    final token = preferences.getString('token') ?? "";
-    final device = preferences.getString('device') ?? "";
+    const storage = FlutterSecureStorage();
+    final token = await storage.read(key: "token") ?? "";
+    final device = await storage.read(key: "device") ?? "";
     final response = await http.post(
       Uri.parse('https://api.taskwolf.net/v1/device/language/find/'),
       headers: <String, String>{

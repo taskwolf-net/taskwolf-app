@@ -1,14 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:taskwolf_app/product/base/header.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taskwolf_app/product/file/file-workspace.dart';
 import 'package:taskwolf_app/settings/theme/theme-state.dart';
 
@@ -81,9 +81,9 @@ class FileWorkspaceAddPage extends StatelessWidget {
         isLight, context);
       return;
     }
-    final preferences = await SharedPreferences.getInstance();
-    final token = preferences.getString('token') ?? "";
-    final device = preferences.getString('device') ?? "";
+    const storage = FlutterSecureStorage();
+    final token = await storage.read(key: "token") ?? "";
+    final device = await storage.read(key: "device") ?? "";
     await http.post(
       Uri.parse('https://api.taskwolf.net/v1/device/file/workspace/create/'),
       headers: <String, String>{

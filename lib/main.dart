@@ -1,18 +1,18 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
+import 'package:taskwolf_app/login/login.dart';
 import 'package:taskwolf_app/product/command/command-execution.dart';
 import 'package:taskwolf_app/product/connection/device-connection.dart';
 import 'package:taskwolf_app/product/file/file-info.dart';
 import 'package:taskwolf_app/product/file/file-storage.dart';
 import 'package:taskwolf_app/product/file/workspace-monitor-compound.dart';
 import 'package:taskwolf_app/product/home/home.dart';
-import 'package:taskwolf_app/login/login.dart';
 import 'package:taskwolf_app/settings/theme/theme-state.dart';
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -92,14 +92,14 @@ class TaskwolfApp extends StatelessWidget {
   }
 
   Future<ThemeMode> findTheme() async {
-    final preferences = await SharedPreferences.getInstance();
-    final theme = preferences.getString('theme') ?? "";
+    const storage = FlutterSecureStorage();
+    final theme = await storage.read(key: "theme") ?? "";
     return theme == "light" ? ThemeMode.light : ThemeMode.dark;
   }
 
   Future<bool> checkTokenExistence() async {
-    final preferences = await SharedPreferences.getInstance();
-    final token = preferences.getString('token') ?? "";
+    const storage = FlutterSecureStorage();
+    final token = await storage.read(key: "token") ?? "";
     return token != "";
   }
 }

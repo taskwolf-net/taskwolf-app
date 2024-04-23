@@ -1,9 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
-import 'package:taskwolf_app/product/base/page.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:taskwolf_app/product/base/page.dart';
 import 'package:taskwolf_app/product/file/file-history.dart';
 import 'package:taskwolf_app/product/file/file-workspace.dart';
 
@@ -94,9 +95,9 @@ class FilePage extends StatelessWidget {
   }
 
   createFileSettingEntries() async {
-    final preferences = await SharedPreferences.getInstance();
-    final token = preferences.getString('token') ?? "";
-    final device = preferences.getString('device') ?? "";
+    const storage = FlutterSecureStorage();
+    final token = await storage.read(key: "token") ?? "";
+    final device = await storage.read(key: "device") ?? "";
     final response = await http.post(
       Uri.parse('https://api.taskwolf.net/v1/device/file/settings/'),
       headers: <String, String>{
@@ -167,9 +168,9 @@ class FileSettingEntryState extends State<FileSettingEntry> {
   }
 
   updateFileSettings() async {
-    final preferences = await SharedPreferences.getInstance();
-    final token = preferences.getString('token') ?? "";
-    final device = preferences.getString('device') ?? "";
+    const storage = FlutterSecureStorage();
+    final token = await storage.read(key: "token") ?? "";
+    final device = await storage.read(key: "device") ?? "";
     var fileStorage = entry.entries[0].state;
     var fileInfo = entry.entries[1].state;
     var fileDelete = entry.entries[2].state;

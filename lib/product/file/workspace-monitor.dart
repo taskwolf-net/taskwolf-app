@@ -1,8 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class WorkspaceMonitor {
   final workspaceId;
@@ -11,8 +11,8 @@ class WorkspaceMonitor {
   WorkspaceMonitor(this.workspaceId, this.workspacePath);
 
   check() async {
-    final preferences = await SharedPreferences.getInstance();
-    if (!preferences.containsKey("workspace-$workspaceId")) {
+    const storage = FlutterSecureStorage();
+    if (!await storage.containsKey(key: "workspace-$workspaceId")) {
       await saveCurrentState();
       return;
     }
@@ -21,13 +21,13 @@ class WorkspaceMonitor {
   }
 
   findDifferences() async {
-    final preferences = await SharedPreferences.getInstance();
+    const storage = FlutterSecureStorage();
     var workspaceFolder = Directory(workspacePath);
     if (!await workspaceFolder.exists()) {
       removeWorkspace();
       return;
     }
-    var previousWorkspace = jsonDecode(preferences.getString("workspace-$workspaceId") ?? "");
+    var previousWorkspace = jsonDecode(await storage.read(key: "workspace-$workspaceId") ?? "");
     findFolderDifference(workspaceFolder, previousWorkspace);
   }
 
@@ -115,14 +115,14 @@ class WorkspaceMonitor {
   }
 
   saveCurrentState() async {
-    final preferences = await SharedPreferences.getInstance();
+    const storage = FlutterSecureStorage();
     var workspaceFolder = Directory(workspacePath);
     if (!await workspaceFolder.exists()) {
       removeWorkspace();
       return;
     }
-    preferences.setString("workspace-$workspaceId",
-      jsonEncode(createFolderObject(workspaceFolder)));
+    storage.write(key: "workspace-$workspaceId",
+      value: jsonEncode(createFolderObject(workspaceFolder)));
   }
 
   createFolderObject(folder) {
@@ -148,9 +148,9 @@ class WorkspaceMonitor {
   }
 
   reportFileChange(url, filePath, fileName) async {
-    final preferences = await SharedPreferences.getInstance();
-    final token = preferences.getString('token') ?? "";
-    final device = preferences.getString('device') ?? "";
+    const storage = FlutterSecureStorage();
+    final token = await storage.read(key: "token") ?? "";
+    final device = await storage.read(key: "device") ?? "";
     await http.post(Uri.parse(url),
       headers: <String, String>{
         'Authorization': "Bearer " + token,
@@ -167,9 +167,9 @@ class WorkspaceMonitor {
   }
 
   reportFolderChange(url, folderPath) async {
-    final preferences = await SharedPreferences.getInstance();
-    final token = preferences.getString('token') ?? "";
-    final device = preferences.getString('device') ?? "";
+    const storage = FlutterSecureStorage();
+    final token = await storage.read(key: "token") ?? "";
+    final device = await storage.read(key: "device") ?? "";
     await http.post(Uri.parse(url),
       headers: <String, String>{
         'Authorization': "Bearer " + token,
@@ -185,9 +185,9 @@ class WorkspaceMonitor {
   }
 
   removeWorkspace() async {
-    final preferences = await SharedPreferences.getInstance();
-    final token = preferences.getString('token') ?? "";
-    final device = preferences.getString('device') ?? "";
+    const storage = FlutterSecureStorage();
+    final token = await storage.read(key: "token") ?? "";
+    final device = await storage.read(key: "device") ?? "";
     await http.post(Uri.parse("https://api.taskwolf.net/v1/device/file/workspace/remove/"),
       headers: <String, String>{
         'Authorization': "Bearer " + token,

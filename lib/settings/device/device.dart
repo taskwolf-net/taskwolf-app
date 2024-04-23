@@ -1,13 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:taskwolf_app/login/login.dart';
 import 'package:taskwolf_app/settings/base/page.dart';
 import 'package:taskwolf_app/settings/theme/theme-state.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class DevicePage extends StatelessWidget {
   DevicePage({super.key});
@@ -113,9 +114,9 @@ class DevicePage extends StatelessWidget {
 
   void submitDeviceAccountChange(password, isLight, context) async {
     Navigator.pop(context);
-    final preferences = await SharedPreferences.getInstance();
-    final token = preferences.getString('token') ?? "";
-    final device = preferences.getString('device') ?? "";
+    const storage = FlutterSecureStorage();
+    final token = await storage.read(key: "token") ?? "";
+    final device = await storage.read(key: "device") ?? "";
     var response = await http.post(
       Uri.parse('https://api.taskwolf.net/v1/device/account/change/'),
       headers: <String, String>{
@@ -176,15 +177,15 @@ class DevicePage extends StatelessWidget {
       }),
     );
     var apiKey = jsonDecode(response.body)["apiKey"];
-    final preferences = await SharedPreferences.getInstance();
-    preferences.setString('token', apiKey);
+    const storage = FlutterSecureStorage();
+    storage.write(key: "token", value: apiKey);
   }
 
   void submitDeviceDelete(password, isLight, context) async {
     Navigator.pop(context);
-    final preferences = await SharedPreferences.getInstance();
-    final token = preferences.getString('token') ?? "";
-    final device = preferences.getString('device') ?? "";
+    const storage = FlutterSecureStorage();
+    final token = await storage.read(key: "token") ?? "";
+    final device = await storage.read(key: "device") ?? "";
     var response = await http.post(
       Uri.parse('https://api.taskwolf.net/v1/device/delete/'),
       headers: <String, String>{
@@ -207,10 +208,8 @@ class DevicePage extends StatelessWidget {
   }
 
   void logout(context) async {
-    final preferences = await SharedPreferences.getInstance();
-    for (var key in preferences.getKeys()) {
-      preferences.remove(key);
-    }
+    const storage = FlutterSecureStorage();
+    await storage.deleteAll();
     Navigator.pushReplacement(context,
       MaterialPageRoute(builder: (context) => LoginPage()));
   }
