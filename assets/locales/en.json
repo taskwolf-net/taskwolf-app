@@ -119,5 +119,11 @@
 
   "settings.theme.title": "Theme",
   "settings.theme.dark": "Dark",
-  "settings.theme.light": "Light"
+  "settings.theme.light": "Light",
+
+  "settings.data.volume.title": "Data Volume",
+  "settings.data.volume.protected.title": "The data volume is protected: ",
+  "settings.data.volume.protected.description": "If you are not connected to a WLAN but are accessing your data volume, data-intensive functions are restricted. For example, care is taken to ensure that no files are downloaded or uploaded",
+  "settings.data.volume.unprotected.title": "The data volume is unprotected: ",
+  "settings.data.volume.unprotected.description": "Even if you are not connected to any WLAN, all original functions are still fully available to you. There are no restrictions. However, it is possible that your data volume is quickly used up, e.g. by sending/receiving large data files"
 }

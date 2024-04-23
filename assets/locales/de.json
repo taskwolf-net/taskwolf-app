@@ -119,5 +119,11 @@
 
   "settings.theme.title": "Farbe",
   "settings.theme.dark": "Dunkel",
-  "settings.theme.light": "Hell"
+  "settings.theme.light": "Hell",
+
+  "settings.data.volume.title": "Datenvolumen",
+  "settings.data.volume.protected.title": "Das Datenvolumen ist geschützt: ",
+  "settings.data.volume.protected.description": "Wenn Sie nicht mit einem WLAN verbunden sind, aber auf Ihr Datenvolumen zugreifen, werden datenintensive Funktionen eingeschränkt. Es wird zum Beispiel darauf geachtet, dass keine Dateien herunter- oder hochgeladen werden",
+  "settings.data.volume.unprotected.title": "Das Datenvolumen ist ungeschützt: ",
+  "settings.data.volume.unprotected.description": "Auch wenn Sie nicht mit einem WLAN verbunden sind, stehen Ihnen alle ursprünglichen Funktionen in vollem Umfang zur Verfügung. Es gibt keine Einschränkungen. Allerdings ist es möglich, dass Ihr Datenvolumen schnell aufgebraucht ist, z. B. durch das Senden/Empfangen großer Dateien"
 }
