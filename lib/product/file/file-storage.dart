@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
@@ -13,6 +14,9 @@ class FileStorage {
   }
 
   store(storeId, filePath) async {
+    if (await checkDataVolumeProtection()) {
+      return;
+    }
     const storage = FlutterSecureStorage();
     final token = await storage.read(key: "token") ?? "";
     final device = await storage.read(key: "device") ?? "";
@@ -45,5 +49,15 @@ class FileStorage {
   createFolder(folderPath) async {
     var folder = Directory(folderPath);
     await folder.create(recursive: true);
+  }
+
+  checkDataVolumeProtection() async {
+    const storage = FlutterSecureStorage();
+    var isProtected = (await storage.read(key: "data-volume") ?? "protected") == "protected";
+    if (!isProtected) {
+      return false;
+    }
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    return connectivityResult.contains(ConnectivityResult.mobile);
   }
 }
