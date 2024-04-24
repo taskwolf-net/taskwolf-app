@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
+import 'package:taskwolf_app/firebase_options.dart';
 import 'package:taskwolf_app/login/login.dart';
 import 'package:taskwolf_app/product/command/command-execution.dart';
 import 'package:taskwolf_app/product/connection/device-connection.dart';
@@ -37,7 +39,9 @@ void main() async {
       WorkspaceMonitorCompound().check();
     });
   } else {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+    FirebaseMessaging.instance.subscribeToTopic("taskwolf-workspace-monitor");
   }
   runApp(const TaskwolfApp());
 }
