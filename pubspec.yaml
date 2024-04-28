@@ -36,9 +36,10 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
   http: ^1.2.1
-  flutter_secure_storage: ^8.1.0
+  flutter_secure_storage: ^9.0.0
   flutter_locales: ^3.0.1
-  device_info_plus: ^3.2.4
+  device_info_plus: ^10.1.0
+  android_id: ^0.3.6
   local_notifier: ^0.1.5
   firebase_core: ^2.28.0
   firebase_messaging: ^14.8.0
@@ -46,7 +47,7 @@ dependencies:
   web_socket_channel: ^2.4.5
   provider: ^6.1.2
   rflutter_alert: ^2.0.7
-  file_picker: ^4.6.1
+  file_picker: ^8.0.3
   connectivity_plus: ^6.0.3
 dev_dependencies:
   flutter_test:
