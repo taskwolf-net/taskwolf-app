@@ -1,10 +1,12 @@
+import 'dart:io';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:taskwolf_app/product/home/desktop-home.dart';
+import 'package:taskwolf_app/product/home/mobile-home.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:taskwolf_app/product/base/page.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -14,12 +16,14 @@ class HomePage extends StatelessWidget {
     return FutureBuilder<String>(
       future: applyUserLanguage(context),
       builder: (context, AsyncSnapshot<String> snapshot) {
-        return ProductPage(name: Locales.string(context, "product.home.title"),
-          content: Center()
-        );
+        if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+          return DesktopHomePage();
+        }
+        return MobileHomePage();
       }
     );
   }
+
 
   Future<String> applyUserLanguage(context) async {
     const storage = FlutterSecureStorage();
