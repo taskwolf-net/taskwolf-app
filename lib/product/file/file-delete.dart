@@ -8,8 +8,7 @@ class FileDelete {
   FileDelete();
 
   interpretFileDelete(message) {
-    var split = message.replaceAll("File Delete ", "").split(" ");
-    delete(split[0], split[1]);
+    delete(message["deleteId"], message["filePath"]);
   }
 
   delete(deleteId, filePath) async {

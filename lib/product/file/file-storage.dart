@@ -9,8 +9,7 @@ class FileStorage {
   FileStorage();
 
   interpretFileStorage(message) {
-    var split = message.replaceAll("File Storage ", "").split(" ");
-    store(split[0], split[1]);
+    store(message["storeId"], message["filePath"]);
   }
 
   store(storeId, filePath) async {

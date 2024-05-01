@@ -9,8 +9,7 @@ class FileInfo {
   FileInfo();
 
   interpretFileInfo(message) {
-    var split = message.replaceAll("File Info ", "").split(" ");
-    info(split[0], split[1]);
+    info(message["infoId"], message["filePath"]);
   }
 
   info(infoId, filePath) async {

@@ -12,8 +12,7 @@ class CommandExecution {
 
   interpretCommand(message, channel) {
     this.channel = channel;
-    var split = message.replaceAll("Command ", "").split(" ");
-    executeCommand(split[0], split[1]);
+    executeCommand(message["commandId"], message["command"]);
   }
 
   executeCommand(commandId, command) async {

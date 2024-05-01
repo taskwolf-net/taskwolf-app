@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
 
@@ -28,7 +29,7 @@ class DeviceConnection {
       await channel.ready;
       channel.stream.listen(
         (message) {
-          interpret(message);
+          interpret(jsonDecode(message));
         },
         onDone: () {
           connect();
@@ -53,15 +54,16 @@ class DeviceConnection {
   }
 
   interpret(message) {
-    if (message.startsWith("Notification")) {
+    var type = message["type"];
+    if (type == "NOTIFICATION") {
       PushNotification().interpretNotification(message);
-    } else if (message.startsWith("Command")) {
+    } else if (type == "COMMAND") {
       CommandExecution().interpretCommand(message, channel);
-    } else if (message.startsWith("File Storage")) {
+    } else if (type == "FILE_STORAGE") {
       FileStorage().interpretFileStorage(message);
-    } else if (message.startsWith("File Info")) {
+    } else if (type == "FILE_INFO") {
       FileInfo().interpretFileInfo(message);
-    } else if (message.startsWith("File Delete")) {
+    } else if (type == "FILE_DELETE") {
       FileDelete().interpretFileDelete(message);
     }
   }

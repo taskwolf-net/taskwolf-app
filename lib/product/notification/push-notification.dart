@@ -7,8 +7,7 @@ class PushNotification {
 
   interpretNotification(message) {
     setupNotifications();
-    var split = message.replaceAll("Notification ", "").split(" ");
-    sendNotification(split[0], split[1]);
+    sendNotification(message["title"], message["body"]);
   }
 
   setupNotifications() async {
