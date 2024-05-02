@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:taskwolf_app/firebase_options.dart';
 import 'package:taskwolf_app/login/login.dart';
@@ -104,6 +106,20 @@ class TaskwolfApp extends StatelessWidget {
   Future<bool> checkTokenExistence() async {
     const storage = FlutterSecureStorage();
     final token = await storage.read(key: "token") ?? "";
-    return token != "";
+    if (token == "") {
+      return false;
+    }
+    final response = await http.post(
+      Uri.parse('https://api.taskwolf.net/v1/verification/isValid/'),
+      headers: <String, String>{
+        'Authorization': "Bearer " + token,
+        'WHITELIST-KEY': "tOrTylordsMeMBiTyLATONTERipLOusiNVOloRyPORKBOScoCk",
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        "token": token
+      }),
+    );
+    return jsonDecode(response.body)["isValid"] == "true";
   }
 }
