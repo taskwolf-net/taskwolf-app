@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:taskwolf_app/product/base/page.dart';
 import 'package:taskwolf_app/settings/theme/theme-state.dart';
+import 'package:taskwolf_app/whitelist_options.dart';
 
 class CommandPage extends StatelessWidget {
   CommandPage({super.key});
@@ -130,13 +131,16 @@ class CommandPage extends StatelessWidget {
     const storage = FlutterSecureStorage();
     final token = await storage.read(key: "token") ?? "";
     final device = await storage.read(key: "device") ?? "";
+    var headers = <String, String>{
+      'Authorization': "Bearer " + token,
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    if (WhitelistOptions.whitelistEnabled) {
+      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
+    }
     final response = await http.post(
       Uri.parse('https://api.taskwolf.net/v1/device/command/history/'),
-      headers: <String, String>{
-        'Authorization': "Bearer " + token,
-        'WHITELIST-KEY': "tOrTylordsMeMBiTyLATONTERipLOusiNVOloRyPORKBOScoCk",
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: headers,
       body: jsonEncode(<String, String>{
         "device": device
       }),
@@ -148,13 +152,16 @@ class CommandPage extends StatelessWidget {
     const storage = FlutterSecureStorage();
     final token = await storage.read(key: "token") ?? "";
     final device = await storage.read(key: "device") ?? "";
+    var headers = <String, String>{
+      'Authorization': "Bearer " + token,
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    if (WhitelistOptions.whitelistEnabled) {
+      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
+    }
     final response = await http.post(
       Uri.parse('https://api.taskwolf.net/v1/device/command/settings/'),
-      headers: <String, String>{
-        'Authorization': "Bearer " + token,
-        'WHITELIST-KEY': "tOrTylordsMeMBiTyLATONTERipLOusiNVOloRyPORKBOScoCk",
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: headers,
       body: jsonEncode(<String, String>{
         "device": device
       }),
@@ -178,13 +185,16 @@ class CommandPage extends StatelessWidget {
     const storage = FlutterSecureStorage();
     final token = await storage.read(key: "token") ?? "";
     final device = await storage.read(key: "device") ?? "";
+    var headers = <String, String>{
+      'Authorization': "Bearer " + token,
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    if (WhitelistOptions.whitelistEnabled) {
+      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
+    }
     await http.post(
       Uri.parse('https://api.taskwolf.net/v1/device/command/history/reset/'),
-      headers: <String, String>{
-        'Authorization': "Bearer " + token,
-        'WHITELIST-KEY': "tOrTylordsMeMBiTyLATONTERipLOusiNVOloRyPORKBOScoCk",
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: headers,
       body: jsonEncode(<String, String>{
         "device": device
       }),
@@ -239,13 +249,16 @@ class CommandSettingEntryState extends State<CommandSettingEntry> {
     final token = await storage.read(key: "token") ?? "";
     final device = await storage.read(key: "device") ?? "";
     var commandExecution = entry.entries[0].state;
+    var headers = <String, String>{
+      'Authorization': "Bearer " + token,
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    if (WhitelistOptions.whitelistEnabled) {
+      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
+    }
     await http.post(
       Uri.parse('https://api.taskwolf.net/v1/device/command/settings/update/'),
-      headers: <String, String>{
-        'Authorization': "Bearer " + token,
-        'WHITELIST-KEY': "tOrTylordsMeMBiTyLATONTERipLOusiNVOloRyPORKBOScoCk",
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: headers,
       body: jsonEncode(<String, String>{
         "device": device,
         "commandExecution": "$commandExecution",

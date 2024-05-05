@@ -8,6 +8,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:taskwolf_app/product/base/header.dart';
 import 'package:taskwolf_app/product/base/sidebar.dart';
+import 'package:taskwolf_app/whitelist_options.dart';
 import 'package:webview_cef/webview_cef.dart';
 
 class DesktopHomePage extends StatefulWidget {
@@ -44,35 +45,18 @@ class DesktopHomePageState extends State<DesktopHomePage> {
   findDashboard() async {
     const storage = FlutterSecureStorage();
     final token = await storage.read(key: "token") ?? "";
+    var headers = <String, String>{
+      'Authorization': "Bearer " + token,
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    if (WhitelistOptions.whitelistEnabled) {
+      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
+    }
     final response = await http.get(
-        Uri.parse('https://api.taskwolf.net/v1/dashboard/'),
-        headers: <String, String>{
-          'Authorization': "Bearer " + token,
-          'WHITELIST-KEY': "tOrTylordsMeMBiTyLATONTERipLOusiNVOloRyPORKBOScoCk",
-          'Content-Type': 'application/json; charset=UTF-8',
-        }
+      Uri.parse('https://api.taskwolf.net/v1/dashboard/'),
+      headers: headers
     );
     return await jsonDecode(response.body);
-  }
-
-  Future<String> applyUserLanguage(context) async {
-    const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
-    final device = await storage.read(key: "device") ?? "";
-    final response = await http.post(
-      Uri.parse('https://api.taskwolf.net/v1/device/language/find/'),
-      headers: <String, String>{
-        'Authorization': "Bearer " + token,
-        'WHITELIST-KEY': "tOrTylordsMeMBiTyLATONTERipLOusiNVOloRyPORKBOScoCk",
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        "device": device
-      }),
-    );
-    var language = await jsonDecode(response.body)["language"];
-    await Locales.change(context, language);
-    return language;
   }
 
   @override

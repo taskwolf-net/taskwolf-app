@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:taskwolf_app/product/base/page.dart';
 import 'package:taskwolf_app/product/organization/organization-add.dart';
 import 'package:taskwolf_app/settings/theme/theme-state.dart';
+import 'package:taskwolf_app/whitelist_options.dart';
 
 class OrganizationPage extends StatelessWidget {
   OrganizationPage({super.key});
@@ -129,13 +130,16 @@ class OrganizationPage extends StatelessWidget {
     const storage = FlutterSecureStorage();
     final token = await storage.read(key: "token") ?? "";
     final device = await storage.read(key: "device") ?? "";
+    var headers = <String, String>{
+      'Authorization': "Bearer " + token,
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    if (WhitelistOptions.whitelistEnabled) {
+      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
+    }
     await http.post(
       Uri.parse('https://api.taskwolf.net/v1/device/organization/remove/'),
-      headers: <String, String>{
-        'Authorization': "Bearer " + token,
-        'WHITELIST-KEY': "tOrTylordsMeMBiTyLATONTERipLOusiNVOloRyPORKBOScoCk",
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: headers,
       body: jsonEncode(<String, String>{
         "device": device,
         "organization": organization["id"]
@@ -147,13 +151,16 @@ class OrganizationPage extends StatelessWidget {
     const storage = FlutterSecureStorage();
     final token = await storage.read(key: "token") ?? "";
     final device = await storage.read(key: "device") ?? "";
+    var headers = <String, String>{
+      'Authorization': "Bearer " + token,
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    if (WhitelistOptions.whitelistEnabled) {
+      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
+    }
     final response = await http.post(
       Uri.parse('https://api.taskwolf.net/v1/device/organizations/'),
-      headers: <String, String>{
-        'Authorization': "Bearer " + token,
-        'WHITELIST-KEY': "tOrTylordsMeMBiTyLATONTERipLOusiNVOloRyPORKBOScoCk",
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: headers,
       body: jsonEncode(<String, String>{
         "device": device
       }),

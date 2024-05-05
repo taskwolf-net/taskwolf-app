@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:taskwolf_app/product/base/page.dart';
 import 'package:taskwolf_app/product/file/file-history.dart';
 import 'package:taskwolf_app/product/file/file-workspace.dart';
+import 'package:taskwolf_app/whitelist_options.dart';
 
 class FilePage extends StatelessWidget {
   FilePage({super.key});
@@ -98,13 +99,16 @@ class FilePage extends StatelessWidget {
     const storage = FlutterSecureStorage();
     final token = await storage.read(key: "token") ?? "";
     final device = await storage.read(key: "device") ?? "";
+    var headers = <String, String>{
+      'Authorization': "Bearer " + token,
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    if (WhitelistOptions.whitelistEnabled) {
+      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
+    }
     final response = await http.post(
       Uri.parse('https://api.taskwolf.net/v1/device/file/settings/'),
-      headers: <String, String>{
-        'Authorization': "Bearer " + token,
-        'WHITELIST-KEY': "tOrTylordsMeMBiTyLATONTERipLOusiNVOloRyPORKBOScoCk",
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: headers,
       body: jsonEncode(<String, String>{
         "device": device
       }),
@@ -176,13 +180,16 @@ class FileSettingEntryState extends State<FileSettingEntry> {
     var fileDelete = entry.entries[2].state;
     var folderCreate = entry.entries[3].state;
     var folderDelete = entry.entries[4].state;
+    var headers = <String, String>{
+      'Authorization': "Bearer " + token,
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    if (WhitelistOptions.whitelistEnabled) {
+      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
+    }
     await http.post(
       Uri.parse('https://api.taskwolf.net/v1/device/file/settings/update/'),
-      headers: <String, String>{
-        'Authorization': "Bearer " + token,
-        'WHITELIST-KEY': "tOrTylordsMeMBiTyLATONTERipLOusiNVOloRyPORKBOScoCk",
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: headers,
       body: jsonEncode(<String, String>{
         "device": device,
         "fileStorage": "$fileStorage",

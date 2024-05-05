@@ -11,6 +11,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:taskwolf_app/product/base/header.dart';
 import 'package:taskwolf_app/product/file/file-workspace.dart';
 import 'package:taskwolf_app/settings/theme/theme-state.dart';
+import 'package:taskwolf_app/whitelist_options.dart';
 
 class FileWorkspaceAddPage extends StatelessWidget {
   FileWorkspaceAddPage({super.key});
@@ -84,13 +85,16 @@ class FileWorkspaceAddPage extends StatelessWidget {
     const storage = FlutterSecureStorage();
     final token = await storage.read(key: "token") ?? "";
     final device = await storage.read(key: "device") ?? "";
+    var headers = <String, String>{
+      'Authorization': "Bearer " + token,
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    if (WhitelistOptions.whitelistEnabled) {
+      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
+    }
     await http.post(
       Uri.parse('https://api.taskwolf.net/v1/device/file/workspace/create/'),
-      headers: <String, String>{
-        'Authorization': "Bearer " + token,
-        'WHITELIST-KEY': "tOrTylordsMeMBiTyLATONTERipLOusiNVOloRyPORKBOScoCk",
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: headers,
       body: jsonEncode(<String, String>{
         "device": device,
         "path": path

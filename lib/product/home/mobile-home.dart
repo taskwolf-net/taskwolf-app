@@ -8,6 +8,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:taskwolf_app/product/base/header.dart';
 import 'package:taskwolf_app/product/base/sidebar.dart';
+import 'package:taskwolf_app/whitelist_options.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class MobileHomePage extends StatefulWidget {
@@ -54,13 +55,16 @@ class MobileHomePageState extends State<MobileHomePage> {
   findDashboard() async {
     const storage = FlutterSecureStorage();
     final token = await storage.read(key: "token") ?? "";
+    var headers = <String, String>{
+      'Authorization': "Bearer " + token,
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    if (WhitelistOptions.whitelistEnabled) {
+      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
+    }
     final response = await http.get(
-        Uri.parse('https://api.taskwolf.net/v1/dashboard/'),
-        headers: <String, String>{
-          'Authorization': "Bearer " + token,
-          'WHITELIST-KEY': "tOrTylordsMeMBiTyLATONTERipLOusiNVOloRyPORKBOScoCk",
-          'Content-Type': 'application/json; charset=UTF-8',
-        }
+      Uri.parse('https://api.taskwolf.net/v1/dashboard/'),
+      headers: headers
     );
     return await jsonDecode(response.body);
   }

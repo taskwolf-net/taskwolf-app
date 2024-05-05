@@ -18,6 +18,7 @@ import 'package:taskwolf_app/product/file/file-storage.dart';
 import 'package:taskwolf_app/product/file/workspace-monitor-compound.dart';
 import 'package:taskwolf_app/product/home/home.dart';
 import 'package:taskwolf_app/settings/theme/theme-state.dart';
+import 'package:taskwolf_app/whitelist_options.dart';
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   var data = message.data;
@@ -109,13 +110,16 @@ class TaskwolfApp extends StatelessWidget {
     if (token == "") {
       return false;
     }
+    var headers = <String, String>{
+      'Authorization': "Bearer " + token,
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    if (WhitelistOptions.whitelistEnabled) {
+      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
+    }
     final response = await http.post(
       Uri.parse('https://api.taskwolf.net/v1/verification/isValid/'),
-      headers: <String, String>{
-        'Authorization': "Bearer " + token,
-        'WHITELIST-KEY': "tOrTylordsMeMBiTyLATONTERipLOusiNVOloRyPORKBOScoCk",
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: headers,
       body: jsonEncode(<String, String>{
         "token": token
       }),

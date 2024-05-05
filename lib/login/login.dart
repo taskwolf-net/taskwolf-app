@@ -13,6 +13,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:taskwolf_app/firebase_options.dart';
 import 'package:taskwolf_app/product/home/home.dart';
 import 'package:taskwolf_app/settings/theme/theme-state.dart';
+import 'package:taskwolf_app/whitelist_options.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -90,12 +91,15 @@ class LoginPage extends StatelessWidget {
   }
 
   submitLogin(isLight, context) async {
+    var headers = <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    if (WhitelistOptions.whitelistEnabled) {
+      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
+    }
     final response = await http.post(
       Uri.parse('https://api.taskwolf.net/v1/verification/login/'),
-      headers: <String, String>{
-        'WHITELIST-KEY': "tOrTylordsMeMBiTyLATONTERipLOusiNVOloRyPORKBOScoCk",
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: headers,
       body: jsonEncode(<String, String>{
         "email": emailController.text,
         "password": passwordController.text
@@ -124,13 +128,16 @@ class LoginPage extends StatelessWidget {
       var token = await findFirebaseToken();
       body.putIfAbsent("firebaseToken", () => token);
     }
+    var headers = <String, String>{
+      'Authorization': "Bearer " + apiKey,
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    if (WhitelistOptions.whitelistEnabled) {
+      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
+    }
     final response = await http.post(
       Uri.parse('https://api.taskwolf.net/v1/device/login/'),
-      headers: <String, String>{
-        'Authorization': "Bearer " + apiKey,
-        'WHITELIST-KEY': "tOrTylordsMeMBiTyLATONTERipLOusiNVOloRyPORKBOScoCk",
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: headers,
       body: jsonEncode(body),
     );
     return jsonDecode(response.body)["id"];
