@@ -18,19 +18,15 @@ class ProductSidebar extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: Color(0x33FFFFFF),
-            ),
-            child: Column(
-              children: [
-                SizedBox(
-                  width: 100,
-                  child: Image.asset("assets/images/logo.png"),
-                ),
-                Text("Taskwolf"),
-              ],
-            ),
+          Column(
+            children: [
+              const SizedBox(height: 20),
+              SizedBox(
+                width: 100,
+                child: Image.asset("assets/images/logo.png"),
+              ),
+              const SizedBox(height: 20),
+            ],
           ),
           createSidebarEntry("product.home.title", HomePage(), Icons.home, context),
           createSidebarEntry("product.organizations.title", OrganizationPage(), Icons.groups, context),
