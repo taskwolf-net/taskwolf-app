@@ -45,6 +45,9 @@ class MobileHomePageState extends State<MobileHomePage> {
       );
     var response = await findDashboard();
     var url = response["url"];
+    const storage = FlutterSecureStorage();
+    final theme = await storage.read(key: "theme") ?? "";
+    url = url + "&theme=" + theme;
     var token = response["token"];
     await WebViewCookieManager().setCookie(WebViewCookie(name: "grafana_session",
       value: token, domain: ".taskwolf.net"));

@@ -33,10 +33,13 @@ class DesktopHomePageState extends State<DesktopHomePage> {
     }
     var response = await findDashboard();
     var url = response["url"];
+    const storage = FlutterSecureStorage();
+    final theme = await storage.read(key: "theme") ?? "";
+    url = url + "&theme=" + theme;
     var token = response["token"];
     await webViewController.loadUrl(url);
     await webViewController.executeJavaScript("document.cookie = 'grafana_session=" +
-        token + ";path=/;domain=.taskwolf.net;secure=true'");
+      token + ";path=/;domain=.taskwolf.net;secure=true'");
     sleep(const Duration(milliseconds: 500));
     await webViewController.loadUrl(url);
     setState(() {});
