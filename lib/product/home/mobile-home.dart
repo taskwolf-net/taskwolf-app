@@ -51,7 +51,7 @@ class MobileHomePageState extends State<MobileHomePage> {
     var token = response["token"];
     await WebViewCookieManager().setCookie(WebViewCookie(name: "grafana_session",
       value: token, domain: ".taskwolf.net"));
-    sleep(const Duration(milliseconds: 500));
+    sleep(const Duration(milliseconds: 1000));
     await webViewController.loadRequest(Uri.parse(url));
   }
 

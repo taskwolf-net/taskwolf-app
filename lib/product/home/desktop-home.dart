@@ -40,7 +40,7 @@ class DesktopHomePageState extends State<DesktopHomePage> {
     await webViewController.loadUrl(url);
     await webViewController.executeJavaScript("document.cookie = 'grafana_session=" +
       token + ";path=/;domain=.taskwolf.net;secure=true'");
-    sleep(const Duration(milliseconds: 500));
+    sleep(const Duration(milliseconds: 1000));
     await webViewController.loadUrl(url);
     setState(() {});
   }
