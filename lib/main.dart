@@ -68,6 +68,9 @@ class TaskwolfApp extends StatelessWidget {
           child: FutureBuilder<bool>(
             future: checkTokenExistence(),
             builder: (context, AsyncSnapshot<bool> tokenSnapshot) {
+              if (tokenSnapshot.data == null) {
+                return Container();
+              }
               var home = tokenSnapshot.data == true ? HomePage() : LoginPage();
               return LocaleBuilder(
                 builder: (locale) => MaterialApp( title: 'Taskwolf App',
