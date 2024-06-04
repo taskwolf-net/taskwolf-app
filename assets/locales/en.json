@@ -3,6 +3,8 @@
   "neutral.header.logout": "Logout",
 
   "product.home.title": "Home",
+  "product.home.available": "The device is now available to you for automation using workflows and processes.",
+  "product.home.welcome": "Welcome ",
 
   "product.organizations.title": "Organisationen",
   "product.organizations.trusted.organizations": "Trusted Organizations",
