@@ -5,6 +5,8 @@
   "product.home.title": "Übersicht",
   "product.home.available": "Das Gerät steht Ihnen nun für die Automatisierung durch Workflows und Prozesse zur Verfügung.",
   "product.home.welcome": "Willkommen ",
+  "product.home.file.activity": "Datei Aktivität",
+  "product.home.file.activity.empty": "Der Dateiverlauf ist leider leer. Daher können Sie keine Aktivitäten melden",
 
   "product.organizations.title": "Organisationen",
   "product.organizations.trusted.organizations": "Vertrauenswürdige Organisationen",
