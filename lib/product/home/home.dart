@@ -23,128 +23,185 @@ class HomePage extends StatelessWidget {
     return FutureBuilder<dynamic>(
       future: findUsername(context),
       builder: (context, AsyncSnapshot<dynamic> usernameSnapshot) {
-        return FutureBuilder<dynamic>(
-          future: findFileActivity(),
-          builder: (context, AsyncSnapshot<dynamic> fileSnapshot) {
-            return FutureBuilder<dynamic>(
-              future: findCommandActivity(),
-              builder: (context, AsyncSnapshot<dynamic> commandSnapshot) {
-                return ProductPage(name: Locales.string(context, "product.home.title"),
-                  content: SingleChildScrollView(
-                    child: Center(
-                      child: Column(
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(vertical: 60),
-                            decoration: const BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  Color(0xFF232D3E),
-                                  Color(0xFF586882),
-                                ],
-                                begin: FractionalOffset(0.0, 0.0),
-                                end: FractionalOffset(1.0, 0.0),
-                                stops: [0.0, 1.0],
-                                tileMode: TileMode.clamp),
+        return ProductPage(name: Locales.string(context, "product.home.title"),
+          content: SingleChildScrollView(
+            child: Center(
+              child: Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 60),
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Color(0xFF232D3E),
+                          Color(0xFF586882),
+                        ],
+                        begin: FractionalOffset(0.0, 0.0),
+                        end: FractionalOffset(1.0, 0.0),
+                        stops: [0.0, 1.0],
+                        tileMode: TileMode.clamp),
+                    ),
+                    child: Flex(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      direction: MediaQuery.sizeOf(context).width < 1000 ? Axis.vertical : Axis.horizontal,
+                      children: [
+                        Image.asset(
+                          "assets/images/logo.png",
+                          height: 192.0,
+                          width: 192.0,
+                        ),
+                        const SizedBox(width: 200),
+                        Column(
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.symmetric(vertical: 20),
+                              child: Text(
+                                Locales.string(context, "product.home.welcome") +
+                                  (usernameSnapshot.data ?? ""),
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white))
                             ),
-                            child: Flex(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              direction: MediaQuery.sizeOf(context).width < 1000 ? Axis.vertical : Axis.horizontal,
-                              children: [
-                                Image.asset(
-                                  "assets/images/logo.png",
-                                  height: 192.0,
-                                  width: 192.0,
-                                ),
-                                const SizedBox(width: 200),
-                                Column(
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.symmetric(vertical: 20),
-                                      child: Text(
-                                        Locales.string(context, "product.home.welcome") +
-                                          (usernameSnapshot.data ?? ""),
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white))
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.symmetric(vertical: 20),
-                                      width: 400,
-                                      child: const LocaleText("product.home.available",
-                                        textAlign: TextAlign.center, style: TextStyle(fontSize: 16, color: Colors.white))
-                                    ),
-                                  ],
-                                )
-                              ],
+                            Container(
+                              margin: const EdgeInsets.symmetric(vertical: 20),
+                              width: 400,
+                              child: const LocaleText("product.home.available",
+                                textAlign: TextAlign.center, style: TextStyle(fontSize: 16, color: Colors.white))
                             ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                  FractionallySizedBox(
+                    widthFactor: 0.9,
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 40),
+                        Center(
+                          child: Wrap(
+                            alignment: WrapAlignment.center,
+                            children: [
+                              createPageButton("product.home.title", HomePage(),
+                                Icons.home, context),
+                              createPageButton("product.organizations.title", OrganizationPage(),
+                                Icons.groups, context),
+                              createPageButton("product.notifications.title", NotificationPage(),
+                                Icons.notifications, context),
+                              createPageButton("product.files.title", FilePage(),
+                                Icons.file_copy_sharp, context),
+                              createPageButton("product.commands.title", CommandPage(),
+                                Icons.terminal, context),
+                              createPageButton("product.help.title", HelpPage(),
+                                Icons.help, context),
+                            ],
                           ),
-                          FractionallySizedBox(
-                            widthFactor: 0.9,
-                            child: Column(
-                              children: [
-                                const SizedBox(height: 40),
-                                Center(
-                                  child: Wrap(
-                                    alignment: WrapAlignment.center,
-                                    children: [
-                                      createPageButton("product.home.title", HomePage(),
-                                        Icons.home, context),
-                                      createPageButton("product.organizations.title", OrganizationPage(),
-                                        Icons.groups, context),
-                                      createPageButton("product.notifications.title", NotificationPage(),
-                                        Icons.notifications, context),
-                                      createPageButton("product.files.title", FilePage(),
-                                        Icons.file_copy_sharp, context),
-                                      createPageButton("product.commands.title", CommandPage(),
-                                        Icons.terminal, context),
-                                      createPageButton("product.help.title", HelpPage(),
-                                        Icons.help, context),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 40),
-                                const Divider(),
-                                Flex(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  direction: MediaQuery.sizeOf(context).width < 1800 ? Axis.vertical : Axis.horizontal,
-                                  children: [
-                                    Column(
-                                      children: [
-                                        Container(
-                                          margin: const EdgeInsets.symmetric(vertical: 20),
-                                          child: const LocaleText("product.home.file.activity",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))
-                                        ),
-                                        createFileActivity(List<Map<String, dynamic>>.from(fileSnapshot.data ?? []),
-                                            fileSnapshot.data, context),
-                                      ],
-                                    ),
-                                    Column(
-                                      children: [
-                                        Container(
-                                          margin: const EdgeInsets.symmetric(vertical: 20),
-                                          child: const LocaleText("product.home.command.activity",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))
-                                        ),
-                                        createCommandActivity(List<Map<String, dynamic>>.from(commandSnapshot.data ?? []),
-                                            commandSnapshot.data, context)
-                                      ],
-                                    ),
-                                  ],
-                                )
-                              ],
-                            )
-                          ),
-                        ]
-                      )
+                        ),
+                        const SizedBox(height: 40),
+                        const Divider(),
+                        Activity()
+                      ],
                     )
-                  )
-                );
-              }
+                  ),
+                ]
+              )
+            )
+          )
+        );
+      }
+    );
+  }
+
+  createPageButton(text, page, icon, context) {
+    return Container(
+      margin: const EdgeInsets.all(20),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          foregroundColor: Theme.of(context).primaryColor,
+          padding: const EdgeInsets.all(20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25.0))
+        ),
+        onPressed: () async {
+          Navigator.push(context,
+            MaterialPageRoute(builder: (context) => page));
+        },
+        child: SizedBox(
+          width: 192,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 80,),
+              const SizedBox(height: 10),
+              LocaleText(text, style: const TextStyle(fontSize: 20),)
+            ],
+          )
+        ),
+      )
+    );
+  }
+
+  findUsername(context) async {
+    const storage = FlutterSecureStorage();
+    final token = await storage.read(key: "token") ?? "";
+    var headers = <String, String>{
+      'Authorization': "Bearer " + token,
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    if (WhitelistOptions.whitelistEnabled) {
+      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
+    }
+    final response = await http.get(
+      Uri.parse('https://api.taskwolf.net/v1/settings/profile/username/'),
+      headers: headers
+    );
+    return await jsonDecode(response.body)["username"];
+  }
+}
+
+class Activity extends StatelessWidget {
+  Activity({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<dynamic>(
+      future: findFileActivity(),
+      builder: (context, AsyncSnapshot<dynamic> fileSnapshot) {
+        return FutureBuilder<dynamic>(
+          future: findCommandActivity(),
+          builder: (context, AsyncSnapshot<dynamic> commandSnapshot) {
+            if (!fileSnapshot.hasData || !commandSnapshot.hasData) {
+              return Container();
+            }
+            return Flex(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              direction: MediaQuery.sizeOf(context).width < 1800 ? Axis.vertical : Axis.horizontal,
+              children: [
+                Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.all(20),
+                      child: const LocaleText("product.home.file.activity",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))
+                    ),
+                    createFileActivity(List<Map<String, dynamic>>.from(fileSnapshot.data ?? []), context),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.all(20),
+                      child: const LocaleText("product.home.command.activity",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))
+                    ),
+                    createCommandActivity(List<Map<String, dynamic>>.from(commandSnapshot.data ?? []), context)
+                  ],
+                ),
+              ],
             );
           }
         );
@@ -152,10 +209,8 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  createFileActivity(activity, raw, context) {
-    if (raw == null) {
-      return Container();
-    }
+
+  createFileActivity(activity, context) {
     if (activity.isEmpty) {
       return Container(
         margin: const EdgeInsets.symmetric(vertical: 40),
@@ -270,10 +325,7 @@ class HomePage extends StatelessWidget {
     return null;
   }
 
-  createCommandActivity(List<Map<String, dynamic>> history, raw, context) {
-    if (raw == null) {
-      return Container();
-    }
+  createCommandActivity(history, context) {
     if (history.isEmpty) {
       return Container(
         margin: const EdgeInsets.symmetric(vertical: 40),
@@ -311,7 +363,7 @@ class HomePage extends StatelessWidget {
       ),
       subtitle: Text(Locales.string(context, "product.commands.history.output") +
         ": \"" + command["output"] + command["errorMessage"] + "\"\n" +
-          Locales.string(context, "product.commands.history.exit.code") + ": $exitCode"),
+        Locales.string(context, "product.commands.history.exit.code") + ": $exitCode"),
       tileColor: isLight ? const Color(0xFFDCDCDC) : const Color(0xFF333333),
       shape: RoundedRectangleBorder(
         side: BorderSide(color: isLight ? const Color(0xFFA9A9A9) : const Color(0xFF5D5D5D),
@@ -347,52 +399,5 @@ class HomePage extends StatelessWidget {
       }
     }
     return entries;
-  }
-
-  createPageButton(text, page, icon, context) {
-    return Container(
-      margin: const EdgeInsets.all(20),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          foregroundColor: Theme.of(context).primaryColor,
-          padding: const EdgeInsets.all(20),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(25.0))
-        ),
-        onPressed: () async {
-          Navigator.push(context,
-            MaterialPageRoute(builder: (context) => page));
-        },
-        child: SizedBox(
-          width: 192,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 80,),
-              const SizedBox(height: 10),
-              LocaleText(text, style: const TextStyle(fontSize: 20),)
-            ],
-          )
-        ),
-      )
-    );
-  }
-
-  findUsername(context) async {
-    const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
-    var headers = <String, String>{
-      'Authorization': "Bearer " + token,
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    final response = await http.get(
-      Uri.parse('https://api.taskwolf.net/v1/settings/profile/username/'),
-      headers: headers
-    );
-    return await jsonDecode(response.body)["username"];
   }
 }
