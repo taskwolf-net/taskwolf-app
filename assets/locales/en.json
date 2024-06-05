@@ -7,6 +7,11 @@
   "product.home.welcome": "Welcome ",
   "product.home.file.activity": "File Activity",
   "product.home.file.activity.empty": "The file history is unfortunately empty. Therefore you cannot report any activities",
+  "product.home.file.activity.storage": "Storage",
+  "product.home.file.activity.deletion": "Deletion",
+  "product.home.file.activity.info": "Info",
+  "product.home.command.activity": "Command Activity",
+  "product.home.command.activity.empty": "The command history is unfortunately empty. Therefore you cannot report any activities",
 
   "product.organizations.title": "Organisationen",
   "product.organizations.trusted.organizations": "Trusted Organizations",

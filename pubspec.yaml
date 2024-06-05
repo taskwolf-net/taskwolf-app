@@ -77,7 +77,6 @@ flutter:
   assets:
     - assets/locales/
     - assets/images/logo.png
-    - assets/images/success.gif
     - assets/images/languages/en.png
     - assets/images/languages/de.png
 

@@ -7,6 +7,11 @@
   "product.home.welcome": "Willkommen ",
   "product.home.file.activity": "Datei Aktivität",
   "product.home.file.activity.empty": "Der Dateiverlauf ist leider leer. Daher können Sie keine Aktivitäten melden",
+  "product.home.file.activity.storage": "Speicherung",
+  "product.home.file.activity.deletion": "Löschung",
+  "product.home.file.activity.info": "Auslesung",
+  "product.home.command.activity": "Befehls Aktivität",
+  "product.home.command.activity.empty": "Der Befehlsverlauf ist leider leer. Daher können Sie keine Aktivitäten melden",
 
   "product.organizations.title": "Organisationen",
   "product.organizations.trusted.organizations": "Vertrauenswürdige Organisationen",
