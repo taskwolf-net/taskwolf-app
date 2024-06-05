@@ -27,8 +27,8 @@ class HomePage extends StatelessWidget {
           future: findFileActivity(),
           builder: (context, AsyncSnapshot<dynamic> fileSnapshot) {
             return FutureBuilder<dynamic>(
-                future: findCommandActivity(),
-                builder: (context, AsyncSnapshot<dynamic> commandSnapshot) {
+              future: findCommandActivity(),
+              builder: (context, AsyncSnapshot<dynamic> commandSnapshot) {
                 return ProductPage(name: Locales.string(context, "product.home.title"),
                   content: SingleChildScrollView(
                     child: Center(
@@ -303,8 +303,12 @@ class HomePage extends StatelessWidget {
   createCommandHistoryEntry(command, isLight, context) {
     var exitCode = command["exitCode"];
     return ListTile(
-      title: Text(Locales.string(context, "product.commands.history.command") +
-        ": \"" + command["command"] + "\""),
+      title: Container(
+        padding: const EdgeInsets.all(5),
+        margin: const EdgeInsets.only(bottom: 10),
+        child: Text(Locales.string(context, "product.commands.history.command") +
+          ": \"" + command["command"] + "\"")
+      ),
       subtitle: Text(Locales.string(context, "product.commands.history.output") +
         ": \"" + command["output"] + command["errorMessage"] + "\"\n" +
           Locales.string(context, "product.commands.history.exit.code") + ": $exitCode"),
