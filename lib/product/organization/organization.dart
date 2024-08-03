@@ -6,7 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:taskwolf_app/product/base/page.dart';
-import 'package:taskwolf_app/product/organization/organization-add.dart';
+import 'package:taskwolf_app/product/organization/team.dart';
 import 'package:taskwolf_app/settings/theme/theme-state.dart';
 import 'package:taskwolf_app/whitelist_options.dart';
 
@@ -17,7 +17,7 @@ class OrganizationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var isLight = Provider.of<ThemeState>(context).getTheme == ThemeMode.light;
     return FutureBuilder<dynamic>(
-      future: findTrustedOrganizations(),
+      future: findAllOrganizations(),
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
         return ProductPage(name: Locales.string(context, "product.organizations.title"),
           content: Scaffold(
@@ -26,7 +26,7 @@ class OrganizationPage extends StatelessWidget {
                 children: [
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 20),
-                    child: const LocaleText("product.organizations.trusted.organizations",
+                    child: const LocaleText("product.organizations.your.organizations",
                       textAlign: TextAlign.center, style:
                       TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
                   ),
@@ -34,16 +34,6 @@ class OrganizationPage extends StatelessWidget {
                     snapshot.data, isLight, context)
                 ]
               ),
-            ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => OrganizationAddPage()));
-              },
-              foregroundColor: Theme.of(context).primaryColor,
-              backgroundColor: isLight ? Color(0xFFFFFFFF) : Color(0x33FFFFFF),
-              child: const Icon(Icons.add),
-              tooltip: Locales.string(context, "product.organizations.add"),
             ),
           )
         );
@@ -87,21 +77,24 @@ class OrganizationPage extends StatelessWidget {
 
   createOrganizationEntry(organization, isLight, context) {
     return ListTile(
-      title: Text(organization["organizationName"]),
-      subtitle: Text(Locales.string(context, "product.organizations.owner") + ": " + organization["organizationOwner"]),
+      title: Text(organization["name"]),
+      subtitle: Text(Locales.string(context, "product.organizations.owner") + ": " + organization["ownerName"]),
       tileColor: isLight ? Color(0xFFDCDCDC) : Color(0xFF333333),
       shape: RoundedRectangleBorder(
         side: BorderSide(color: isLight ? Color(0xFFA9A9A9) : Color(0xFF5D5D5D),
           width: 1),
         borderRadius: BorderRadius.circular(5),
       ),
+      onTap: () => {
+        Navigator.push(context, MaterialPageRoute(builder: (context) =>
+          TeamPage(organization: organization["id"])))
+      },
     );
   }
 
-  findTrustedOrganizations() async {
+  findAllOrganizations() async {
     const storage = FlutterSecureStorage();
     final token = await storage.read(key: "token") ?? "";
-    final device = await storage.read(key: "device") ?? "";
     var headers = <String, String>{
       'Authorization': "Bearer " + token,
       'Content-Type': 'application/json; charset=UTF-8',
@@ -109,13 +102,10 @@ class OrganizationPage extends StatelessWidget {
     if (WhitelistOptions.whitelistEnabled) {
       headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
     }
-    final response = await http.post(
-      Uri.parse('https://api.taskwolf.net/v1/device/users/'),
-      headers: headers,
-      body: jsonEncode(<String, String>{
-        "device": device
-      }),
+    final response = await http.get(
+      Uri.parse('https://api.taskwolf.net/v1/organizations/all/'),
+      headers: headers
     );
-    return jsonDecode(response.body)["users"];
+    return jsonDecode(response.body)["organizations"];
   }
 }

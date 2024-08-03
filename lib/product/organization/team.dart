@@ -5,49 +5,50 @@ import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:taskwolf_app/product/base/page.dart';
-import 'package:taskwolf_app/product/organization/organization-add.dart';
+import 'package:taskwolf_app/product/base/header.dart';
+import 'package:taskwolf_app/product/organization/team-add.dart';
 import 'package:taskwolf_app/settings/theme/theme-state.dart';
 import 'package:taskwolf_app/whitelist_options.dart';
 
 class TeamPage extends StatelessWidget {
-  TeamPage({super.key});
+  final String organization;
+
+  TeamPage({super.key, required this.organization});
 
   @override
   Widget build(BuildContext context) {
     var isLight = Provider.of<ThemeState>(context).getTheme == ThemeMode.light;
     return FutureBuilder<dynamic>(
-        future: findTrustedTeams(),
-        builder: (context, AsyncSnapshot<dynamic> snapshot) {
-          return ProductPage(name: Locales.string(context, "product.organizations.teams.title"),
-              content: Scaffold(
-                body: Center(
-                  child: Column(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.symmetric(vertical: 20),
-                        child: const LocaleText("product.organizations.teams.trusted.teams",
-                          textAlign: TextAlign.center, style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
-                      ),
-                      createTeamList(List<Map<String, dynamic>>.from(snapshot.data ?? []),
-                          snapshot.data, isLight, context)
-                    ]
-                  ),
+      future: findTrustedTeams(),
+      builder: (context, AsyncSnapshot<dynamic> snapshot) {
+        return Scaffold(
+          appBar: ProductHeader(page: Locales.string(context, "product.organizations.teams.title")),
+          body: Center(
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 20),
+                  child: const LocaleText("product.organizations.teams.trusted.teams",
+                    textAlign: TextAlign.center, style:
+                    TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
                 ),
-                floatingActionButton: FloatingActionButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => OrganizationAddPage()));
-                  },
-                  foregroundColor: Theme.of(context).primaryColor,
-                  backgroundColor: isLight ? Color(0xFFFFFFFF) : Color(0x33FFFFFF),
-                  child: const Icon(Icons.add),
-                  tooltip: Locales.string(context, "product.organizations.add"),
-                ),
-              )
-          );
-        }
+                createTeamList(List<Map<String, dynamic>>.from(snapshot.data ?? []),
+                    snapshot.data, isLight, context)
+              ]
+            ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                TeamAddPage(organization: organization)));
+            },
+            foregroundColor: Theme.of(context).primaryColor,
+            backgroundColor: isLight ? Color(0xFFFFFFFF) : Color(0x33FFFFFF),
+            child: const Icon(Icons.add),
+            tooltip: Locales.string(context, "product.organizations.teams.add"),
+          ),
+        );
+      }
     );
   }
 
@@ -116,9 +117,10 @@ class TeamPage extends StatelessWidget {
     if (value == Locales.string(context, "product.organizations.teams.remove")) {
       await removeTrustedTeam(team);
       Navigator.pushReplacement(context, PageRouteBuilder(
-          pageBuilder: (context, animation1, animation2) => TeamPage(),
-          transitionDuration: Duration.zero,
-          reverseTransitionDuration: Duration.zero));
+        pageBuilder: (context, animation1, animation2) =>
+          TeamPage(organization: organization),
+        transitionDuration: Duration.zero,
+        reverseTransitionDuration: Duration.zero));
       return;
     }
   }
@@ -139,7 +141,7 @@ class TeamPage extends StatelessWidget {
       headers: headers,
       body: jsonEncode(<String, String>{
         "device": device,
-        "organization": "",
+        "organization": organization,
         "team": team["teamId"]
       }),
     );
@@ -163,6 +165,13 @@ class TeamPage extends StatelessWidget {
         "device": device
       }),
     );
-    return jsonDecode(response.body)["users"];
+    var allTeams = jsonDecode(response.body)["users"];
+    var organizationTeams = [];
+    for (var team in allTeams) {
+      if (team["organizationId"] == organization) {
+        organizationTeams.add(team);
+      }
+    }
+    return organizationTeams;
   }
 }

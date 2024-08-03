@@ -6,30 +6,32 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:taskwolf_app/product/base/header.dart';
-import 'package:taskwolf_app/product/organization/organization.dart';
+import 'package:taskwolf_app/product/organization/team.dart';
 import 'package:taskwolf_app/settings/theme/theme-state.dart';
 import 'package:taskwolf_app/whitelist_options.dart';
 
-class OrganizationAddPage extends StatelessWidget {
-  OrganizationAddPage({super.key});
+class TeamAddPage extends StatelessWidget {
+  final String organization;
+
+  TeamAddPage({super.key, required this.organization});
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<dynamic>(
-      future: findAvailableOrganizations(),
+      future: findAvailableTeams(),
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
         return Scaffold(
-          appBar: ProductHeader(page: Locales.string(context, "product.organization.add.title")),
+          appBar: ProductHeader(page: Locales.string(context, "product.organization.team.add.title")),
           body: Center(
             child: Column(
               children: [
                 Container(
                   margin: EdgeInsets.symmetric(vertical: 20),
-                  child: const LocaleText("product.organization.add.available.organizations",
+                  child: const LocaleText("product.organization.team.add.available.teams",
                     textAlign: TextAlign.center, style:
                     TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
                 ),
-                createOrganizationList(List<Map<String, dynamic>>.from(snapshot.data ?? []),
+                createTeamList(List<Map<String, dynamic>>.from(snapshot.data ?? []),
                   snapshot.data, context)
               ]
             ),
@@ -39,16 +41,16 @@ class OrganizationAddPage extends StatelessWidget {
     );
   }
 
-  createOrganizationList(List<Map<String, dynamic>> organizations, raw, context) {
+  createTeamList(List<Map<String, dynamic>> teams, raw, context) {
     if (raw == null) {
       return Container();
     }
-    if (organizations.isEmpty) {
+    if (teams.isEmpty) {
       return Container(
         margin: EdgeInsets.symmetric(vertical: 40),
         padding: EdgeInsets.symmetric(horizontal: 20),
         width: 750,
-        child: const LocaleText("product.organization.add.empty",
+        child: const LocaleText("product.organization.team.add.empty",
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))
       );
@@ -60,22 +62,21 @@ class OrganizationAddPage extends StatelessWidget {
         width: 750,
         child: ListView.separated(
           itemBuilder: (builder, index) {
-            return Card(child: createOrganizationEntry(organizations[index],
+            return Card(child: createTeamEntry(teams[index],
               isLight, context));
           },
           separatorBuilder: (context, index) => SizedBox(
             height: 20,
           ),
-          itemCount: organizations.length,
+          itemCount: teams.length,
         ),
       ),
     );
   }
 
-  createOrganizationEntry(organization, isLight, context) {
+  createTeamEntry(team, isLight, context) {
     return ListTile(
-      title: Text(organization["name"]),
-      subtitle: Text(Locales.string(context, "product.organization.owner") + ": " + organization["owner"]),
+      title: Text(team["name"]),
       tileColor: isLight ? Color(0xFFDCDCDC) : Color(0xFF333333),
       shape: RoundedRectangleBorder(
         side: BorderSide(color: isLight ? Color(0xFFA9A9A9) : Color(0xFF5D5D5D),
@@ -83,34 +84,35 @@ class OrganizationAddPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(5),
       ),
       onTap: () async => {
-        await addTrustedOrganization(organization),
-        Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => OrganizationPage()))
+        await addTrustedOrganization(team),
+        Navigator.pop(context),
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>
+          TeamPage(organization: organization)))
       },
     );
   }
 
-  findAvailableOrganizations() async {
-    var allOrganizations = List<Map<String, dynamic>>.from(await findAllOrganizations());
-    var trustedOrganizations = List<Map<String, dynamic>>.from(await findTrustedOrganizations());
-    var availableOrganizations = <Map<String, dynamic>>[];
-    for (var organization in allOrganizations) {
-      var organizationId = organization["id"];
+  findAvailableTeams() async {
+    var allTeams = List<Map<String, dynamic>>.from(await findAllTeams());
+    var trustedTeams = List<Map<String, dynamic>>.from(await findTrustedTeams());
+    var availableTeams = <Map<String, dynamic>>[];
+    for (var team in allTeams) {
+      var teamId = team["id"];
       var found = false;
-      for (var trustedOrganization in trustedOrganizations) {
-        if (organizationId == trustedOrganization["id"]) {
+      for (var trustedTeam in trustedTeams) {
+        if (teamId == trustedTeam["teamId"]) {
           found = true;
           break;
         }
       }
       if (!found) {
-        availableOrganizations.add(organization);
+        availableTeams.add(team);
       }
     }
-    return availableOrganizations;
+    return availableTeams;
   }
 
-  findAllOrganizations() async {
+  findAllTeams() async {
     const storage = FlutterSecureStorage();
     final token = await storage.read(key: "token") ?? "";
     var headers = <String, String>{
@@ -120,14 +122,23 @@ class OrganizationAddPage extends StatelessWidget {
     if (WhitelistOptions.whitelistEnabled) {
       headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
     }
-    final response = await http.get(
-      Uri.parse('https://api.taskwolf.net/v1/organizations/all/'),
+    final response = await http.post(
+      Uri.parse('https://api.taskwolf.net/v1/organization/team/targets/find/'),
       headers: headers,
+      body: jsonEncode(<String, String>{
+        "organization": organization,
+      })
     );
-    return jsonDecode(response.body)["organizations"];
+    var teams = jsonDecode(response.body)["targets"];
+    for (var team in teams) {
+      if (team["type"] == "GLOBAL") {
+        team["id"] = organization;
+      }
+    }
+    return teams;
   }
 
-  findTrustedOrganizations() async {
+  findTrustedTeams() async {
     const storage = FlutterSecureStorage();
     final token = await storage.read(key: "token") ?? "";
     final device = await storage.read(key: "device") ?? "";
@@ -139,16 +150,23 @@ class OrganizationAddPage extends StatelessWidget {
       headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
     }
     final response = await http.post(
-      Uri.parse('https://api.taskwolf.net/v1/device/organizations/'),
+      Uri.parse('https://api.taskwolf.net/v1/device/users/'),
       headers: headers,
       body: jsonEncode(<String, String>{
         "device": device
       }),
     );
-    return jsonDecode(response.body)["organizations"];
+    var allTeams = jsonDecode(response.body)["users"];
+    var organizationTeams = [];
+    for (var team in allTeams) {
+      if (team["organizationId"] == organization) {
+        organizationTeams.add(team);
+      }
+    }
+    return organizationTeams;
   }
 
-  addTrustedOrganization(organization) async {
+  addTrustedOrganization(team) async {
     const storage = FlutterSecureStorage();
     final token = await storage.read(key: "token") ?? "";
     final device = await storage.read(key: "device") ?? "";
@@ -164,7 +182,8 @@ class OrganizationAddPage extends StatelessWidget {
       headers: headers,
       body: jsonEncode(<String, String>{
         "device": device,
-        "organization": organization["id"]
+        "organization": organization,
+        "team": team["id"]
       }),
     );
   }
