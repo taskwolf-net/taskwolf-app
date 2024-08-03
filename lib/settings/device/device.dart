@@ -145,47 +145,29 @@ class DevicePage extends StatelessWidget {
   }
 
   deviceAccountChangeSuccessful(isLight, context) async {
-    await changeToken();
     changeEmailController.text = "";
     changePasswordController.text = "";
     alert("settings.device.account.successful.title",
       "settings.device.account.successful.body",
       AlertType.success, "settings.device.account.successful.acknowledged",
-      isLight, context);
+        () => logout(context), isLight, context);
   }
 
   deviceAccountChangeFailure(errorCode, isLight, context) {
     changePasswordController.text = "";
     if (errorCode == 1000) {
       failure("settings.device.account.failed.title",
-        "settings.device.account.failed.current.password", isLight, context);
+        "settings.device.account.failed.current.password", () => {},
+        isLight, context);
     } else if (errorCode == 1001) {
       failure("settings.device.account.failed.title",
-        "settings.device.account.failed.new.account", isLight, context);
+        "settings.device.account.failed.new.account", () => {},
+        isLight, context);
     } else if (errorCode == 1002) {
       failure("settings.device.account.failed.title",
-        "settings.device.account.failed.new.password", isLight, context);
+        "settings.device.account.failed.new.password", () => {},
+        isLight, context);
     }
-  }
-
-  changeToken() async {
-    var headers = <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    final response = await http.post(
-      Uri.parse('https://api.taskwolf.net/v1/verification/login/'),
-      headers: headers,
-      body: jsonEncode(<String, String>{
-        "email": changeEmailController.text,
-        "password": changePasswordController.text
-      }),
-    );
-    var apiKey = jsonDecode(response.body)["apiKey"];
-    const storage = FlutterSecureStorage();
-    storage.write(key: "token", value: apiKey);
   }
 
   void submitDeviceDelete(password, isLight, context) async {
@@ -214,7 +196,7 @@ class DevicePage extends StatelessWidget {
       return;
     }
     failure("settings.device.delete.failed.title",
-      "settings.device.delete.failed.body", isLight, context);
+      "settings.device.delete.failed.body", () => {}, isLight, context);
   }
 
   void logout(context) async {
@@ -264,11 +246,12 @@ class DevicePage extends StatelessWidget {
     ).show();
   }
 
-  void failure(title, body, isLight, context) {
-    alert(title, body, AlertType.error, "settings.device.cancel", isLight, context);
+  void failure(title, body, onClick, isLight, context) {
+    alert(title, body, AlertType.error, "settings.device.cancel", onClick,
+        isLight, context);
   }
 
-  void alert(title, body, type, button, isLight, context) {
+  void alert(title, body, type, button, onClick, isLight, context) {
     Alert(
       context: context,
       type: type,
@@ -282,7 +265,10 @@ class DevicePage extends StatelessWidget {
           child: LocaleText(button,
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            Navigator.pop(context);
+            onClick();
+          },
           color: Colors.grey,
         ),
       ],

@@ -6,8 +6,10 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:pin_code_fields/pin_code_fields.dart' as code;
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:taskwolf_app/firebase_options.dart';
@@ -20,6 +22,7 @@ class LoginPage extends StatelessWidget {
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  TextEditingController multiFactorController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -30,17 +33,17 @@ class LoginPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             SizedBox(
-              width: 300,
+              width: 200,
               child: Image.asset("assets/images/logo.png"),
             ),
             ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 500),
               child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 10),
+                margin: const EdgeInsets.symmetric(horizontal: 30),
                 child: Column(
                   children: <Widget>[
                     Container(
-                      margin: const EdgeInsets.only(top: 20),
+                      margin: const EdgeInsets.only(top: 40),
                       child: TextField(
                         controller: emailController,
                         decoration: const InputDecoration(
@@ -102,14 +105,23 @@ class LoginPage extends StatelessWidget {
       headers: headers,
       body: jsonEncode(<String, String>{
         "email": emailController.text,
-        "password": passwordController.text
+        "password": passwordController.text,
+        "multiFactorCode": multiFactorController.text,
       }),
     );
+    var responseBody = jsonDecode(response.body);
     if (response.statusCode != 200) {
-      loginFailed(isLight, context);
-      return;
+      if (responseBody["error"] != 1002) {
+        loginFailed(isLight, context);
+        return;
+      }
+      if (multiFactorController.text.isNotEmpty) {
+        multiFactorAuthenticationFailed(isLight, context);
+        return;
+      }
+      multiFactorAuthentication(isLight, context);
     }
-    var apiKey = jsonDecode(response.body)["apiKey"];
+    var apiKey = responseBody["productApiKey"];
     var deviceId = await sendDeviceLogin(apiKey);
     const storage = FlutterSecureStorage();
     await storage.write(key: "token", value: apiKey);
@@ -182,14 +194,96 @@ class LoginPage extends StatelessWidget {
     return deviceIdentifier ?? "";
   }
 
-  loginFailed(isLight, context) {
-    passwordController.text = "";
+  multiFactorAuthentication(isLight, context) {
+    multiFactorController = TextEditingController();
+    Alert(
+      context: context,
+      content: GestureDetector(
+        onTap: () {},
+        child: Container(
+          width: 50,
+          child: Form(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 30
+              ),
+              child: code.PinCodeTextField(
+                appContext: context,
+                length: 6,
+                animationType: code.AnimationType.scale,
+                pinTheme: code.PinTheme(
+                  shape: code.PinCodeFieldShape.box,
+                  borderRadius: BorderRadius.circular(5),
+                  fieldHeight: 50,
+                  fieldWidth: 40,
+                  fieldOuterPadding: EdgeInsets.symmetric(horizontal: 5),
+                  inactiveFillColor: Colors.transparent,
+                  inactiveColor: isLight ? Colors.black : Colors.white,
+                  selectedFillColor: Colors.transparent,
+                  selectedColor: isLight ? Colors.black : Colors.white,
+                  activeFillColor: Colors.transparent,
+                  activeColor: isLight ? Colors.black : Colors.white,
+                ),
+                cursorColor: isLight ? Colors.black : Colors.white,
+                animationDuration: const Duration(milliseconds: 100),
+                enableActiveFill: true,
+                autoFocus: true,
+                mainAxisAlignment: MainAxisAlignment.center,
+                controller: multiFactorController,
+                keyboardType: TextInputType.datetime,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ],
+                onCompleted: (v) {
+                  submitLogin(isLight, context);
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+      style: AlertStyle(
+        titleStyle: TextStyle(color: isLight ? Colors.black : Colors.white),
+        descStyle: TextStyle(color: isLight ? Colors.black : Colors.white)),
+      title: "2-factor authentication",
+      desc: "Please go to your Authenticator app now and enter your current token",
+      buttons: [
+      ],
+    ).show();
+  }
+
+  multiFactorAuthenticationFailed(isLight, context) {
+    multiFactorController.text = "";
     Alert(
       context: context,
       type: AlertType.error,
       style: AlertStyle(
           titleStyle: TextStyle(color: isLight ? Colors.black : Colors.white),
           descStyle: TextStyle(color: isLight ? Colors.black : Colors.white)),
+      title: "2-factor authentication failed",
+      desc: "The 2 factor code entered is incorrect. Please try again!",
+      buttons: [
+        DialogButton(
+          child: Text("OK", style: TextStyle(color: Colors.white, fontSize: 20)),
+          onPressed: () {
+            Navigator.pop(context);
+            Navigator.pop(context);
+            multiFactorAuthentication(isLight, context);
+          },
+          color: Colors.grey,
+        ),
+      ],
+    ).show();
+  }
+
+  loginFailed(isLight, context) {
+    passwordController.text = "";
+    Alert(
+      context: context,
+      type: AlertType.error,
+      style: AlertStyle(
+        titleStyle: TextStyle(color: isLight ? Colors.black : Colors.white),
+        descStyle: TextStyle(color: isLight ? Colors.black : Colors.white)),
       title: "Login failed",
       desc: "The email or password you entered is incorrect. Please try again!",
       buttons: [
