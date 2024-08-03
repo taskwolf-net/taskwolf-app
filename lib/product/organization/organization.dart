@@ -87,63 +87,14 @@ class OrganizationPage extends StatelessWidget {
 
   createOrganizationEntry(organization, isLight, context) {
     return ListTile(
-      title: Text(organization["name"]),
-      subtitle: Text(Locales.string(context, "product.organizations.owner") + ": " + organization["owner"]),
+      title: Text(organization["organizationName"]),
+      subtitle: Text(Locales.string(context, "product.organizations.owner") + ": " + organization["organizationOwner"]),
       tileColor: isLight ? Color(0xFFDCDCDC) : Color(0xFF333333),
       shape: RoundedRectangleBorder(
         side: BorderSide(color: isLight ? Color(0xFFA9A9A9) : Color(0xFF5D5D5D),
           width: 1),
         borderRadius: BorderRadius.circular(5),
       ),
-      trailing: PopupMenuButton<String>(
-        icon: const Icon(Icons.more_vert),
-        onSelected: (value) {
-          clickOrganizationSettings(organization, value, context);
-        },
-        offset: Offset(0, 30),
-        color: isLight ? Color(0xFFEDEDED) : Color(0xFF545454),
-        tooltip: Locales.string(context, "product.organizations.settings"),
-        itemBuilder: (BuildContext context) {
-          return [Locales.string(context, "product.organizations.remove")].map((String choice) {
-            return PopupMenuItem<String>(
-              value: choice,
-              child: Text(choice),
-            );
-          }).toList();
-        },
-      ),
-    );
-  }
-
-  clickOrganizationSettings(organization, value, context) async {
-    if (value == Locales.string(context, "product.organizations.remove")) {
-      await removeTrustedOrganization(organization);
-      Navigator.pushReplacement(context, PageRouteBuilder(
-        pageBuilder: (context, animation1, animation2) => OrganizationPage(),
-        transitionDuration: Duration.zero,
-        reverseTransitionDuration: Duration.zero));
-      return;
-    }
-  }
-
-  removeTrustedOrganization(organization) async {
-    const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
-    final device = await storage.read(key: "device") ?? "";
-    var headers = <String, String>{
-      'Authorization': "Bearer " + token,
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    await http.post(
-      Uri.parse('https://api.taskwolf.net/v1/device/organization/remove/'),
-      headers: headers,
-      body: jsonEncode(<String, String>{
-        "device": device,
-        "organization": organization["id"]
-      }),
     );
   }
 
@@ -159,12 +110,12 @@ class OrganizationPage extends StatelessWidget {
       headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
     }
     final response = await http.post(
-      Uri.parse('https://api.taskwolf.net/v1/device/organizations/'),
+      Uri.parse('https://api.taskwolf.net/v1/device/users/'),
       headers: headers,
       body: jsonEncode(<String, String>{
         "device": device
       }),
     );
-    return jsonDecode(response.body)["organizations"];
+    return jsonDecode(response.body)["users"];
   }
 }
