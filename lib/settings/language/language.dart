@@ -1,40 +1,33 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:taskwolf_app/settings/base/page.dart';
-import 'package:taskwolf_app/whitelist_options.dart';
+import 'package:taskwolf_app/settings/language/language-state.dart';
 
 class LanguagePage extends StatelessWidget {
   LanguagePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var languageState = Provider.of<LanguageState>(context);
     return SettingsPage(name: Locales.string(context, "settings.language.title"),
-      content: FutureBuilder<String>(
-        future: findCurrentLanguage(),
-        builder: (context, AsyncSnapshot<String> snapshot) {
-          var language = snapshot.data;
-          return Container(alignment: Alignment.center,
-            child: OverflowBar(
-              alignment: MainAxisAlignment.spaceEvenly,
-              overflowAlignment: OverflowBarAlignment.center,
-              children: [
-                createLanguageButton("assets/images/languages/en.png",
-                  "settings.language.english", "en", language == "en", context),
-                createLanguageButton("assets/images/languages/de.png",
-                  "settings.language.german", "de", language == "de", context)
-              ],
-            )
-          );
-        }
+      content: Container(alignment: Alignment.center,
+        child: OverflowBar(
+          alignment: MainAxisAlignment.spaceEvenly,
+          overflowAlignment: OverflowBarAlignment.center,
+          children: [
+            createLanguageButton(languageState, "assets/images/languages/en.png",
+              "settings.language.english", "en", languageState.getLanguage == "en", context),
+            createLanguageButton(languageState, "assets/images/languages/de.png",
+              "settings.language.german", "de", languageState.getLanguage == "de", context)
+          ],
+        )
       )
     );
   }
 
-  createLanguageButton(flag, text, language, selected, context) {
+  createLanguageButton(languageState, flag, text, language, selected, context) {
     return Container(
       margin: EdgeInsets.all(20),
       child: ElevatedButton(
@@ -57,7 +50,7 @@ class LanguagePage extends StatelessWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0))
         ),
         onPressed: () async {
-          changeLanguage(language);
+          changeLanguage(languageState, language);
           await Locales.change(context, language);
           Navigator.pushReplacement(context, PageRouteBuilder(
             pageBuilder: (context, animation1, animation2) => LanguagePage(),
@@ -68,45 +61,9 @@ class LanguagePage extends StatelessWidget {
     );
   }
 
-  Future<String> findCurrentLanguage() async {
+  changeLanguage(languageState, language) async {
+    languageState.setLanguage(language);
     const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
-    final device = await storage.read(key: "device") ?? "";
-    var headers = <String, String>{
-      'Authorization': "Bearer " + token,
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    final response = await http.post(
-      Uri.parse('https://api.taskwolf.net/v1/device/language/find/'),
-      headers: headers,
-      body: jsonEncode(<String, String>{
-        "device": device
-      }),
-    );
-    return await jsonDecode(response.body)["language"];
-  }
-
-  changeLanguage(language) async {
-    const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
-    final device = await storage.read(key: "device") ?? "";
-    var headers = <String, String>{
-      'Authorization': "Bearer " + token,
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    await http.post(
-      Uri.parse('https://api.taskwolf.net/v1/device/language/change/'),
-      headers: headers,
-      body: jsonEncode(<String, String>{
-        "device": device,
-        "language": language,
-      }),
-    );
+    await storage.write(key: "language", value: language);
   }
 }
