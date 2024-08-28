@@ -82,12 +82,12 @@ class Request {
     }
     var response = await Request.post(context: context, url: "/verification/refresh/",
       body: <String, String>{"refreshToken": refreshToken}).send();
-    var success = jsonDecode(response.body).success;
-    if (success == false) {
+    var responseBody = jsonDecode(response.body);
+    if (responseBody["success"] == false) {
       return false;
     }
-    await storage.write(key: "token", value: response["productApiKey"]);
-    await storage.write(key: "device", value: response["refreshToken"]);
+    await storage.write(key: "token", value: responseBody["productApiKey"]);
+    await storage.write(key: "device", value: responseBody["refreshToken"]);
     return true;
   }
 
