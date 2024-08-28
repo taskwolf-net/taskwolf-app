@@ -98,8 +98,9 @@ class LoginPage extends StatelessWidget {
       "password": passwordController.text,
       "multiFactorCode": multiFactorController.text,
     };
+    var headers = <String, String> {"User-Agent": imitateUserAgent()};
     var response = await Request.post(context: context, url: "/verification/login/",
-      body: body, checkAuthorization: false).send();
+      body: body, checkAuthorization: false, headers: headers).send();
     var responseBody = jsonDecode(response.body);
     if (response.statusCode != 200) {
       if (responseBody["error"] != 1002) {
@@ -121,6 +122,20 @@ class LoginPage extends StatelessWidget {
     await storage.write(key: "device", value: deviceId);
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => HomePage()));
+  }
+
+  imitateUserAgent() {
+    if (Platform.isWindows) {
+      return "WINDOWS";
+    } else if (Platform.isLinux) {
+      return "X11";
+    } else if (Platform.isAndroid) {
+      return "ANDROID";
+    } else if (Platform.isMacOS) {
+      return "MAC";
+    } else if (Platform.isIOS) {
+      return "IPHONE";
+    }
   }
 
  Future<String> sendDeviceLogin(context, apiKey) async {
