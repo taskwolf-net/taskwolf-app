@@ -87,7 +87,7 @@ class Request {
       return false;
     }
     await storage.write(key: "token", value: responseBody["productApiKey"]);
-    await storage.write(key: "device", value: responseBody["refreshToken"]);
+    await storage.write(key: "refreshToken", value: responseBody["refreshToken"]);
     return true;
   }
 
