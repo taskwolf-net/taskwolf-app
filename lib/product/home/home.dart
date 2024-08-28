@@ -2,8 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:taskwolf_app/product/base/page.dart';
 import 'package:taskwolf_app/product/command/command.dart';
@@ -11,8 +9,8 @@ import 'package:taskwolf_app/product/file/file.dart';
 import 'package:taskwolf_app/product/help/help.dart';
 import 'package:taskwolf_app/product/notification/notification.dart';
 import 'package:taskwolf_app/product/organization/organization.dart';
+import 'package:taskwolf_app/request/request.dart';
 import 'package:taskwolf_app/settings/theme/theme-state.dart';
-import 'package:taskwolf_app/whitelist_options.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -142,33 +140,22 @@ class HomePage extends StatelessWidget {
   }
 
   findUsername(context) async {
-    const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
-    var headers = <String, String>{
-      'Authorization': "Bearer " + token,
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    final response = await http.get(
-      Uri.parse('https://api.taskwolf.net/v1/settings/profile/username/'),
-      headers: headers
-    );
-    return await jsonDecode(response.body)["username"];
+    var response = await Request.get(context: context,
+      url: "/settings/profile/username/").send();
+    return jsonDecode(response.body)["username"];
   }
 }
 
 class Activity extends StatelessWidget {
-  Activity({super.key});
+  const Activity({super.key});
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<dynamic>(
-      future: findFileActivity(),
+      future: findFileActivity(context),
       builder: (context, AsyncSnapshot<dynamic> fileSnapshot) {
         return FutureBuilder<dynamic>(
-          future: findCommandActivity(),
+          future: findCommandActivity(context),
           builder: (context, AsyncSnapshot<dynamic> commandSnapshot) {
             if (!fileSnapshot.hasData || !commandSnapshot.hasData) {
               return Container();
@@ -281,40 +268,26 @@ class Activity extends StatelessWidget {
     );
   }
 
-  findFileActivity() async {
-    const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
-    final device = await storage.read(key: "device") ?? "";
-    var headers = <String, String>{
-      'Authorization': "Bearer " + token,
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    var body = jsonEncode(<String, String>{"device": device});
+  findFileActivity(context) async {
     var entries = [];
-    var storageEntry = await findFileHistoryEntry("storage", headers, body);
+    var storageEntry = await findFileHistoryEntry(context, "storage");
     if (storageEntry != null) {
       entries.add(storageEntry);
     }
-    var deleteEntry = await findFileHistoryEntry("delete", headers, body);
+    var deleteEntry = await findFileHistoryEntry(context, "delete");
     if (deleteEntry != null) {
       entries.add(deleteEntry);
     }
-    var infoEntry = await findFileHistoryEntry("info", headers, body);
+    var infoEntry = await findFileHistoryEntry(context, "info");
     if (infoEntry != null) {
       entries.add(infoEntry);
     }
     return entries;
   }
 
-  findFileHistoryEntry(type, headers, body) async {
-    var response = await http.post(
-      Uri.parse('https://api.taskwolf.net/v1/device/file/' + type + '/history/'),
-      headers: headers,
-      body: body
-    );
+  findFileHistoryEntry(context, type) async {
+    var response = await Request.post(context: context,
+      url: "/device/file/$type/history/", devicePreset: true).send();
     var entries = jsonDecode(response.body)["history"];
     if (entries.length > 0) {
       var entry = entries[0];
@@ -372,24 +345,9 @@ class Activity extends StatelessWidget {
     );
   }
 
-  findCommandActivity() async {
-    const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
-    final device = await storage.read(key: "device") ?? "";
-    var headers = <String, String>{
-      'Authorization': "Bearer " + token,
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    final response = await http.post(
-      Uri.parse('https://api.taskwolf.net/v1/device/command/history/'),
-      headers: headers,
-      body: jsonEncode(<String, String>{
-        "device": device
-      }),
-    );
+  findCommandActivity(context) async {
+    var response = await Request.post(context: context,
+      url: "/device/command/history/", devicePreset: true).send();
     var entries = [];
     var history = jsonDecode(response.body)["history"];
     for (var i = 0; i < 3; i++) {

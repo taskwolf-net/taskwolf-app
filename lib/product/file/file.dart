@@ -2,12 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
 import 'package:taskwolf_app/product/base/page.dart';
 import 'package:taskwolf_app/product/file/file-history.dart';
 import 'package:taskwolf_app/product/file/file-workspace.dart';
-import 'package:taskwolf_app/whitelist_options.dart';
+import 'package:taskwolf_app/request/request.dart';
 
 class FilePage extends StatelessWidget {
   FilePage({super.key});
@@ -15,7 +13,7 @@ class FilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<dynamic>(
-      future: createFileSettingEntries(),
+      future: createFileSettingEntries(context),
       builder: (context, AsyncSnapshot<dynamic> settingsSnapshot) {
         var settingsEntries = List<FileSettingEntry>.from(
           settingsSnapshot.data ?? []);
@@ -95,24 +93,9 @@ class FilePage extends StatelessWidget {
     );
   }
 
-  createFileSettingEntries() async {
-    const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
-    final device = await storage.read(key: "device") ?? "";
-    var headers = <String, String>{
-      'Authorization': "Bearer " + token,
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    final response = await http.post(
-      Uri.parse('https://api.taskwolf.net/v1/device/file/settings/'),
-      headers: headers,
-      body: jsonEncode(<String, String>{
-        "device": device
-      }),
-    );
+  createFileSettingEntries(context) async {
+    var response = await Request.post(context: context,
+      url: "/device/file/settings/", devicePreset: true).send();
     final body = jsonDecode(response.body);
     var entries = <FileSettingEntry>[];
     entries.add(FileSettingEntry(title: "product.files.storage",
@@ -172,32 +155,19 @@ class FileSettingEntryState extends State<FileSettingEntry> {
   }
 
   updateFileSettings() async {
-    const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
-    final device = await storage.read(key: "device") ?? "";
     var fileStorage = entry.entries[0].state;
     var fileInfo = entry.entries[1].state;
     var fileDelete = entry.entries[2].state;
     var folderCreate = entry.entries[3].state;
     var folderDelete = entry.entries[4].state;
-    var headers = <String, String>{
-      'Authorization': "Bearer " + token,
-      'Content-Type': 'application/json; charset=UTF-8',
+    var body = <String, String> {
+      "fileStorage": "$fileStorage",
+      "fileInfo": "$fileInfo",
+      "fileDelete": "$fileDelete",
+      "folderCreate": "$folderCreate",
+      "folderDelete": "$folderDelete",
     };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    await http.post(
-      Uri.parse('https://api.taskwolf.net/v1/device/file/settings/update/'),
-      headers: headers,
-      body: jsonEncode(<String, String>{
-        "device": device,
-        "fileStorage": "$fileStorage",
-        "fileInfo": "$fileInfo",
-        "fileDelete": "$fileDelete",
-        "folderCreate": "$folderCreate",
-        "folderDelete": "$folderDelete",
-      }),
-    );
+    await Request.post(context: context, url: "/device/file/settings/update/",
+      body: body, devicePreset: true).send();
   }
 }

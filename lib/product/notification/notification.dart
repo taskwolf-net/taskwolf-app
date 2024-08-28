@@ -2,10 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
 import 'package:taskwolf_app/product/base/page.dart';
-import 'package:taskwolf_app/whitelist_options.dart';
+import 'package:taskwolf_app/request/request.dart';
 
 class NotificationPage extends StatelessWidget {
   NotificationPage({super.key});
@@ -13,7 +11,7 @@ class NotificationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<dynamic>(
-      future: createNotificationSettingEntries(),
+      future: createNotificationSettingEntries(context),
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
         var entries = List<NotificationSettingEntry>.from(snapshot.data ?? []);
         return ProductPage(name: Locales.string(context, "product.notifications.title"),
@@ -48,24 +46,9 @@ class NotificationPage extends StatelessWidget {
     );
   }
 
-  createNotificationSettingEntries() async {
-    const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
-    final device = await storage.read(key: "device") ?? "";
-    var headers = <String, String>{
-      'Authorization': "Bearer " + token,
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    final response = await http.post(
-      Uri.parse('https://api.taskwolf.net/v1/device/notification/settings/'),
-      headers: headers,
-      body: jsonEncode(<String, String>{
-        "device": device
-      }),
-    );
+  createNotificationSettingEntries(context) async {
+    var response = await Request.post(context: context,
+      url: "/device/notification/settings/", devicePreset: true).send();
     final body = jsonDecode(response.body);
     var entries = <NotificationSettingEntry>[];
     entries.add(NotificationSettingEntry(
@@ -124,28 +107,15 @@ class NotificationSettingEntryState extends State<NotificationSettingEntry> {
   }
 
   updateNotificationSettings() async {
-    const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
-    final device = await storage.read(key: "device") ?? "";
     var workflowNotifications = entry.entries[0].state;
     var errorNotifications = entry.entries[1].state;
     var newsNotifications = entry.entries[2].state;
-    var headers = <String, String>{
-      'Authorization': "Bearer " + token,
-      'Content-Type': 'application/json; charset=UTF-8',
+    var body = <String, String>{
+      "workflowNotifications": "$workflowNotifications",
+      "errorNotifications": "$errorNotifications",
+      "newsNotifications": "$newsNotifications",
     };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    await http.post(
-      Uri.parse('https://api.taskwolf.net/v1/device/notification/settings/update/'),
-      headers: headers,
-      body: jsonEncode(<String, String>{
-        "device": device,
-        "workflowNotifications": "$workflowNotifications",
-        "errorNotifications": "$errorNotifications",
-        "newsNotifications": "$newsNotifications",
-      }),
-    );
+    await Request.post(context: context, url: "/device/notification/settings/update/",
+      body: body, devicePreset: true).send();
   }
 }

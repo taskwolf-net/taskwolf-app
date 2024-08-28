@@ -3,8 +3,7 @@ import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
-import 'package:taskwolf_app/whitelist_options.dart';
+import 'package:taskwolf_app/request/request.dart';
 
 class FileInfo {
   FileInfo();
@@ -17,25 +16,12 @@ class FileInfo {
     if (await checkDataVolumeProtection()) {
       return;
     }
-    const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
-    final device = await storage.read(key: "device") ?? "";
-    var headers = <String, String>{
-      'Authorization': "Bearer " + token,
-      'Content-Type': 'application/json; charset=UTF-8',
+    var body = <String, String>{
+      "info": infoId,
+      "content": base64.encode(await findFileContent(filePath))
     };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    await http.post(
-      Uri.parse("https://api.taskwolf.net/v1/device/file/info/response/"),
-      headers: headers,
-      body: jsonEncode(<String, String>{
-        "device": device,
-        "info": infoId,
-        "content": base64.encode(await findFileContent(filePath))
-      }),
-    );
+    await Request.post(url: "/device/file/info/response/",
+      body: body, devicePreset: true).send();
   }
 
   findFileContent(filePath) async {

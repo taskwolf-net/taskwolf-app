@@ -17,6 +17,7 @@ import 'package:taskwolf_app/product/file/file-info.dart';
 import 'package:taskwolf_app/product/file/file-storage.dart';
 import 'package:taskwolf_app/product/file/workspace-monitor-compound.dart';
 import 'package:taskwolf_app/product/home/home.dart';
+import 'package:taskwolf_app/settings/language/language-state.dart';
 import 'package:taskwolf_app/settings/theme/theme-state.dart';
 import 'package:taskwolf_app/whitelist_options.dart';
 
@@ -57,45 +58,52 @@ class TaskwolfApp extends StatelessWidget {
     return FutureBuilder<ThemeMode>(
       future: findTheme(),
       builder: (context, AsyncSnapshot<ThemeMode> themeSnapshot) {
-        if (themeSnapshot.data == null) {
-          return Container();
-        }
-        return MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (_) => ThemeState(themeSnapshot.data ??
-              ThemeMode.light)),
-          ],
-          child: FutureBuilder<bool>(
-            future: checkTokenExistence(),
-            builder: (context, AsyncSnapshot<bool> tokenSnapshot) {
-              if (tokenSnapshot.data == null) {
-                return Container();
-              }
-              var home = tokenSnapshot.data == true ? HomePage() : LoginPage();
-              return LocaleBuilder(
-                builder: (locale) => MaterialApp( title: 'Taskwolf App',
-                  theme: ThemeData(
-                    useMaterial3: true,
-                    primaryColor: Colors.black,
-                    colorScheme: ColorScheme.light(primary: Color(0xFF2196F3),
-                      background: Color(0xFFE8E8E8)),
-                  ),
-                  darkTheme: ThemeData(
-                    useMaterial3: true,
-                    primaryColor: Colors.white,
-                    colorScheme: ColorScheme.dark(primary: Color(0xFF2196F3),
-                      background: Color(0xFF121212)),
-                  ),
-                  themeMode: Provider.of<ThemeState>(context).getTheme,
-                  home: home,
-                  debugShowCheckedModeBanner: false,
-                  localizationsDelegates: Locales.delegates,
-                  supportedLocales: Locales.supportedLocales,
-                  locale: locale,
-                )
-              );
+        return FutureBuilder<String>(
+          future: findLanguage(),
+          builder: (context, AsyncSnapshot<String> languageSnapshot) {
+            if (themeSnapshot.data == null || languageSnapshot.data == null) {
+              return Container();
             }
-          )
+            return MultiProvider(
+              providers: [
+                ChangeNotifierProvider(create: (_) => ThemeState(
+                  themeSnapshot.data ?? ThemeMode.light)),
+                ChangeNotifierProvider(create: (_) => LanguageState(
+                  languageSnapshot.data ?? "en")),
+              ],
+              child: FutureBuilder<bool>(
+                future: checkTokenExistence(),
+                builder: (context, AsyncSnapshot<bool> tokenSnapshot) {
+                  if (tokenSnapshot.data == null) {
+                    return Container();
+                  }
+                  var home = tokenSnapshot.data == true ? HomePage() : LoginPage();
+                  return LocaleBuilder(
+                    builder: (locale) => MaterialApp( title: 'Taskwolf App',
+                      theme: ThemeData(
+                        useMaterial3: true,
+                        primaryColor: Colors.black,
+                        colorScheme: ColorScheme.light(primary: Color(0xFF2196F3),
+                          background: Color(0xFFE8E8E8)),
+                      ),
+                      darkTheme: ThemeData(
+                        useMaterial3: true,
+                        primaryColor: Colors.white,
+                        colorScheme: ColorScheme.dark(primary: Color(0xFF2196F3),
+                          background: Color(0xFF121212)),
+                      ),
+                      themeMode: Provider.of<ThemeState>(context).getTheme,
+                      home: home,
+                      debugShowCheckedModeBanner: false,
+                      localizationsDelegates: Locales.delegates,
+                      supportedLocales: Locales.supportedLocales,
+                      locale: locale,
+                    )
+                  );
+                }
+              )
+            );
+          }
         );
       }
     );
@@ -105,6 +113,12 @@ class TaskwolfApp extends StatelessWidget {
     const storage = FlutterSecureStorage();
     final theme = await storage.read(key: "theme") ?? "";
     return theme == "light" ? ThemeMode.light : ThemeMode.dark;
+  }
+
+  Future<String> findLanguage() async {
+    const storage = FlutterSecureStorage();
+    final language = await storage.read(key: "language") ?? "en";
+    return language;
   }
 
   Future<bool> checkTokenExistence() async {

@@ -8,14 +8,13 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
 import 'package:pin_code_fields/pin_code_fields.dart' as code;
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:taskwolf_app/firebase_options.dart';
 import 'package:taskwolf_app/product/home/home.dart';
+import 'package:taskwolf_app/request/request.dart';
 import 'package:taskwolf_app/settings/theme/theme-state.dart';
-import 'package:taskwolf_app/whitelist_options.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -94,21 +93,13 @@ class LoginPage extends StatelessWidget {
   }
 
   submitLogin(isLight, context) async {
-    var headers = <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
+    var body = <String, String>{
+      "email": emailController.text,
+      "password": passwordController.text,
+      "multiFactorCode": multiFactorController.text,
     };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    final response = await http.post(
-      Uri.parse('https://api.taskwolf.net/v1/verification/login/'),
-      headers: headers,
-      body: jsonEncode(<String, String>{
-        "email": emailController.text,
-        "password": passwordController.text,
-        "multiFactorCode": multiFactorController.text,
-      }),
-    );
+    var response = await Request.post(context: context, url: "/verification/login/",
+      body: body, checkAuthorization: false).send();
     var responseBody = jsonDecode(response.body);
     if (response.statusCode != 200) {
       if (responseBody["error"] != 1002) {
@@ -122,15 +113,17 @@ class LoginPage extends StatelessWidget {
       multiFactorAuthentication(isLight, context);
     }
     var apiKey = responseBody["productApiKey"];
-    var deviceId = await sendDeviceLogin(apiKey);
+    var refreshToken = responseBody["refreshToken"];
+    var deviceId = await sendDeviceLogin(context, apiKey);
     const storage = FlutterSecureStorage();
     await storage.write(key: "token", value: apiKey);
+    await storage.write(key: "refreshToken", value: refreshToken);
     await storage.write(key: "device", value: deviceId);
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => HomePage()));
   }
 
- Future<String> sendDeviceLogin(apiKey) async {
+ Future<String> sendDeviceLogin(context, apiKey) async {
     var body = <String, String>{
       "device": await findMachineIdentifier(),
       "information": await findDeviceInformation(),
@@ -140,18 +133,11 @@ class LoginPage extends StatelessWidget {
       var token = await findFirebaseToken();
       body.putIfAbsent("firebaseToken", () => token);
     }
-    var headers = <String, String>{
-      'Authorization': "Bearer " + apiKey,
-      'Content-Type': 'application/json; charset=UTF-8',
+    var headers = <String, String> {
+      'Authorization': "Bearer $apiKey"
     };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    final response = await http.post(
-      Uri.parse('https://api.taskwolf.net/v1/device/login/'),
-      headers: headers,
-      body: jsonEncode(body),
-    );
+    var response = await Request.post(context: context, url: "/device/login/",
+      headers: headers, body: body).send();
     return jsonDecode(response.body)["id"];
   }
 
@@ -167,7 +153,7 @@ class LoginPage extends StatelessWidget {
     String? deviceIdentifier;
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     if (Platform.isAndroid) {
-      deviceIdentifier = await AndroidId().getId();
+      deviceIdentifier = await const AndroidId().getId();
     } else if (Platform.isIOS) {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
       deviceIdentifier = iosInfo.identifierForVendor;

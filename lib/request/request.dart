@@ -1,0 +1,103 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+import 'package:taskwolf_app/login/login.dart';
+import 'package:taskwolf_app/whitelist_options.dart';
+
+class Request {
+  var context;
+  var url;
+  var method;
+  var headers;
+  var body;
+  var devicePreset;
+  var checkAuthorization;
+
+  Request.get({
+    this.context, required url, Map<String, String> this.headers = const {},
+    this.checkAuthorization = true
+  }) {
+    this.url = "https://api.taskwolf.net/v1$url";
+    method = "GET";
+    devicePreset = false;
+  }
+
+  Request.post({
+    this.context, required url, Map<String, String> this.headers = const {},
+    Map<String, String> this.body = const {}, this.devicePreset = false,
+    this.checkAuthorization = true
+  }) {
+    this.url = "https://api.taskwolf.net/v1$url";
+    method = "POST";
+  }
+
+  send() async {
+    Map<String, String> headers = Map.from(this.headers);
+    headers["Content-Type"] = "application/json; charset=UTF-8";
+    const storage = FlutterSecureStorage();
+    final token = await storage.read(key: "token") ?? "";
+    if (token != "") {
+      headers["Authorization"] = "Bearer $token";
+    }
+    if (WhitelistOptions.whitelistEnabled) {
+      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
+    }
+    var response = await generateResponse(storage, headers);
+    if (response.statusCode == 403 && checkAuthorization) {
+      await reset();
+      return response;
+    }
+    if (response.statusCode == 417 && checkAuthorization) {
+      var refreshResult = await refresh(context);
+      if (refreshResult == true) {
+        return await send();
+      }
+      await reset();
+      return response;
+    }
+    return response;
+  }
+
+  generateResponse(storage, headers) async {
+    if (method == "GET") {
+      return await http.get(Uri.parse(url), headers: headers);
+    } else if (method == "POST") {
+      Map<String, String> body = Map.from(this.body);
+      if (devicePreset == true) {
+        final device = await storage.read(key: "device") ?? "";
+        body["device"] = device;
+      }
+      return await http.post(Uri.parse(url), headers: headers,
+        body: jsonEncode(body));
+    }
+  }
+
+  refresh(context) async {
+    const storage = FlutterSecureStorage();
+    final refreshToken = await storage.read(key: "refreshToken") ?? "";
+    if (refreshToken == "") {
+      return;
+    }
+    var response = await Request.post(context: context, url: "/verification/refresh/",
+      body: <String, String>{"refreshToken": refreshToken}).send();
+    var success = jsonDecode(response.body).success;
+    if (success == false) {
+      return false;
+    }
+    await storage.write(key: "token", value: response["productApiKey"]);
+    await storage.write(key: "device", value: response["refreshToken"]);
+    return true;
+  }
+
+  reset() async {
+    const storage = FlutterSecureStorage();
+    await storage.deleteAll();
+    if (context == null) {
+      return;
+    }
+    Navigator.pushReplacement(context,
+      MaterialPageRoute(builder: (context) => LoginPage()));
+  }
+}

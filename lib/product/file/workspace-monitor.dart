@@ -2,8 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
-import 'package:taskwolf_app/whitelist_options.dart';
+import 'package:taskwolf_app/request/request.dart';
 
 class WorkspaceMonitor {
   final workspaceId;
@@ -70,8 +69,7 @@ class WorkspaceMonitor {
     }
     var fileName = File(file.path).uri.pathSegments.last;
     var filePath = file.path.replaceAll(workspacePath, "").replaceAll(fileName, "");
-    reportFileChange("https://api.taskwolf.net/v1/device/file/workspace/file/create/",
-      filePath, fileName);
+    reportFileChange("/device/file/workspace/file/create/", filePath, fileName);
   }
 
   checkFileDeletion(file, currentFolder) {
@@ -85,8 +83,7 @@ class WorkspaceMonitor {
     }
     var fileName = File(file["path"]).uri.pathSegments.last;
     var filePath = file["path"].replaceAll(workspacePath, "").replaceAll(fileName, "");
-    reportFileChange("https://api.taskwolf.net/v1/device/file/workspace/file/delete/",
-      filePath, fileName);
+    reportFileChange("/device/file/workspace/file/delete/", filePath, fileName);
   }
 
   checkFolderCreation(folder, previousFolder) {
@@ -97,8 +94,7 @@ class WorkspaceMonitor {
       }
     }
     var folderPath = folder.path.replaceAll(workspacePath, "");
-    reportFolderChange("https://api.taskwolf.net/v1/device/file/workspace/folder/create/",
-      folderPath);
+    reportFolderChange("/device/file/workspace/folder/create/", folderPath);
   }
 
   checkFolderDeletion(folder, currentFolder) {
@@ -111,8 +107,7 @@ class WorkspaceMonitor {
       }
     }
     var folderPath = folder["path"].replaceAll(workspacePath, "");
-    reportFolderChange("https://api.taskwolf.net/v1/device/file/workspace/folder/delete/",
-      folderPath);
+    reportFolderChange("/device/file/workspace/folder/delete/", folderPath);
   }
 
   saveCurrentState() async {
@@ -149,65 +144,25 @@ class WorkspaceMonitor {
   }
 
   reportFileChange(url, filePath, fileName) async {
-    const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
-    final device = await storage.read(key: "device") ?? "";
-    var headers = <String, String>{
-      'Authorization': "Bearer " + token,
-      'Content-Type': 'application/json; charset=UTF-8',
+    var body = <String, String> {
+      "workspace": workspaceId,
+      "filePath": filePath,
+      "fileName": fileName
     };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    await http.post(Uri.parse(url),
-      headers: headers,
-      body: jsonEncode(<String, String>{
-        "device": device,
-        "workspace": workspaceId,
-        "filePath": filePath,
-        "fileName": fileName
-      }),
-    );
+    await Request.post(url: url, body: body, devicePreset: true).send();
   }
 
   reportFolderChange(url, folderPath) async {
-    const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
-    final device = await storage.read(key: "device") ?? "";
-    var headers = <String, String>{
-      'Authorization': "Bearer " + token,
-      'Content-Type': 'application/json; charset=UTF-8',
+    var body = <String, String> {
+      "workspace": workspaceId,
+      "folderPath": folderPath
     };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    await http.post(Uri.parse(url),
-      headers: headers,
-      body: jsonEncode(<String, String>{
-        "device": device,
-        "workspace": workspaceId,
-        "folderPath": folderPath
-      }),
-    );
+    await Request.post(url: url, body: body, devicePreset: true).send();
   }
 
   removeWorkspace() async {
-    const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
-    final device = await storage.read(key: "device") ?? "";
-    var headers = <String, String>{
-      'Authorization': "Bearer " + token,
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    await http.post(Uri.parse("https://api.taskwolf.net/v1/device/file/workspace/remove/"),
-      headers: headers,
-      body: jsonEncode(<String, String>{
-        "device": device,
-        "workspace": workspaceId
-      }),
-    );
+    var body = <String, String> {"workspace": workspaceId};
+    await Request.post(url: "/device/file/workspace/remove/", body: body,
+      devicePreset: true).send();
   }
 }

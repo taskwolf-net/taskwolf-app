@@ -2,13 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:taskwolf_app/product/base/header.dart';
 import 'package:taskwolf_app/product/organization/team-add.dart';
+import 'package:taskwolf_app/request/request.dart';
 import 'package:taskwolf_app/settings/theme/theme-state.dart';
-import 'package:taskwolf_app/whitelist_options.dart';
 
 class TeamPage extends StatelessWidget {
   final String organization;
@@ -19,7 +17,7 @@ class TeamPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var isLight = Provider.of<ThemeState>(context).getTheme == ThemeMode.light;
     return FutureBuilder<dynamic>(
-      future: findTrustedTeams(),
+      future: findTrustedTeams(context),
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
         return Scaffold(
           appBar: ProductHeader(page: Locales.string(context, "product.organizations.teams.title")),
@@ -115,7 +113,7 @@ class TeamPage extends StatelessWidget {
 
   clickTeamSettings(team, value, context) async {
     if (value == Locales.string(context, "product.organizations.teams.remove")) {
-      await removeTrustedTeam(team);
+      await removeTrustedTeam(context, team);
       Navigator.pushReplacement(context, PageRouteBuilder(
         pageBuilder: (context, animation1, animation2) =>
           TeamPage(organization: organization),
@@ -125,46 +123,18 @@ class TeamPage extends StatelessWidget {
     }
   }
 
-  removeTrustedTeam(team) async {
-    const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
-    final device = await storage.read(key: "device") ?? "";
-    var headers = <String, String>{
-      'Authorization': "Bearer " + token,
-      'Content-Type': 'application/json; charset=UTF-8',
+  removeTrustedTeam(context, team) async {
+    var body = <String, String>{
+      "organization": organization,
+      "team": team["teamId"]
     };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    await http.post(
-      Uri.parse('https://api.taskwolf.net/v1/device/organization/remove/'),
-      headers: headers,
-      body: jsonEncode(<String, String>{
-        "device": device,
-        "organization": organization,
-        "team": team["teamId"]
-      }),
-    );
+    await Request.post(context: context, url: "/device/organization/remove/",
+      body: body, devicePreset: true).send();
   }
 
-  findTrustedTeams() async {
-    const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
-    final device = await storage.read(key: "device") ?? "";
-    var headers = <String, String>{
-      'Authorization': "Bearer " + token,
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    final response = await http.post(
-      Uri.parse('https://api.taskwolf.net/v1/device/users/'),
-      headers: headers,
-      body: jsonEncode(<String, String>{
-        "device": device
-      }),
-    );
+  findTrustedTeams(context) async {
+    var response = await Request.post(context: context,
+      url: "/device/users/", devicePreset: true).send();
     var allTeams = jsonDecode(response.body)["users"];
     var organizationTeams = [];
     for (var team in allTeams) {

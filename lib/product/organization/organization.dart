@@ -2,13 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:taskwolf_app/product/base/page.dart';
 import 'package:taskwolf_app/product/organization/team.dart';
+import 'package:taskwolf_app/request/request.dart';
 import 'package:taskwolf_app/settings/theme/theme-state.dart';
-import 'package:taskwolf_app/whitelist_options.dart';
 
 class OrganizationPage extends StatelessWidget {
   OrganizationPage({super.key});
@@ -17,7 +15,7 @@ class OrganizationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var isLight = Provider.of<ThemeState>(context).getTheme == ThemeMode.light;
     return FutureBuilder<dynamic>(
-      future: findAllOrganizations(),
+      future: findAllOrganizations(context),
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
         return ProductPage(name: Locales.string(context, "product.organizations.title"),
           content: Scaffold(
@@ -92,20 +90,9 @@ class OrganizationPage extends StatelessWidget {
     );
   }
 
-  findAllOrganizations() async {
-    const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
-    var headers = <String, String>{
-      'Authorization': "Bearer " + token,
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    final response = await http.get(
-      Uri.parse('https://api.taskwolf.net/v1/organizations/all/'),
-      headers: headers
-    );
+  findAllOrganizations(context) async {
+    var response = await Request.get(context: context,
+      url: "/organizations/all/").send();
     return jsonDecode(response.body)["organizations"];
   }
 }

@@ -2,12 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:taskwolf_app/product/base/header.dart';
+import 'package:taskwolf_app/request/request.dart';
 import 'package:taskwolf_app/settings/theme/theme-state.dart';
-import 'package:taskwolf_app/whitelist_options.dart';
 
 class FileDeleteHistoryPage extends StatelessWidget {
   FileDeleteHistoryPage({super.key});
@@ -15,7 +13,7 @@ class FileDeleteHistoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<dynamic>(
-      future: findDeleteHistory(),
+      future: findDeleteHistory(context),
       builder: (context, AsyncSnapshot<dynamic> historySnapshot) {
         var historyEntries = List<Map<String, dynamic>>.from(
           historySnapshot.data ?? []);
@@ -101,49 +99,19 @@ class FileDeleteHistoryPage extends StatelessWidget {
     );
   }
 
-  findDeleteHistory() async {
-    const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
-    final device = await storage.read(key: "device") ?? "";
-    var headers = <String, String>{
-      'Authorization': "Bearer " + token,
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    final response = await http.post(
-      Uri.parse('https://api.taskwolf.net/v1/device/file/delete/history/'),
-      headers: headers,
-      body: jsonEncode(<String, String>{
-        "device": device
-      }),
-    );
+  findDeleteHistory(context) async {
+    var response = await Request.post(context: context,
+      url: "/device/file/delete/history/", devicePreset: true).send();
     return jsonDecode(response.body)["history"];
   }
 
   clickDeleteResetButton(context) async {
-    await resetDeleteHistory();
+    await resetDeleteHistory(context);
     Navigator.pop(context);
   }
 
-  resetDeleteHistory() async {
-    const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
-    final device = await storage.read(key: "device") ?? "";
-    var headers = <String, String>{
-      'Authorization': "Bearer " + token,
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    await http.post(
-      Uri.parse('https://api.taskwolf.net/v1/device/file/delete/history/reset/'),
-      headers: headers,
-      body: jsonEncode(<String, String>{
-        "device": device
-      }),
-    );
+  resetDeleteHistory(context) async {
+    await Request.post(context: context, url: "/device/file/delete/history/reset/",
+      devicePreset: true).send();
   }
 }

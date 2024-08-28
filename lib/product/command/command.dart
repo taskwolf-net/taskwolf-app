@@ -2,12 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:taskwolf_app/product/base/page.dart';
+import 'package:taskwolf_app/request/request.dart';
 import 'package:taskwolf_app/settings/theme/theme-state.dart';
-import 'package:taskwolf_app/whitelist_options.dart';
 
 class CommandPage extends StatelessWidget {
   CommandPage({super.key});
@@ -15,10 +13,10 @@ class CommandPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<dynamic>(
-      future: createCommandSettingEntries(),
+      future: createCommandSettingEntries(context),
       builder: (context, AsyncSnapshot<dynamic> settingsSnapshot) {
         return FutureBuilder<dynamic>(
-          future: findCommandHistory(),
+          future: findCommandHistory(context),
           builder: (context, AsyncSnapshot<dynamic> historySnapshot) {
             var settingsEntries = List<CommandSettingEntry>.from(
               settingsSnapshot.data ?? []);
@@ -127,45 +125,15 @@ class CommandPage extends StatelessWidget {
     );
   }
 
-  findCommandHistory() async {
-    const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
-    final device = await storage.read(key: "device") ?? "";
-    var headers = <String, String>{
-      'Authorization': "Bearer " + token,
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    final response = await http.post(
-      Uri.parse('https://api.taskwolf.net/v1/device/command/history/'),
-      headers: headers,
-      body: jsonEncode(<String, String>{
-        "device": device
-      }),
-    );
+  findCommandHistory(context) async {
+    var response = await Request.post(context: context,
+      url: "/device/command/history/", devicePreset: true).send();
     return jsonDecode(response.body)["history"];
   }
 
-  createCommandSettingEntries() async {
-    const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
-    final device = await storage.read(key: "device") ?? "";
-    var headers = <String, String>{
-      'Authorization': "Bearer " + token,
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    final response = await http.post(
-      Uri.parse('https://api.taskwolf.net/v1/device/command/settings/'),
-      headers: headers,
-      body: jsonEncode(<String, String>{
-        "device": device
-      }),
-    );
+  createCommandSettingEntries(context) async {
+    var response = await Request.post(context: context,
+      url: "/device/command/settings/", devicePreset: true).send();
     final body = jsonDecode(response.body);
     var entries = <CommandSettingEntry>[];
     entries.add(CommandSettingEntry(title: "product.commands.enabled",
@@ -174,31 +142,16 @@ class CommandPage extends StatelessWidget {
   }
 
   clickCommandResetButton(context) async {
-    await resetCommandHistory();
+    await resetCommandHistory(context);
     Navigator.pushReplacement(context, PageRouteBuilder(
       pageBuilder: (context, animation1, animation2) => CommandPage(),
       transitionDuration: Duration.zero,
       reverseTransitionDuration: Duration.zero));
   }
 
-  resetCommandHistory() async {
-    const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
-    final device = await storage.read(key: "device") ?? "";
-    var headers = <String, String>{
-      'Authorization': "Bearer " + token,
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    await http.post(
-      Uri.parse('https://api.taskwolf.net/v1/device/command/history/reset/'),
-      headers: headers,
-      body: jsonEncode(<String, String>{
-        "device": device
-      }),
-    );
+  resetCommandHistory(context) async {
+    await Request.post(context: context, url: "/device/command/history/reset/",
+      devicePreset: true).send();
   }
 }
 
@@ -236,7 +189,7 @@ class CommandSettingEntryState extends State<CommandSettingEntry> {
           onChanged: (bool value) {
             setState(() {
               entry.state = value;
-              updateCommandSettings();
+              updateCommandSettings(context);
             });
           },
         )
@@ -244,25 +197,10 @@ class CommandSettingEntryState extends State<CommandSettingEntry> {
     );
   }
 
-  updateCommandSettings() async {
-    const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
-    final device = await storage.read(key: "device") ?? "";
+  updateCommandSettings(context) async {
     var commandExecution = entry.entries[0].state;
-    var headers = <String, String>{
-      'Authorization': "Bearer " + token,
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    await http.post(
-      Uri.parse('https://api.taskwolf.net/v1/device/command/settings/update/'),
-      headers: headers,
-      body: jsonEncode(<String, String>{
-        "device": device,
-        "commandExecution": "$commandExecution",
-      }),
-    );
+    var body = <String, String>{"commandExecution": "$commandExecution"};
+    await Request.post(context: context, url: "/device/command/settings/update/",
+      body: body, devicePreset: true).send();
   }
 }
