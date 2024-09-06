@@ -101,10 +101,14 @@ class LoginPage extends StatelessWidget {
     var headers = <String, String> {"User-Agent": imitateUserAgent()};
     var response = await Request.post(context: context, url: "/verification/login/",
       body: body, checkAuthorization: false, headers: headers).send();
+    if (response.statusCode == 409) {
+      loginFailed(isLight, context, "Maintenance work is currently being carried out. Please try again later.");
+      return;
+    }
     var responseBody = jsonDecode(response.body);
     if (response.statusCode != 200) {
       if (responseBody["error"] != 1002) {
-        loginFailed(isLight, context);
+        loginFailed(isLight, context, "The email or password you entered is incorrect. Please try again!");
         return;
       }
       if (multiFactorController.text.isNotEmpty) {
@@ -277,7 +281,7 @@ class LoginPage extends StatelessWidget {
     ).show();
   }
 
-  loginFailed(isLight, context) {
+  loginFailed(isLight, context, text) {
     passwordController.text = "";
     Alert(
       context: context,
@@ -286,7 +290,7 @@ class LoginPage extends StatelessWidget {
         titleStyle: TextStyle(color: isLight ? Colors.black : Colors.white),
         descStyle: TextStyle(color: isLight ? Colors.black : Colors.white)),
       title: "Login failed",
-      desc: "The email or password you entered is incorrect. Please try again!",
+      desc: text,
       buttons: [
         DialogButton(
           child: Text("OK", style: TextStyle(color: Colors.white, fontSize: 20)),

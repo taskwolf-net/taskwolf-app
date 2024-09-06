@@ -45,11 +45,14 @@ class Request {
       headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
     }
     var response = await generateResponse(storage, headers);
-    if (response.statusCode == 403 && checkAuthorization) {
+    if (!checkAuthorization) {
+      return response;
+    }
+    if (response.statusCode == 403 || response.statusCode == 409) {
       await reset();
       return response;
     }
-    if (response.statusCode == 417 && checkAuthorization) {
+    if (response.statusCode == 417) {
       var refreshResult = await refresh(context);
       if (refreshResult == true) {
         return await send();
