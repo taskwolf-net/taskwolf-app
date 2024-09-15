@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:taskwolf_app/settings/base/page.dart';
+import 'package:dulno_app/settings/base/page.dart';
 
 class DataVolumePage extends StatelessWidget {
   DataVolumePage({super.key});

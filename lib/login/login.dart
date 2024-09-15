@@ -11,10 +11,10 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:pin_code_fields/pin_code_fields.dart' as code;
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:taskwolf_app/firebase_options.dart';
-import 'package:taskwolf_app/product/home/home.dart';
-import 'package:taskwolf_app/request/request.dart';
-import 'package:taskwolf_app/settings/theme/theme-state.dart';
+import 'package:dulno_app/firebase_options.dart';
+import 'package:dulno_app/product/home/home.dart';
+import 'package:dulno_app/request/request.dart';
+import 'package:dulno_app/settings/theme/theme-state.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});

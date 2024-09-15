@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:taskwolf_app/request/request.dart';
+import 'package:dulno_app/request/request.dart';
 
 class FileInfo {
   FileInfo();

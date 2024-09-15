@@ -12,7 +12,7 @@ class PushNotification {
 
   setupNotifications() async {
     await localNotifier.setup(
-      appName: 'Taskwolf',
+      appName: 'dulno',
       shortcutPolicy: ShortcutPolicy.requireCreate,
     );
   }

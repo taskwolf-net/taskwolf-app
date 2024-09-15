@@ -1,3 +1,3 @@
-# Taskwolf - App
+# Dulno - App
 
-This app can be used by Taskwolf customers to automate their local devices. The app is not a direct representation of the Taskwolf panels but implements its own functions. It is based on Flutter and will be available for many different platforms in the course of development
+This app can be used by Dulno customers to automate their local devices. The app is not a direct representation of the Dulno panels but implements its own functions. It is based on Flutter and will be available for many different platforms in the course of development

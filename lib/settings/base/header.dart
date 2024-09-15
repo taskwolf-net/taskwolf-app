@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:provider/provider.dart';
-import 'package:taskwolf_app/product/home/home.dart';
-import 'package:taskwolf_app/settings/theme/theme-state.dart';
+import 'package:dulno_app/product/home/home.dart';
+import 'package:dulno_app/settings/theme/theme-state.dart';
 
 class ProductHeader extends StatelessWidget implements PreferredSizeWidget {
   ProductHeader({super.key, required this.page});

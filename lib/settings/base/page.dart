@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:taskwolf_app/settings/base/header.dart';
-import 'package:taskwolf_app/settings/base/sidebar.dart';
+import 'package:dulno_app/settings/base/header.dart';
+import 'package:dulno_app/settings/base/sidebar.dart';
 
 class SettingsPage extends StatelessWidget {
   SettingsPage({super.key, required this.name, required this.content});

@@ -92,13 +92,13 @@
   "product.help.title": "Help",
   "product.help.frequently.questions": "Frequently asked questions",
   "product.help.question.support.question": "Where and how can I get support?",
-  "product.help.question.support.answer": "If you have any questions, you can contact our email support@taskwolf.net at any time. We also offer a ticket system where you can ask questions and report bugs. You can find this at https://taskwolf.net/tickets/. Our staff will take care of every request as quickly as possible.",
+  "product.help.question.support.answer": "If you have any questions, you can contact our email support@dulno.com at any time. We also offer a ticket system where you can ask questions and report bugs. You can find this at https://dulno.com/tickets/. Our staff will take care of every request as quickly as possible.",
   "product.help.question.purpose.question": "What is the purpose of this app?",
-  "product.help.question.purpose.answer": "We offer this app to automate your local devices. Various device-related functions can be integrated into workflows and used for automation. All linked devices can be found under https://taskwolf.net/devices/ .",
+  "product.help.question.purpose.answer": "We offer this app to automate your local devices. Various device-related functions can be integrated into workflows and used for automation. All linked devices can be found under https://dulno.com/devices/ .",
   "product.help.question.required.question": "Do I really need this app?",
-  "product.help.question.required.answer": "We offer this app as an extension of the existing Taskwolf functions. You can also use Taskwolf without this app, but many of the app's functions are very useful for using Taskwolf.",
-  "product.help.question.delete.question": "How can I remove the device from Taskwolf?",
-  "product.help.question.delete.answer": "To remove the device from Taskwolf, click on the banner at the top right, then select \"Settings\" and go to \"Device\". There you will find the option to remove the device from Taskwolf.",
+  "product.help.question.required.answer": "We offer this app as an extension of the existing Dulno functions. You can also use Dulno without this app, but many of the app's functions are very useful for using Dulno.",
+  "product.help.question.delete.question": "How can I remove the device from Dulno?",
+  "product.help.question.delete.answer": "To remove the device from Dulno, click on the banner at the top right, then select \"Settings\" and go to \"Device\". There you will find the option to remove the device from Dulno.",
 
   "settings": "Settings",
 

@@ -9,17 +9,17 @@ import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:taskwolf_app/firebase_options.dart';
-import 'package:taskwolf_app/login/login.dart';
-import 'package:taskwolf_app/product/command/command-execution.dart';
-import 'package:taskwolf_app/product/connection/device-connection.dart';
-import 'package:taskwolf_app/product/file/file-info.dart';
-import 'package:taskwolf_app/product/file/file-storage.dart';
-import 'package:taskwolf_app/product/file/workspace-monitor-compound.dart';
-import 'package:taskwolf_app/product/home/home.dart';
-import 'package:taskwolf_app/settings/language/language-state.dart';
-import 'package:taskwolf_app/settings/theme/theme-state.dart';
-import 'package:taskwolf_app/whitelist_options.dart';
+import 'package:dulno_app/firebase_options.dart';
+import 'package:dulno_app/login/login.dart';
+import 'package:dulno_app/product/command/command-execution.dart';
+import 'package:dulno_app/product/connection/device-connection.dart';
+import 'package:dulno_app/product/file/file-info.dart';
+import 'package:dulno_app/product/file/file-storage.dart';
+import 'package:dulno_app/product/file/workspace-monitor-compound.dart';
+import 'package:dulno_app/product/home/home.dart';
+import 'package:dulno_app/settings/language/language-state.dart';
+import 'package:dulno_app/settings/theme/theme-state.dart';
+import 'package:dulno_app/whitelist_options.dart';
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   var data = message.data;
@@ -45,13 +45,13 @@ void main() async {
   } else {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-    FirebaseMessaging.instance.subscribeToTopic("taskwolf-workspace-monitor");
+    FirebaseMessaging.instance.subscribeToTopic("dulno-workspace-monitor");
   }
-  runApp(const TaskwolfApp());
+  runApp(const dulnoApp());
 }
 
-class TaskwolfApp extends StatelessWidget {
-  const TaskwolfApp({super.key});
+class dulnoApp extends StatelessWidget {
+  const dulnoApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +79,7 @@ class TaskwolfApp extends StatelessWidget {
                   }
                   var home = tokenSnapshot.data == true ? HomePage() : LoginPage();
                   return LocaleBuilder(
-                    builder: (locale) => MaterialApp( title: 'Taskwolf App',
+                    builder: (locale) => MaterialApp( title: 'dulno App',
                       theme: ThemeData(
                         useMaterial3: true,
                         primaryColor: Colors.black,
@@ -135,7 +135,7 @@ class TaskwolfApp extends StatelessWidget {
       headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
     }
     final response = await http.post(
-      Uri.parse('https://api.taskwolf.net/v1/verification/isValid/'),
+      Uri.parse('https://api.dulno.com/v1/verification/isValid/'),
       headers: headers,
       body: jsonEncode(<String, String>{
         "token": token

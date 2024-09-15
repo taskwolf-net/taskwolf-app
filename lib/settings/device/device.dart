@@ -5,10 +5,10 @@ import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:taskwolf_app/login/login.dart';
-import 'package:taskwolf_app/request/request.dart';
-import 'package:taskwolf_app/settings/base/page.dart';
-import 'package:taskwolf_app/settings/theme/theme-state.dart';
+import 'package:dulno_app/login/login.dart';
+import 'package:dulno_app/request/request.dart';
+import 'package:dulno_app/settings/base/page.dart';
+import 'package:dulno_app/settings/theme/theme-state.dart';
 
 class DevicePage extends StatelessWidget {
   DevicePage({super.key});

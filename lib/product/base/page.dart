@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:taskwolf_app/product/base/header.dart';
-import 'package:taskwolf_app/product/base/sidebar.dart';
+import 'package:dulno_app/product/base/header.dart';
+import 'package:dulno_app/product/base/sidebar.dart';
 
 class ProductPage extends StatelessWidget {
   ProductPage({super.key, required this.name, required this.content});

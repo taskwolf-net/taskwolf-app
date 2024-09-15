@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
-import 'package:taskwolf_app/product/base/page.dart';
-import 'package:taskwolf_app/product/file/file-history.dart';
-import 'package:taskwolf_app/product/file/file-workspace.dart';
-import 'package:taskwolf_app/request/request.dart';
+import 'package:dulno_app/product/base/page.dart';
+import 'package:dulno_app/product/file/file-history.dart';
+import 'package:dulno_app/product/file/file-workspace.dart';
+import 'package:dulno_app/request/request.dart';
 
 class FilePage extends StatelessWidget {
   FilePage({super.key});

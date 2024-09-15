@@ -1,7 +1,7 @@
 import 'dart:core';
 import 'dart:io';
 
-import 'package:taskwolf_app/request/request.dart';
+import 'package:dulno_app/request/request.dart';
 
 class CommandExecution {
   CommandExecution();

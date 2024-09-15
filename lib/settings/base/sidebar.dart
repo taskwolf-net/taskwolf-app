@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
-import 'package:taskwolf_app/settings/data-volume/data-volume.dart';
-import 'package:taskwolf_app/settings/device/device.dart';
-import 'package:taskwolf_app/settings/language/language.dart';
-import 'package:taskwolf_app/settings/theme/theme.dart';
+import 'package:dulno_app/settings/data-volume/data-volume.dart';
+import 'package:dulno_app/settings/device/device.dart';
+import 'package:dulno_app/settings/language/language.dart';
+import 'package:dulno_app/settings/theme/theme.dart';
 
 class ProductSidebar extends StatelessWidget {
   ProductSidebar({super.key, required this.page});
