@@ -47,11 +47,11 @@ void main() async {
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     FirebaseMessaging.instance.subscribeToTopic("dulno-workspace-monitor");
   }
-  runApp(const dulnoApp());
+  runApp(const DulnoApp());
 }
 
-class dulnoApp extends StatelessWidget {
-  const dulnoApp({super.key});
+class DulnoApp extends StatelessWidget {
+  const DulnoApp({super.key});
 
   @override
   Widget build(BuildContext context) {
