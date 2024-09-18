@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:dulno_app/product/base/page.dart';
 import 'package:dulno_app/request/request.dart';
@@ -199,6 +200,8 @@ class CommandSettingEntryState extends State<CommandSettingEntry> {
 
   updateCommandSettings(context) async {
     var commandExecution = entry.entries[0].state;
+    const storage = FlutterSecureStorage();
+    await storage.write(key: "commandExecution", value: "$commandExecution");
     var body = <String, String>{"commandExecution": "$commandExecution"};
     await Request.post(context: context, url: "/device/command/settings/update/",
       body: body, devicePreset: true).send();
