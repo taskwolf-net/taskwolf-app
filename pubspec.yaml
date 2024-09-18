@@ -35,12 +35,12 @@ dependencies:
   flutter_secure_storage: ^9.0.0
   flutter_locales: ^3.0.1
   device_info_plus: ^10.1.0
-  android_id: ^0.3.6
+  android_id: ^0.4.0
   local_notifier: ^0.1.5
-  firebase_core: ^2.28.0
-  firebase_messaging: ^14.8.0
+  firebase_core: ^3.5.0
+  firebase_messaging: ^15.1.2
   accordion: ^2.6.0
-  web_socket_channel: ^2.4.5
+  web_socket_channel: ^3.0.1
   provider: ^6.1.2
   rflutter_alert: ^2.0.7
   file_picker: ^8.0.3
@@ -59,7 +59,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.0
+  flutter_lints: ^4.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
