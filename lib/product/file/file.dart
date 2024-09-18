@@ -6,6 +6,7 @@ import 'package:dulno_app/product/base/page.dart';
 import 'package:dulno_app/product/file/file-history.dart';
 import 'package:dulno_app/product/file/file-workspace.dart';
 import 'package:dulno_app/request/request.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class FilePage extends StatelessWidget {
   FilePage({super.key});
@@ -160,6 +161,12 @@ class FileSettingEntryState extends State<FileSettingEntry> {
     var fileDelete = entry.entries[2].state;
     var folderCreate = entry.entries[3].state;
     var folderDelete = entry.entries[4].state;
+    const storage = FlutterSecureStorage();
+    await storage.write(key: "fileStorage", value: "$fileStorage");
+    await storage.write(key: "fileInfo", value: "$fileInfo");
+    await storage.write(key: "fileDelete", value: "$fileDelete");
+    await storage.write(key: "folderCreate", value: "$folderCreate");
+    await storage.write(key: "folderDelete", value: "$folderDelete");
     var body = <String, String> {
       "fileStorage": "$fileStorage",
       "fileInfo": "$fileInfo",

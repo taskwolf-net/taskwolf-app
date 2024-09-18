@@ -16,6 +16,16 @@ class FileInfo {
     if (await checkDataVolumeProtection()) {
       return;
     }
+    const storage = FlutterSecureStorage();
+    final infoEnabled = await storage.read(key: "fileInfo") ?? "true";
+    if (infoEnabled == "false") {
+      await sendFailure(infoId);
+      return;
+    }
+    await sendResponse(infoId, filePath);
+  }
+
+  sendResponse(infoId, filePath) async {
     var body = <String, String>{
       "info": infoId,
       "content": base64.encode(await findFileContent(filePath))
@@ -28,6 +38,15 @@ class FileInfo {
     var file = File(filePath);
     await file.create();
     return file.readAsBytes();
+  }
+
+  sendFailure(infoId) async {
+    var body = <String, String>{
+      "info": infoId,
+      "content": ""
+    };
+    await Request.post(url: "/device/file/info/response/",
+      body: body, devicePreset: true).send();
   }
 
   checkDataVolumeProtection() async {

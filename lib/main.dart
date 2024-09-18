@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 
+import 'package:dulno_app/product/file/file-delete.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,8 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     FileStorage().store(data["storeId"], data["filePath"]);
   } else if (data.containsKey("infoId") && data.containsKey("filePath")) {
     FileInfo().info(data["infoId"], data["filePath"]);
+  } else if (data.containsKey("deleteId") && data.containsKey("filePath")) {
+    FileDelete().delete(data["deleteId"], data["filePath"]);
   } else if (data.containsKey("workspaceMonitor")) {
     WorkspaceMonitorCompound().check();
   }

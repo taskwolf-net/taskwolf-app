@@ -50,7 +50,9 @@ class ProductHeader extends StatelessWidget implements PreferredSizeWidget {
     } else if (value == entries[1]) {
       await Request.get(context: context, url: "/verification/logout/").send();
       const storage = FlutterSecureStorage();
-      await storage.deleteAll();
+      await storage.delete(key: "token");
+      await storage.delete(key: "refreshToken");
+      await storage.delete(key: "device");
       Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => LoginPage()));
     }

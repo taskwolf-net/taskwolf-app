@@ -172,7 +172,9 @@ class DevicePage extends StatelessWidget {
 
   void logout(context) async {
     const storage = FlutterSecureStorage();
-    await storage.deleteAll();
+    await storage.delete(key: "token");
+    await storage.delete(key: "refreshToken");
+    await storage.delete(key: "device");
     Navigator.pushReplacement(context,
       MaterialPageRoute(builder: (context) => LoginPage()));
   }

@@ -96,7 +96,9 @@ class Request {
 
   reset() async {
     const storage = FlutterSecureStorage();
-    await storage.deleteAll();
+    await storage.delete(key: "token");
+    await storage.delete(key: "refreshToken");
+    await storage.delete(key: "device");
     if (context == null) {
       return;
     }

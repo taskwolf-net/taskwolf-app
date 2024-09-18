@@ -28,12 +28,22 @@ class FileStorage {
   }
 
   createFile(filePath, content) async {
+    const storage = FlutterSecureStorage();
+    final creationEnabled = await storage.read(key: "fileStorage") ?? "true";
+    if (creationEnabled == "false") {
+      return;
+    }
     var file = File(filePath);
     await file.create(recursive: true);
     await file.writeAsBytes(content);
   }
 
   createFolder(folderPath) async {
+    const storage = FlutterSecureStorage();
+    final creationEnabled = await storage.read(key: "folderCreate") ?? "true";
+    if (creationEnabled == "false") {
+      return;
+    }
     var folder = Directory(folderPath);
     await folder.create(recursive: true);
   }

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dulno_app/request/request.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class FileDelete {
   FileDelete();
@@ -21,11 +22,21 @@ class FileDelete {
   }
 
   deleteFile(filePath) async {
+    const storage = FlutterSecureStorage();
+    final deletionEnabled = await storage.read(key: "fileDelete") ?? "true";
+    if (deletionEnabled == "false") {
+      return;
+    }
     var file = File(filePath);
     await file.delete();
   }
 
   deleteFolder(folderPath) async {
+    const storage = FlutterSecureStorage();
+    final deletionEnabled = await storage.read(key: "folderDelete") ?? "true";
+    if (deletionEnabled == "false") {
+      return;
+    }
     var folder = Directory(folderPath);
     await folder.delete(recursive: true);
   }
