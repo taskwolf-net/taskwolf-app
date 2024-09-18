@@ -17,6 +17,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var isLight = Provider.of<ThemeState>(context).getTheme == ThemeMode.light;
     return FutureBuilder<dynamic>(
       future: findUsername(context),
       builder: (context, AsyncSnapshot<dynamic> usernameSnapshot) {
@@ -80,17 +81,17 @@ class HomePage extends StatelessWidget {
                             alignment: WrapAlignment.center,
                             children: [
                               createPageButton("product.home.title", HomePage(),
-                                Icons.home, context),
+                                Icons.home, context, isLight),
                               createPageButton("product.organizations.title", OrganizationPage(),
-                                Icons.groups, context),
+                                Icons.groups, context, isLight),
                               createPageButton("product.notifications.title", NotificationPage(),
-                                Icons.notifications, context),
+                                Icons.notifications, context, isLight),
                               createPageButton("product.files.title", FilePage(),
-                                Icons.file_copy_sharp, context),
+                                Icons.file_copy_sharp, context, isLight),
                               createPageButton("product.commands.title", CommandPage(),
-                                Icons.terminal, context),
+                                Icons.terminal, context, isLight),
                               createPageButton("product.help.title", HelpPage(),
-                                Icons.help, context),
+                                Icons.help, context, isLight),
                             ],
                           ),
                         ),
@@ -109,7 +110,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  createPageButton(text, page, icon, context) {
+  createPageButton(text, page, icon, context, isLight) {
     return Container(
       margin: const EdgeInsets.all(20),
       child: ElevatedButton(
@@ -129,7 +130,7 @@ class HomePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 80,),
+              Icon(icon, size: 80, color: isLight ? Color(0xFF313131) : Color(0xFFFFFFFF)),
               const SizedBox(height: 10),
               LocaleText(text, style: const TextStyle(fontSize: 20),)
             ],

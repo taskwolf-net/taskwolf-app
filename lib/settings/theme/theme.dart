@@ -35,7 +35,9 @@ class ThemePage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 80,),
+          Icon(icon, size: 80, color: selected ? Colors.blue :
+            themeState.getTheme == ThemeMode.light ?
+              Color(0xFF313131) : Color(0xFFFFFFFF)),
           SizedBox(height: 10),
           LocaleText(text, style: TextStyle(fontSize: 25),)
         ],
