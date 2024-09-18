@@ -44,7 +44,7 @@ class HomePage extends StatelessWidget {
                       direction: MediaQuery.sizeOf(context).width < 1000 ? Axis.vertical : Axis.horizontal,
                       children: [
                         Image.asset(
-                          "assets/images/logo.png",
+                          "assets/images/logo-light.webp",
                           height: 192.0,
                           width: 192.0,
                         ),

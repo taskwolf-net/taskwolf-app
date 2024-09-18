@@ -17,9 +17,9 @@ class LanguagePage extends StatelessWidget {
           alignment: MainAxisAlignment.spaceEvenly,
           overflowAlignment: OverflowBarAlignment.center,
           children: [
-            createLanguageButton(languageState, "assets/images/languages/en.png",
+            createLanguageButton(languageState, "assets/images/languages/en.webp",
               "settings.language.english", "en", languageState.getLanguage == "en", context),
-            createLanguageButton(languageState, "assets/images/languages/de.png",
+            createLanguageButton(languageState, "assets/images/languages/de.webp",
               "settings.language.german", "de", languageState.getLanguage == "de", context)
           ],
         )

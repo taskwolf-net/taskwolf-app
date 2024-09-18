@@ -33,7 +33,7 @@ class LoginPage extends StatelessWidget {
           children: <Widget>[
             SizedBox(
               width: 200,
-              child: Image.asset("assets/images/logo.png"),
+              child: Image.asset("assets/images/logo-${isLight ? "dark" : "light"}.webp"),
             ),
             ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 500),

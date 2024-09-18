@@ -1,3 +1,4 @@
+import 'package:dulno_app/settings/theme/theme-state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:dulno_app/product/command/command.dart';
@@ -6,6 +7,7 @@ import 'package:dulno_app/product/help/help.dart';
 import 'package:dulno_app/product/home/home.dart';
 import 'package:dulno_app/product/notification/notification.dart';
 import 'package:dulno_app/product/organization/organization.dart';
+import 'package:provider/provider.dart';
 
 class ProductSidebar extends StatelessWidget {
   ProductSidebar({super.key, required this.page});
@@ -14,6 +16,7 @@ class ProductSidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var isLight = Provider.of<ThemeState>(context).getTheme == ThemeMode.light;
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -23,7 +26,7 @@ class ProductSidebar extends StatelessWidget {
               const SizedBox(height: 20),
               SizedBox(
                 width: 100,
-                child: Image.asset("assets/images/logo.png"),
+                child: Image.asset("assets/images/logo-${isLight ? "dark" : "light"}.webp"),
               ),
               const SizedBox(height: 20),
             ],
