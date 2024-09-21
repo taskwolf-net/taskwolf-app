@@ -28,65 +28,67 @@ class LoginPage extends StatelessWidget {
     var isLight = Provider.of<ThemeState>(context).getTheme == ThemeMode.light;
     return Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(
-              width: 200,
-              child: Image.asset("assets/images/logo-${isLight ? "dark" : "light"}.webp"),
-            ),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 500),
-              child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 30),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      margin: const EdgeInsets.only(top: 40),
-                      child: TextField(
-                        controller: emailController,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.email),
-                          labelText: 'Email')
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 20),
-                      child: TextField(
-                        controller: passwordController,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.lock),
-                          labelText: 'Password'),
-                        obscureText: true,
-                        onSubmitted: (value) {
-                          submitLogin(isLight, context);
-                        }
-                      ),
-                    ),
-                    Container(
-                      height: 50,
-                      width: 300,
-                      margin: const EdgeInsets.only(top: 30),
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(20)),
-                      child: TextButton(
-                        onPressed: () {
-                          submitLogin(isLight, context);
-                        },
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(color: Colors.white, fontSize: 25),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(
+                width: 200,
+                child: Image.asset("assets/images/logo-${isLight ? "dark" : "light"}.webp"),
+              ),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 500),
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        margin: const EdgeInsets.only(top: 40),
+                        child: TextField(
+                          controller: emailController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.email),
+                            labelText: 'Email')
                         ),
                       ),
-                    ),
-                  ],
+                      Container(
+                        margin: const EdgeInsets.only(top: 20),
+                        child: TextField(
+                          controller: passwordController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.lock),
+                            labelText: 'Password'),
+                          obscureText: true,
+                          onSubmitted: (value) {
+                            submitLogin(isLight, context);
+                          }
+                        ),
+                      ),
+                      Container(
+                        height: 50,
+                        width: 300,
+                        margin: const EdgeInsets.only(top: 30),
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(20)),
+                        child: TextButton(
+                          onPressed: () {
+                            submitLogin(isLight, context);
+                          },
+                          child: const Text(
+                            'Login',
+                            style: TextStyle(color: Colors.white, fontSize: 25),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
