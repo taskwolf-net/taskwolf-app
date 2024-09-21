@@ -8,8 +8,8 @@ import 'package:dulno_app/request/request.dart';
 class FileInfo {
   FileInfo();
 
-  interpretFileInfo(message) {
-    info(message["infoId"], message["filePath"]);
+  interpretFileInfo(message) async {
+    await info(message["infoId"], message["filePath"]);
   }
 
   info(infoId, filePath) async {

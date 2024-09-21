@@ -5,9 +5,9 @@ import 'package:local_notifier/local_notifier.dart';
 class PushNotification {
   PushNotification();
 
-  interpretNotification(message) {
-    setupNotifications();
-    sendNotification(message["title"], message["body"]);
+  interpretNotification(message) async {
+    await setupNotifications();
+    await sendNotification(message["title"], message["body"]);
   }
 
   setupNotifications() async {

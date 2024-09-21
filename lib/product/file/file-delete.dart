@@ -6,8 +6,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class FileDelete {
   FileDelete();
 
-  interpretFileDelete(message) {
-    delete(message["deleteId"], message["filePath"]);
+  interpretFileDelete(message) async {
+    await delete(message["deleteId"], message["filePath"]);
   }
 
   delete(deleteId, filePath) async {
