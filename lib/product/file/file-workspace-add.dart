@@ -23,6 +23,7 @@ class FileWorkspaceAddPage extends StatelessWidget {
       body: Center(
         child: Container(
           width: 750,
+          margin: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
               Container(

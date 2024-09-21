@@ -23,89 +23,92 @@ class DevicePage extends StatelessWidget {
       content: Center(
         child: Container(
           width: 750,
-          child: Column(
-            children: [
-              Container(
-                margin: EdgeInsets.only(top: 20),
-                alignment: Alignment.topLeft,
-                child: const LocaleText("settings.device.account.headline",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
-              ),
-              new Divider(
-                color: isLight ? Colors.black12 : Colors.white10,
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 10),
-                child: TextField(
-                  controller: changeEmailController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.email),
-                    labelText: Locales.string(context, "settings.device.account.email"))
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(top: 20),
+                  alignment: Alignment.topLeft,
+                  child: const LocaleText("settings.device.account.headline",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
                 ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 20),
-                child: TextField(
-                  controller: changePasswordController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.lock),
-                    labelText: Locales.string(context, "settings.device.account.password")),
-                  obscureText: true
+                new Divider(
+                  color: isLight ? Colors.black12 : Colors.white10,
                 ),
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 20),
-                child: LocaleText("settings.device.account.disclaimer",
-                  textAlign: TextAlign.left, style:
-                  TextStyle(color: isLight ? Colors.black38 : Colors.white24))
-              ),
-              Container(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    foregroundColor: Colors.white),
-                  onPressed: () {
-                    passwordAlert("settings.device.account.title",
-                      "settings.device.account.body", "settings.device.account.change",
-                      (password) => submitDeviceAccountChange(password, isLight,
-                        context), isLight, context);
-                  },
-                  child: const LocaleText("settings.device.account.change"),
+                Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  child: TextField(
+                    controller: changeEmailController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.email),
+                      labelText: Locales.string(context, "settings.device.account.email"))
+                  ),
                 ),
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 20),
-                alignment: Alignment.topLeft,
-                child: const LocaleText("settings.device.delete.headline",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,
-                    color: Colors.red))
-              ),
-              new Divider(
-                color: isLight ? Colors.black12 : Colors.white10,
-              ),
-              Container(
-                margin: EdgeInsets.only(bottom: 20),
-                child: LocaleText("settings.device.delete.disclaimer",
-                  textAlign: TextAlign.left, style:
-                  TextStyle(color: isLight ? Colors.black38 : Colors.white24))
-              ),
-              Container(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    foregroundColor: Colors.white),
-                  onPressed: () {
-                    passwordAlert("settings.device.delete.title",
-                      "settings.device.delete.body", "settings.device.delete",
-                      (password) => submitDeviceDelete(password, isLight, context),
-                      isLight, context);
-                  },
-                  child: const LocaleText("settings.device.delete"),
+                Container(
+                  margin: const EdgeInsets.only(top: 20),
+                  child: TextField(
+                    controller: changePasswordController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.lock),
+                      labelText: Locales.string(context, "settings.device.account.password")),
+                    obscureText: true
+                  ),
                 ),
-              ),
-            ],
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 20),
+                  child: LocaleText("settings.device.account.disclaimer",
+                    textAlign: TextAlign.left, style:
+                    TextStyle(color: isLight ? Colors.black38 : Colors.white24))
+                ),
+                Container(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white),
+                    onPressed: () {
+                      passwordAlert("settings.device.account.title",
+                        "settings.device.account.body", "settings.device.account.change",
+                        (password) => submitDeviceAccountChange(password, isLight,
+                          context), isLight, context);
+                    },
+                    child: const LocaleText("settings.device.account.change"),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 20),
+                  alignment: Alignment.topLeft,
+                  child: const LocaleText("settings.device.delete.headline",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,
+                      color: Colors.red))
+                ),
+                new Divider(
+                  color: isLight ? Colors.black12 : Colors.white10,
+                ),
+                Container(
+                  margin: EdgeInsets.only(bottom: 20),
+                  child: LocaleText("settings.device.delete.disclaimer",
+                    textAlign: TextAlign.left, style:
+                    TextStyle(color: isLight ? Colors.black38 : Colors.white24))
+                ),
+                Container(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white),
+                    onPressed: () {
+                      passwordAlert("settings.device.delete.title",
+                        "settings.device.delete.body", "settings.device.delete",
+                        (password) => submitDeviceDelete(password, isLight, context),
+                        isLight, context);
+                    },
+                    child: const LocaleText("settings.device.delete"),
+                  ),
+                ),
+              ],
+            ),
           ),
         )
       )

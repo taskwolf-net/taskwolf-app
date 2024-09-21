@@ -14,8 +14,9 @@ class FileHistoryPage extends StatelessWidget {
       appBar: ProductHeader(page: Locales.string(context, "product.files.history")),
       body: Container(
         alignment: Alignment.center,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        child: OverflowBar(
+          alignment: MainAxisAlignment.spaceEvenly,
+          overflowAlignment: OverflowBarAlignment.center,
           children: [
             createFileHistoryButton(Icons.storage,
               "product.files.storage.history",
@@ -44,7 +45,8 @@ class FileHistoryPage extends StatelessWidget {
               children: [
                 Icon(icon, size: 80,),
                 SizedBox(height: 10),
-                LocaleText(text, style: TextStyle(fontSize: 25),)
+                LocaleText(text, textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 25))
               ],
             )
         ),
