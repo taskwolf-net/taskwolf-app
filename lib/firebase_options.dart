@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: '***REMOVED***',
-    appId: '1:402643689386:android:38251abae2c560641b95d3',
+    appId: '1:402643689386:android:5706460ba721d9da1b95d3',
     messagingSenderId: '402643689386',
     projectId: 'dulno-e5482',
     storageBucket: 'dulno-e5482.appspot.com',
@@ -59,10 +59,10 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: '***REMOVED***',
-    appId: '1:402643689386:ios:ea35c646044a17371b95d3',
+    appId: '1:402643689386:ios:7b7e3eb8bf7f06031b95d3',
     messagingSenderId: '402643689386',
     projectId: 'dulno-e5482',
     storageBucket: 'dulno-e5482.appspot.com',
-    iosBundleId: 'com.dulno.dulnoApp',
+    iosBundleId: 'com.dulno.app',
   );
 }
