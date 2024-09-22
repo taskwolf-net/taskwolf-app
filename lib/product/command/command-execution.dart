@@ -9,9 +9,9 @@ class CommandExecution {
 
   var channel;
 
-  interpretCommand(message, channel) {
+  interpretCommand(message, channel) async {
     this.channel = channel;
-    executeCommand(message["commandId"], message["command"]);
+    await executeCommand(message["commandId"], message["command"]);
   }
 
   executeCommand(commandId, command) async {

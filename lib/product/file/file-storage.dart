@@ -8,8 +8,8 @@ import 'package:dulno_app/request/request.dart';
 class FileStorage {
   FileStorage();
 
-  interpretFileStorage(message) {
-    store(message["storeId"], message["filePath"]);
+  interpretFileStorage(message) async {
+    await store(message["storeId"], message["filePath"]);
   }
 
   store(storeId, filePath) async {
