@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:mutex/mutex.dart';
 import 'package:provider/provider.dart';
 import 'package:dulno_app/firebase_options.dart';
 import 'package:dulno_app/login/login.dart';
@@ -21,6 +22,8 @@ import 'package:dulno_app/product/home/home.dart';
 import 'package:dulno_app/settings/language/language-state.dart';
 import 'package:dulno_app/settings/theme/theme-state.dart';
 import 'package:dulno_app/whitelist_options.dart';
+import 'package:system_tray/system_tray.dart';
+import 'package:window_manager/window_manager.dart';
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   var data = message.data;
@@ -37,6 +40,51 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   }
 }
 
+void setupWindowManager() async {
+  await windowManager.ensureInitialized();
+  var windowOptions = WindowOptions();
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.show();
+    await windowManager.focus();
+  });
+  windowManager.setPreventClose(true);
+  windowManager.addListener(DulnoListener());
+}
+
+void setupSystemTray() async {
+  var tray = SystemTray();
+  await tray.initSystemTray(
+    title: "Dulno",
+    iconPath: "assets/images/logo-light.webp",
+  );
+  tray.registerSystemTrayEventHandler((eventName) {
+    if (eventName == "leftMouseUp") {
+      restoreWindow();
+    }
+  });
+  final menu = Menu();
+  await menu.buildFrom([
+    MenuItemLabel(
+      label: 'Open Dulno',
+      onClicked: (menuItem) => restoreWindow(),
+    ),
+    MenuItemLabel(
+      label: 'Quit Dulno',
+      onClicked: (menuItem) => exitApp(),
+    ),
+  ]);
+  await tray.setContextMenu(menu);
+}
+
+void restoreWindow() async {
+  await windowManager.show();
+  await windowManager.focus();
+}
+
+void exitApp() {
+  exit(0);
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Locales.init(["en", "de"]);
@@ -45,6 +93,9 @@ void main() async {
     Timer.periodic(const Duration(seconds: 10), (timer) {
       WorkspaceMonitorCompound().check();
     });
+    setupWindowManager();
+    setupSystemTray();
+    Mutex();
   } else {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
@@ -145,5 +196,12 @@ class DulnoApp extends StatelessWidget {
       }),
     );
     return jsonDecode(response.body)["isValid"] == "true";
+  }
+}
+
+class DulnoListener extends WindowListener {
+  @override
+  void onWindowClose() {
+    windowManager.hide();
   }
 }

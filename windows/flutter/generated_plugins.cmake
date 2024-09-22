@@ -7,6 +7,9 @@ list(APPEND FLUTTER_PLUGIN_LIST
   firebase_core
   flutter_secure_storage_windows
   local_notifier
+  screen_retriever
+  system_tray
+  window_manager
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
