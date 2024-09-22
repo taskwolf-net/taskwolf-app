@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:mutex/mutex.dart';
 import 'package:provider/provider.dart';
 import 'package:dulno_app/firebase_options.dart';
 import 'package:dulno_app/login/login.dart';
@@ -23,6 +22,7 @@ import 'package:dulno_app/settings/language/language-state.dart';
 import 'package:dulno_app/settings/theme/theme-state.dart';
 import 'package:dulno_app/whitelist_options.dart';
 import 'package:system_tray/system_tray.dart';
+import 'package:watcher/watcher.dart';
 import 'package:window_manager/window_manager.dart';
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -38,6 +38,23 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   } else if (data.containsKey("workspaceMonitor")) {
     WorkspaceMonitorCompound().check();
   }
+}
+
+void checkWindowLock() async {
+  final lockFile = File("/tmp/dulno.lock");
+  if (await lockFile.exists()) {
+    await lockFile.delete();
+  }
+  Future.delayed(const Duration(milliseconds: 500), () async {
+    await lockFile.create();
+    var fileWatcher = FileWatcher(lockFile.path);
+    fileWatcher.events.listen((event) async {
+      if (event.type == ChangeType.REMOVE) {
+        await lockFile.create();
+        exit(0);
+      }
+    });
+  });
 }
 
 void setupWindowManager() async {
@@ -81,7 +98,8 @@ void restoreWindow() async {
   await windowManager.focus();
 }
 
-void exitApp() {
+void exitApp() async {
+  await File("/tmp/dulno.lock").delete();
   exit(0);
 }
 
@@ -89,13 +107,13 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Locales.init(["en", "de"]);
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    checkWindowLock();
     await DeviceConnection().establish();
     Timer.periodic(const Duration(seconds: 10), (timer) {
       WorkspaceMonitorCompound().check();
     });
     setupWindowManager();
     setupSystemTray();
-    Mutex();
   } else {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
