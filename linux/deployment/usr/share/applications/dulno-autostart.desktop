@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Dulno
+Exec=/usr/bin/dulno/Dulno
+Icon=/usr/share/dulno/icon.png
+Type=Application
+Categories=Utility;
+X-GNOME-Autostart-enabled=true
