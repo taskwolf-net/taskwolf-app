@@ -41,7 +41,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 void checkWindowLock() async {
-  final lockFile = File("/tmp/dulno.lock");
+  final lockFile = File("dulno.lock");
   if (await lockFile.exists()) {
     await lockFile.delete();
   }
@@ -72,11 +72,14 @@ void setupSystemTray() async {
   var tray = SystemTray();
   await tray.initSystemTray(
     title: "Dulno",
-    iconPath: "assets/images/logo-light.webp",
+    iconPath: Platform.isWindows ? "assets/images/logo-light.ico" :
+      "assets/images/logo-light.webp",
   );
   tray.registerSystemTrayEventHandler((eventName) {
-    if (eventName == "leftMouseUp") {
-      restoreWindow();
+    if (eventName == kSystemTrayEventClick) {
+      Platform.isWindows ? restoreWindow() : tray.popUpContextMenu();
+    } else if (eventName == kSystemTrayEventRightClick) {
+      Platform.isWindows ? tray.popUpContextMenu() : restoreWindow();
     }
   });
   final menu = Menu();
@@ -99,7 +102,7 @@ void restoreWindow() async {
 }
 
 void exitApp() async {
-  await File("/tmp/dulno.lock").delete();
+  await File("dulno.lock").delete();
   exit(0);
 }
 
