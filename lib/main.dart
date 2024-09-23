@@ -49,10 +49,8 @@ void checkWindowLock() async {
     await lockFile.create();
     var fileWatcher = FileWatcher(lockFile.path);
     fileWatcher.events.listen((event) async {
-      if (event.type == ChangeType.REMOVE) {
-        await lockFile.create();
-        exit(0);
-      }
+      await lockFile.create();
+      exit(0);
     });
   });
 }
