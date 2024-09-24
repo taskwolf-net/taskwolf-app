@@ -118,6 +118,7 @@ class LoginPage extends StatelessWidget {
         return;
       }
       multiFactorAuthentication(isLight, context);
+      return;
     }
     var apiKey = responseBody["productApiKey"];
     var refreshToken = responseBody["refreshToken"];
