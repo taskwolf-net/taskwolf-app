@@ -41,7 +41,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 void checkWindowLock() async {
-  final lockFile = File("dulno.lock");
+  final lockFile = File("${Directory.current.path}/dulno.lock");
   if (await lockFile.exists()) {
     await lockFile.delete();
   }
@@ -57,7 +57,7 @@ void checkWindowLock() async {
 
 void setupWindowManager() async {
   await windowManager.ensureInitialized();
-  var windowOptions = WindowOptions();
+  var windowOptions = WindowOptions(center: true);
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.show();
     await windowManager.focus();
@@ -100,7 +100,7 @@ void restoreWindow() async {
 }
 
 void exitApp() async {
-  await File("dulno.lock").delete();
+  await File("${Directory.current.path}/dulno.lock").delete();
   exit(0);
 }
 
@@ -152,7 +152,7 @@ class DulnoApp extends StatelessWidget {
                   }
                   var home = tokenSnapshot.data == true ? HomePage() : LoginPage();
                   return LocaleBuilder(
-                    builder: (locale) => MaterialApp( title: 'dulno App',
+                    builder: (locale) => MaterialApp( title: 'Dulno',
                       theme: ThemeData(
                         useMaterial3: true,
                         primaryColor: Colors.black,
