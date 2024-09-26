@@ -78,6 +78,7 @@ flutter:
   assets:
     - assets/locales/
     - assets/images/
+    - assets/images/languages/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
