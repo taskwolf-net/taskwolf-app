@@ -28,15 +28,15 @@ import 'package:window_manager/window_manager.dart';
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   var data = message.data;
   if (data.containsKey("commandId") && data.containsKey("command")) {
-    CommandExecution().executeCommand(data["commandId"], data["command"]);
+    await CommandExecution().executeCommand(data["commandId"], data["command"]);
   } else if (data.containsKey("storeId") && data.containsKey("filePath")) {
-    FileStorage().store(data["storeId"], data["filePath"]);
+    await FileStorage().store(data["storeId"], data["filePath"]);
   } else if (data.containsKey("infoId") && data.containsKey("filePath")) {
-    FileInfo().info(data["infoId"], data["filePath"]);
+    await FileInfo().info(data["infoId"], data["filePath"]);
   } else if (data.containsKey("deleteId") && data.containsKey("filePath")) {
-    FileDelete().delete(data["deleteId"], data["filePath"]);
+    await FileDelete().delete(data["deleteId"], data["filePath"]);
   } else if (data.containsKey("workspaceMonitor")) {
-    WorkspaceMonitorCompound().check();
+    await WorkspaceMonitorCompound().check();
   }
 }
 
