@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:dulno_app/firebase_options.dart';
 import 'package:dulno_app/login/login.dart';
@@ -26,6 +27,7 @@ import 'package:watcher/watcher.dart';
 import 'package:window_manager/window_manager.dart';
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   var data = message.data;
   if (data.containsKey("commandId") && data.containsKey("command")) {
     await CommandExecution().executeCommand(data["commandId"], data["command"]);
@@ -116,8 +118,10 @@ void main() async {
     setupWindowManager();
     setupSystemTray();
   } else {
+    await Permission.storage.request();
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+    FirebaseMessaging.onMessage.listen(firebaseMessagingBackgroundHandler);
     FirebaseMessaging.instance.subscribeToTopic("dulno-workspace-monitor");
   }
   runApp(const DulnoApp());
