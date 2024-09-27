@@ -128,7 +128,7 @@ class LoginPage extends StatelessWidget {
     await storage.write(key: "refreshToken", value: refreshToken);
     await storage.write(key: "device", value: deviceId);
     Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => HomePage()));
+      MaterialPageRoute(builder: (context) => HomePage()));
   }
 
   imitateUserAgent() {
@@ -145,7 +145,7 @@ class LoginPage extends StatelessWidget {
     }
   }
 
- Future<String> sendDeviceLogin(context, apiKey) async {
+  Future<String> sendDeviceLogin(context, apiKey) async {
     var body = <String, String>{
       "device": await findMachineIdentifier(),
       "information": await findDeviceInformation(),
@@ -182,24 +182,36 @@ class LoginPage extends StatelessWidget {
     } else if (Platform.isLinux) {
       LinuxDeviceInfo linuxInfo = await deviceInfo.linuxInfo;
       deviceIdentifier = linuxInfo.machineId;
+    } else if (Platform.isWindows) {
+      WindowsDeviceInfo windowsInfo = await deviceInfo.windowsInfo;
+      deviceIdentifier = windowsInfo.deviceId;
+    } else if (Platform.isMacOS) {
+      MacOsDeviceInfo macInfo = await deviceInfo.macOsInfo;
+      deviceIdentifier = macInfo.systemGUID;
     }
     return deviceIdentifier ?? "";
   }
 
   Future<String> findDeviceInformation() async {
-    String? deviceIdentifier;
+    String? deviceInformation;
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     if (Platform.isAndroid) {
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      deviceIdentifier = androidInfo.id;
+      deviceInformation = androidInfo.id;
     } else if (Platform.isIOS) {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      deviceIdentifier = iosInfo.identifierForVendor;
+      deviceInformation = iosInfo.identifierForVendor;
     } else if (Platform.isLinux) {
       LinuxDeviceInfo linuxInfo = await deviceInfo.linuxInfo;
-      deviceIdentifier = linuxInfo.prettyName;
+      deviceInformation = linuxInfo.prettyName;
+    } else if (Platform.isWindows) {
+      WindowsDeviceInfo windowsInfo = await deviceInfo.windowsInfo;
+      deviceInformation = windowsInfo.computerName;
+    } else if (Platform.isMacOS) {
+      MacOsDeviceInfo macInfo = await deviceInfo.macOsInfo;
+      deviceInformation = macInfo.computerName;
     }
-    return deviceIdentifier ?? "";
+    return deviceInformation ?? "";
   }
 
   multiFactorAuthentication(isLight, context) {
