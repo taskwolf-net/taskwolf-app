@@ -1,7 +1,7 @@
 import 'dart:core';
 import 'dart:io';
 
-import 'package:dulno_app/request/request.dart';
+import 'package:dulno/request/request.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class CommandExecution {

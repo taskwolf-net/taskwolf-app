@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
-import 'package:dulno_app/product/base/header.dart';
-import 'package:dulno_app/product/file/file-delete-history.dart';
-import 'package:dulno_app/product/file/file-info-history.dart';
-import 'package:dulno_app/product/file/file-storage-history.dart';
+import 'package:dulno/product/base/header.dart';
+import 'package:dulno/product/file/file-delete-history.dart';
+import 'package:dulno/product/file/file-info-history.dart';
+import 'package:dulno/product/file/file-storage-history.dart';
 
 class FileHistoryPage extends StatelessWidget {
   FileHistoryPage({super.key});

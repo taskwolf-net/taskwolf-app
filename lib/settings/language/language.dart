@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
-import 'package:dulno_app/settings/base/page.dart';
-import 'package:dulno_app/settings/language/language-state.dart';
+import 'package:dulno/settings/base/page.dart';
+import 'package:dulno/settings/language/language-state.dart';
 
 class LanguagePage extends StatelessWidget {
   LanguagePage({super.key});

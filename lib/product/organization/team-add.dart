@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:provider/provider.dart';
-import 'package:dulno_app/product/base/header.dart';
-import 'package:dulno_app/product/organization/team.dart';
-import 'package:dulno_app/request/request.dart';
-import 'package:dulno_app/settings/theme/theme-state.dart';
+import 'package:dulno/product/base/header.dart';
+import 'package:dulno/product/organization/team.dart';
+import 'package:dulno/request/request.dart';
+import 'package:dulno/settings/theme/theme-state.dart';
 
 class TeamAddPage extends StatelessWidget {
   final String organization;

@@ -3,11 +3,11 @@ import 'dart:core';
 import 'dart:io';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:dulno_app/product/command/command-execution.dart';
-import 'package:dulno_app/product/file/file-delete.dart';
-import 'package:dulno_app/product/file/file-info.dart';
-import 'package:dulno_app/product/file/file-storage.dart';
-import 'package:dulno_app/product/notification/push-notification.dart';
+import 'package:dulno/product/command/command-execution.dart';
+import 'package:dulno/product/file/file-delete.dart';
+import 'package:dulno/product/file/file-info.dart';
+import 'package:dulno/product/file/file-storage.dart';
+import 'package:dulno/product/notification/push-notification.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class DeviceConnection {

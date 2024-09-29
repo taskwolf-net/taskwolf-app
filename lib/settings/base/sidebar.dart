@@ -1,10 +1,10 @@
-import 'package:dulno_app/settings/theme/theme-state.dart';
+import 'package:dulno/settings/theme/theme-state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
-import 'package:dulno_app/settings/data-volume/data-volume.dart';
-import 'package:dulno_app/settings/device/device.dart';
-import 'package:dulno_app/settings/language/language.dart';
-import 'package:dulno_app/settings/theme/theme.dart';
+import 'package:dulno/settings/data-volume/data-volume.dart';
+import 'package:dulno/settings/device/device.dart';
+import 'package:dulno/settings/language/language.dart';
+import 'package:dulno/settings/theme/theme.dart';
 import 'package:provider/provider.dart';
 
 class ProductSidebar extends StatelessWidget {

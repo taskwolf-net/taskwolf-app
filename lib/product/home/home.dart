@@ -3,14 +3,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:provider/provider.dart';
-import 'package:dulno_app/product/base/page.dart';
-import 'package:dulno_app/product/command/command.dart';
-import 'package:dulno_app/product/file/file.dart';
-import 'package:dulno_app/product/help/help.dart';
-import 'package:dulno_app/product/notification/notification.dart';
-import 'package:dulno_app/product/organization/organization.dart';
-import 'package:dulno_app/request/request.dart';
-import 'package:dulno_app/settings/theme/theme-state.dart';
+import 'package:dulno/product/base/page.dart';
+import 'package:dulno/product/command/command.dart';
+import 'package:dulno/product/file/file.dart';
+import 'package:dulno/product/help/help.dart';
+import 'package:dulno/product/notification/notification.dart';
+import 'package:dulno/product/organization/organization.dart';
+import 'package:dulno/request/request.dart';
+import 'package:dulno/settings/theme/theme-state.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});

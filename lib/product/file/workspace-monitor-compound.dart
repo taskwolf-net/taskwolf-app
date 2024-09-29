@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:dulno_app/product/file/workspace-monitor.dart';
-import 'package:dulno_app/request/request.dart';
+import 'package:dulno/product/file/workspace-monitor.dart';
+import 'package:dulno/request/request.dart';
 
 class WorkspaceMonitorCompound {
   WorkspaceMonitorCompound();

@@ -1,5 +1,5 @@
-name: dulno_app
-description: "A new Flutter project."
+name: dulno
+description: "This is the Dulno app"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -115,7 +115,9 @@ flutter:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/images/logo-light.webp"
+  image_path: "assets/images/icon.png"
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/images/icon.png"
   min_sdk_android: 21
   windows:
     generate: true
