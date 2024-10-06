@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:dulno/product/connection/device-connection.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -127,6 +128,7 @@ class LoginPage extends StatelessWidget {
     await storage.write(key: "token", value: apiKey);
     await storage.write(key: "refreshToken", value: refreshToken);
     await storage.write(key: "device", value: deviceId);
+    await DeviceConnection().establish();
     Navigator.pushReplacement(context,
       MaterialPageRoute(builder: (context) => HomePage()));
   }

@@ -16,6 +16,9 @@ class WorkspaceMonitorCompound {
   findAllWorkspaces() async {
     var response = await Request.post(url: "/device/file/workspaces/find/",
       devicePreset: true).send();
+    if (response.statusCode != 200) {
+      return [];
+    }
     return jsonDecode(response.body)["workspaces"];
   }
 }

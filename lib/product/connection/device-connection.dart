@@ -27,11 +27,19 @@ class DeviceConnection {
       var uri = await createUri();
       channel = WebSocketChannel.connect(uri);
       await channel.ready;
+      var rejected = false;
       channel.stream.listen(
         (message) {
+          if (message == "REJECTED") {
+            rejected = true;
+            return;
+          }
           interpret(jsonDecode(message));
         },
         onDone: () {
+          if (rejected) {
+            return;
+          }
           connect();
         },
       );
