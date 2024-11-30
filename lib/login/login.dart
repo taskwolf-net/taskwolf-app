@@ -89,126 +89,133 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
             flex: 1,
             child: Padding(
               padding: const EdgeInsets.all(40.0),
-              child: Form(
-                key: _formKey,
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Center(
-                        child: Image.asset(
-                          "assets/images/logo-${isLight ? "dark" : "light"}.webp",
-                          height: 150,
-                        ),
-                      ),
-                      SizedBox(height: 80),
-                      Container(
-                        child: TextField(
-                          controller: emailController,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            prefixIcon: Icon(Icons.email),
-                            labelText: 'Email'),
-                          onSubmitted: (value) => FocusScope.of(context).requestFocus(passwordNode),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Container(
-                        child: TextField(
-                          focusNode: passwordNode,
-                          controller: passwordController,
-                          decoration: InputDecoration(
-                            border: const OutlineInputBorder(),
-                            prefixIcon: const Icon(Icons.lock),
-                            labelText: 'Password',
-                            suffixIcon: Container(
-                                margin: EdgeInsets.only(right: 10),
-                                child: IconButton(
-                                  icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
-                                  onPressed: () {
-                                    setState(() {
-                                      _obscurePassword = !_obscurePassword;
-                                    });
-                                  },
-                                )
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Form(key: _formKey,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Center(
+                            child: Image.asset(
+                              "assets/images/logo-${isLight ? "dark" : "light"}.webp",
+                              height: 150,
                             ),
                           ),
-                          obscureText: _obscurePassword,
-                          onSubmitted: (value) => submitLogin(isLight, context),
-                        ),
-                      ),
-                      SizedBox(height: 30),
-                      Container(
-                        height: 50,
-                        width: 300,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [Colors.blueAccent, Colors.purple.shade500],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(30),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.blueAccent.withOpacity(0.5),
-                              spreadRadius: 3,
-                              blurRadius: 10,
+                          SizedBox(height: 80),
+                          Container(
+                            constraints: const BoxConstraints(maxWidth: 500),
+                            child: TextField(
+                              controller: emailController,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                prefixIcon: Icon(Icons.email),
+                                labelText: 'Email'),
+                              onSubmitted: (value) => FocusScope.of(context).requestFocus(passwordNode),
                             ),
-                          ],
-                        ),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState?.validate() ?? false) {
-                              submitLogin(isLight, context);
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent,
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-                            shape: RoundedRectangleBorder(
+                          ),
+                          SizedBox(height: 20),
+                          Container(
+                            constraints: const BoxConstraints(maxWidth: 500),
+                            child: TextField(
+                              focusNode: passwordNode,
+                              controller: passwordController,
+                              decoration: InputDecoration(
+                                border: const OutlineInputBorder(),
+                                prefixIcon: const Icon(Icons.lock),
+                                labelText: 'Password',
+                                suffixIcon: Container(
+                                    margin: EdgeInsets.only(right: 10),
+                                    child: IconButton(
+                                      icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
+                                      onPressed: () {
+                                        setState(() {
+                                          _obscurePassword = !_obscurePassword;
+                                        });
+                                      },
+                                    )
+                                ),
+                              ),
+                              obscureText: _obscurePassword,
+                              onSubmitted: (value) => submitLogin(isLight, context),
+                            ),
+                          ),
+                          SizedBox(height: 30),
+                          Container(
+                            height: 50,
+                            width: 300,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [Color(0xFF5277B0), Color(0xFF5277B0)],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
                               borderRadius: BorderRadius.circular(30),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0xFF4275C4).withOpacity(0.5),
+                                  spreadRadius: 3,
+                                  blurRadius: 10,
+                                ),
+                              ],
                             ),
-                            elevation: 0,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                if (_formKey.currentState?.validate() ?? false) {
+                                  submitLogin(isLight, context);
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.transparent,
+                                foregroundColor: Colors.white,
+                                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 30),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                elevation: 0,
+                              ),
+                              child: Text(
+                                'Login',
+                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                            ),
                           ),
-                          child: Text(
-                            'Login',
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
-                        ),
+                          SizedBox(height: 30),
+                          RichText(
+                            text: TextSpan(
+                              style: TextStyle(fontSize: 18.0, color: isLight ?
+                                Colors.black : Colors.white),
+                              children: [
+                                TextSpan(text: 'Not yet registered? '),
+                                TextSpan(
+                                  text: 'Create account',
+                                  style: TextStyle(color: Colors.blue),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () async => await launchUrl(
+                                      Uri.parse("https://dulno.com/pricing/"),
+                                      mode: LaunchMode.externalApplication),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
                       ),
-                      SizedBox(height: 30),
-                      RichText(
-                        text: TextSpan(
-                          style: TextStyle(fontSize: 18.0, color: isLight ?
-                            Colors.black : Colors.white),
-                          children: [
-                            TextSpan(text: 'Not yet registered? '),
-                            TextSpan(
-                              text: 'Create account',
-                              style: TextStyle(color: Colors.blue),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () async => await launchUrl(
-                                  Uri.parse("https://dulno.com/pricing/"),
-                                  mode: LaunchMode.externalApplication),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
+                    ),
                   ),
-                ),
-              ),
+                ],
+              )
             ),
           ),
-          if (screenWidth >= 1000)
+          if (screenWidth >= 1200)
             Expanded(
-              flex: 1,
+              flex: 2,
               child: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.blue.shade800, Colors.purple.shade600],
+                    colors: [Color(0xFF232D3E), Color(0xFF5277B0)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
