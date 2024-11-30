@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dulno/product/connection/device-connection.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -16,81 +18,299 @@ import 'package:dulno/firebase_options.dart';
 import 'package:dulno/product/home/home.dart';
 import 'package:dulno/request/request.dart';
 import 'package:dulno/settings/theme/theme-state.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class LoginPage extends StatelessWidget {
-  LoginPage({super.key});
+class LoginPage extends StatefulWidget {
+  @override
+  LoginPageState createState() => LoginPageState();
+}
 
+class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final FocusNode passwordNode = FocusNode();
   TextEditingController multiFactorController = TextEditingController();
+  bool _obscurePassword = true;
+  late AnimationController _controller;
+  late Animation<Offset> _circleAnimation1;
+  late Animation<Offset> _circleAnimation2;
+  late Animation<Offset> _circleAnimation3;
+  late Animation<Offset> _circleAnimation4;
+  final Random _random = Random();
+  Offset _randomOffset(double radius) {
+    double randomX = _random.nextDouble() * radius * 2 - radius;
+    double randomY = _random.nextDouble() * radius * 2 - radius;
+    return Offset(randomX, randomY);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: Duration(seconds: 3),
+      vsync: this,
+    )..repeat(reverse: true);
+    _circleAnimation1 = Tween<Offset>(
+      begin: _randomOffset(30.0),
+      end: _randomOffset(30.0),
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+
+    _circleAnimation2 = Tween<Offset>(
+      begin: _randomOffset(30.0),
+      end: _randomOffset(30.0),
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+
+    _circleAnimation3 = Tween<Offset>(
+      begin: _randomOffset(30.0),
+      end: _randomOffset(30.0),
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+
+    _circleAnimation4 = Tween<Offset>(
+      begin: _randomOffset(30.0),
+      end: _randomOffset(30.0),
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    var screenWidth = MediaQuery.of(context).size.width;
     var isLight = Provider.of<ThemeState>(context).getTheme == ThemeMode.light;
     return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(
-                width: 200,
-                child: Image.asset("assets/images/logo-${isLight ? "dark" : "light"}.webp"),
-              ),
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 500),
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 30),
+      body: Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.all(40.0),
+              child: Form(
+                key: _formKey,
+                child: SingleChildScrollView(
                   child: Column(
-                    children: <Widget>[
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: Image.asset(
+                          "assets/images/logo-${isLight ? "dark" : "light"}.webp",
+                          height: 150,
+                        ),
+                      ),
+                      SizedBox(height: 80),
                       Container(
-                        margin: const EdgeInsets.only(top: 40),
                         child: TextField(
                           controller: emailController,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             prefixIcon: Icon(Icons.email),
-                            labelText: 'Email')
+                            labelText: 'Email'),
+                          onSubmitted: (value) => FocusScope.of(context).requestFocus(passwordNode),
                         ),
                       ),
+                      SizedBox(height: 20),
                       Container(
-                        margin: const EdgeInsets.only(top: 20),
                         child: TextField(
+                          focusNode: passwordNode,
                           controller: passwordController,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            prefixIcon: Icon(Icons.lock),
-                            labelText: 'Password'),
-                          obscureText: true,
-                          onSubmitted: (value) {
-                            submitLogin(isLight, context);
-                          }
+                          decoration: InputDecoration(
+                            border: const OutlineInputBorder(),
+                            prefixIcon: const Icon(Icons.lock),
+                            labelText: 'Password',
+                            suffixIcon: Container(
+                                margin: EdgeInsets.only(right: 10),
+                                child: IconButton(
+                                  icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
+                                  onPressed: () {
+                                    setState(() {
+                                      _obscurePassword = !_obscurePassword;
+                                    });
+                                  },
+                                )
+                            ),
+                          ),
+                          obscureText: _obscurePassword,
+                          onSubmitted: (value) => submitLogin(isLight, context),
                         ),
                       ),
+                      SizedBox(height: 30),
                       Container(
                         height: 50,
                         width: 300,
-                        margin: const EdgeInsets.only(top: 30),
                         decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.circular(20)),
-                        child: TextButton(
+                          gradient: LinearGradient(
+                            colors: [Colors.blueAccent, Colors.purple.shade500],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(30),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.blueAccent.withOpacity(0.5),
+                              spreadRadius: 3,
+                              blurRadius: 10,
+                            ),
+                          ],
+                        ),
+                        child: ElevatedButton(
                           onPressed: () {
-                            submitLogin(isLight, context);
+                            if (_formKey.currentState?.validate() ?? false) {
+                              submitLogin(isLight, context);
+                            }
                           },
-                          child: const Text(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 30),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            elevation: 0,
+                          ),
+                          child: Text(
                             'Login',
-                            style: TextStyle(color: Colors.white, fontSize: 25),
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
+                      SizedBox(height: 30),
+                      RichText(
+                        text: TextSpan(
+                          style: TextStyle(fontSize: 18.0, color: isLight ?
+                            Colors.black : Colors.white),
+                          children: [
+                            TextSpan(text: 'Not yet registered? '),
+                            TextSpan(
+                              text: 'Create account',
+                              style: TextStyle(color: Colors.blue),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () async => await launchUrl(
+                                  Uri.parse("https://dulno.com/pricing/"),
+                                  mode: LaunchMode.externalApplication),
+                            ),
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 ),
               ),
-            ],
+            ),
           ),
-        ),
+          if (screenWidth >= 1000)
+            Expanded(
+              flex: 1,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.blue.shade800, Colors.purple.shade600],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: Stack(
+                  children: [
+                    AnimatedBuilder(
+                      animation: _controller,
+                      builder: (context, child) {
+                        return Positioned(
+                          top: -100,
+                          left: -50,
+                          child: Transform.translate(
+                            offset: _circleAnimation1.value,
+                            child: Container(
+                              height: 250,
+                              width: 250,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white.withOpacity(0.1),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    AnimatedBuilder(
+                      animation: _controller,
+                      builder: (context, child) {
+                        return Positioned(
+                          bottom: -100,
+                          right: -50,
+                          child: Transform.translate(
+                            offset: _circleAnimation2.value,
+                            child: Container(
+                              height: 300,
+                              width: 300,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white.withOpacity(0.1),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    AnimatedBuilder(
+                      animation: _controller,
+                      builder: (context, child) {
+                        return Positioned(
+                          top: 150,
+                          right: 100,
+                          child: Transform.translate(
+                            offset: _circleAnimation3.value,
+                            child: Container(
+                              width: 150,
+                              height: 150,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.15),
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    AnimatedBuilder(
+                      animation: _controller,
+                      builder: (context, child) {
+                        return Positioned(
+                          bottom: 100,
+                          left: 100,
+                          child: Transform.translate(
+                            offset: _circleAnimation4.value,
+                            child: Container(
+                              width: 180,
+                              height: 180,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    Center(
+                      child: Text(
+                        textAlign: TextAlign.center,
+                        'Plan.\nExecute.\nSave.',
+                        style: TextStyle(
+                          fontSize: 50,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white.withOpacity(0.9),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -103,7 +323,7 @@ class LoginPage extends StatelessWidget {
     };
     var headers = <String, String> {"User-Agent": imitateUserAgent()};
     var response = await Request.post(context: context, url: "/verification/login/",
-      body: body, checkAuthorization: false, headers: headers).send();
+        body: body, checkAuthorization: false, headers: headers).send();
     if (response.statusCode == 409) {
       loginFailed(isLight, context, "Maintenance work is currently being carried out. Please try again later.");
       return;
@@ -130,7 +350,7 @@ class LoginPage extends StatelessWidget {
     await storage.write(key: "device", value: deviceId);
     await DeviceConnection().establish();
     Navigator.pushReplacement(context,
-      MaterialPageRoute(builder: (context) => HomePage()));
+        MaterialPageRoute(builder: (context) => HomePage()));
   }
 
   imitateUserAgent() {
@@ -161,7 +381,7 @@ class LoginPage extends StatelessWidget {
       'Authorization': "Bearer $apiKey"
     };
     var response = await Request.post(context: context, url: "/device/login/",
-      headers: headers, body: body).send();
+        headers: headers, body: body).send();
     return jsonDecode(response.body)["id"];
   }
 
@@ -227,7 +447,7 @@ class LoginPage extends StatelessWidget {
           child: Form(
             child: Padding(
               padding: const EdgeInsets.symmetric(
-                vertical: 30
+                  vertical: 30
               ),
               child: code.PinCodeTextField(
                 appContext: context,
@@ -265,8 +485,8 @@ class LoginPage extends StatelessWidget {
         ),
       ),
       style: AlertStyle(
-        titleStyle: TextStyle(color: isLight ? Colors.black : Colors.white),
-        descStyle: TextStyle(color: isLight ? Colors.black : Colors.white)),
+          titleStyle: TextStyle(color: isLight ? Colors.black : Colors.white),
+          descStyle: TextStyle(color: isLight ? Colors.black : Colors.white)),
       title: "2-factor authentication",
       desc: "Please go to your Authenticator app now and enter your current token",
       buttons: [
@@ -304,8 +524,8 @@ class LoginPage extends StatelessWidget {
       context: context,
       type: AlertType.error,
       style: AlertStyle(
-        titleStyle: TextStyle(color: isLight ? Colors.black : Colors.white),
-        descStyle: TextStyle(color: isLight ? Colors.black : Colors.white)),
+          titleStyle: TextStyle(color: isLight ? Colors.black : Colors.white),
+          descStyle: TextStyle(color: isLight ? Colors.black : Colors.white)),
       title: "Login failed",
       desc: text,
       buttons: [
