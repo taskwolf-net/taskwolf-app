@@ -109,6 +109,7 @@ void exitApp() async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Locales.init(["en", "de"]);
+  runApp(const DulnoApp());
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     checkWindowLock();
     await DeviceConnection().establish();
@@ -124,7 +125,6 @@ void main() async {
     FirebaseMessaging.onMessage.listen(firebaseMessagingBackgroundHandler);
     FirebaseMessaging.instance.subscribeToTopic("dulno-workspace-monitor");
   }
-  runApp(const DulnoApp());
 }
 
 class DulnoApp extends StatelessWidget {

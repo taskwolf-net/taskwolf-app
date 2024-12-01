@@ -132,8 +132,8 @@ flutter_launcher_icons:
     image_path: "assets/images/logo-light.webp"
 
 flutter_native_splash:
-  image: assets/images/logo-light.webp
-  color: "#000000"
   android: true
   ios: true
   web: false
+  image: assets/images/logo-light.png
+  color: "#000000"
