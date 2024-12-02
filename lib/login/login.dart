@@ -87,104 +87,112 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         children: [
           Expanded(
             flex: 1,
-            child: Padding(
-              padding: const EdgeInsets.all(40.0),
-              child: Form(key: _formKey,
-                child: Center(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Center(
+            child: Form(key: _formKey,
+              child: Center(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 40),
+                        padding: const EdgeInsets.only(top: 40),
+                        child: Center(
                           child: Image.asset(
                             "assets/images/logo-${isLight ? "dark" : "light"}.webp",
                             height: 150,
                           ),
                         ),
-                        SizedBox(height: 80),
-                        Container(
-                          constraints: const BoxConstraints(maxWidth: 500),
-                          child: TextField(
-                            controller: emailController,
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              prefixIcon: Icon(Icons.email),
-                              labelText: 'Email'),
-                            onSubmitted: (value) => FocusScope.of(context).requestFocus(passwordNode),
+                      ),
+                      SizedBox(height: 80),
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 40),
+                        constraints: const BoxConstraints(maxWidth: 500),
+                        child: TextField(
+                          controller: emailController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.email),
+                            labelText: 'Email'),
+                          onSubmitted: (value) => FocusScope.of(context).requestFocus(passwordNode),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 40),
+                        constraints: const BoxConstraints(maxWidth: 500),
+                        child: TextField(
+                          focusNode: passwordNode,
+                          controller: passwordController,
+                          decoration: InputDecoration(
+                            border: const OutlineInputBorder(),
+                            prefixIcon: const Icon(Icons.lock),
+                            labelText: 'Password',
+                            suffixIcon: Container(
+                                margin: EdgeInsets.only(right: 10),
+                                child: IconButton(
+                                  icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
+                                  onPressed: () {
+                                    setState(() {
+                                      _obscurePassword = !_obscurePassword;
+                                    });
+                                  },
+                                )
+                            ),
+                          ),
+                          obscureText: _obscurePassword,
+                          onSubmitted: (value) => submitLogin(isLight, context),
+                        ),
+                      ),
+                      SizedBox(height: 30),
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 40),
+                        height: 55,
+                        width: 300,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Color(0xFF5277B0), Color(0xFF5277B0)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(30),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0xFF4275C4).withOpacity(0.5),
+                              spreadRadius: 3,
+                              blurRadius: 10,
+                            ),
+                          ],
+                        ),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState?.validate() ?? false) {
+                              submitLogin(isLight, context);
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 30),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            elevation: 0,
+                          ),
+                          child: Text(
+                            'Login',
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                         ),
-                        SizedBox(height: 20),
-                        Container(
-                          constraints: const BoxConstraints(maxWidth: 500),
-                          child: TextField(
-                            focusNode: passwordNode,
-                            controller: passwordController,
-                            decoration: InputDecoration(
-                              border: const OutlineInputBorder(),
-                              prefixIcon: const Icon(Icons.lock),
-                              labelText: 'Password',
-                              suffixIcon: Container(
-                                  margin: EdgeInsets.only(right: 10),
-                                  child: IconButton(
-                                    icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
-                                    onPressed: () {
-                                      setState(() {
-                                        _obscurePassword = !_obscurePassword;
-                                      });
-                                    },
-                                  )
-                              ),
-                            ),
-                            obscureText: _obscurePassword,
-                            onSubmitted: (value) => submitLogin(isLight, context),
-                          ),
-                        ),
-                        SizedBox(height: 30),
-                        Container(
-                          height: 50,
-                          width: 300,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Color(0xFF5277B0), Color(0xFF5277B0)],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            borderRadius: BorderRadius.circular(30),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0xFF4275C4).withOpacity(0.5),
-                                spreadRadius: 3,
-                                blurRadius: 10,
-                              ),
-                            ],
-                          ),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState?.validate() ?? false) {
-                                submitLogin(isLight, context);
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              foregroundColor: Colors.white,
-                              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              elevation: 0,
-                            ),
-                            child: Text(
-                              'Login',
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 30),
-                        RichText(
+                      ),
+                      SizedBox(height: 30),
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 40),
+                        padding: const EdgeInsets.only(bottom: 40),
+                        child: RichText(
                           text: TextSpan(
                             style: TextStyle(fontSize: 18.0, color: isLight ?
-                              Colors.black : Colors.white),
+                            Colors.black : Colors.white),
                             children: [
                               TextSpan(text: 'Not yet registered? '),
                               TextSpan(
@@ -192,14 +200,14 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                                 style: TextStyle(color: Colors.blue),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () async => await launchUrl(
-                                    Uri.parse("https://dulno.com/pricing/"),
-                                    mode: LaunchMode.externalApplication),
+                                      Uri.parse("https://dulno.com/pricing/"),
+                                      mode: LaunchMode.externalApplication),
                               ),
                             ],
                           ),
-                        )
-                      ],
-                    ),
+                        ),
+                      )
+                    ],
                   ),
                 ),
               ),
