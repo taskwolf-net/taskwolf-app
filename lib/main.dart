@@ -8,7 +8,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
+import 'package:dulno/request/request.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:dulno/firebase_options.dart';
@@ -21,7 +21,6 @@ import 'package:dulno/product/file/workspace-monitor-compound.dart';
 import 'package:dulno/product/home/home.dart';
 import 'package:dulno/settings/language/language-state.dart';
 import 'package:dulno/settings/theme/theme-state.dart';
-import 'package:dulno/whitelist_options.dart';
 import 'package:system_tray/system_tray.dart';
 import 'package:watcher/watcher.dart';
 import 'package:window_manager/window_manager.dart';
@@ -204,20 +203,11 @@ class DulnoApp extends StatelessWidget {
     if (token == "") {
       return false;
     }
-    var headers = <String, String>{
-      'Authorization': "Bearer " + token,
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-    if (WhitelistOptions.whitelistEnabled) {
-      headers["WHITELIST-KEY"] = WhitelistOptions.whitelistKey;
-    }
-    final response = await http.post(
-      Uri.parse('https://api.dulno.com/v1/verification/isValid/'),
-      headers: headers,
-      body: jsonEncode(<String, String>{
-        "token": token
-      }),
-    );
+    var body = <String, String>{"token": token};
+    refresh() async => <String, String>{"token":
+      await storage.read(key: "token") ?? ""};
+    var response = await Request.post(context: null,
+      url: "/verification/isValid/", body: body, refreshUpdate: refresh).send();
     return jsonDecode(response.body)["isValid"] == "true";
   }
 }

@@ -14,10 +14,11 @@ class Request {
   var body;
   var devicePreset;
   var checkAuthorization;
+  final Future<Map<String, String>> Function()? refreshUpdate;
 
   Request.get({
     this.context, required url, Map<String, String> this.headers = const {},
-    this.checkAuthorization = true
+    this.checkAuthorization = true, this.refreshUpdate
   }) {
     this.url = "https://api.dulno.com/v1$url";
     method = "GET";
@@ -27,7 +28,7 @@ class Request {
   Request.post({
     this.context, required url, Map<String, String> this.headers = const {},
     Map<String, String> this.body = const {}, this.devicePreset = false,
-    this.checkAuthorization = true
+    this.checkAuthorization = true, this.refreshUpdate
   }) {
     this.url = "https://api.dulno.com/v1$url";
     method = "POST";
@@ -37,7 +38,7 @@ class Request {
     Map<String, String> headers = Map.from(this.headers);
     headers["Content-Type"] = "application/json; charset=UTF-8";
     const storage = FlutterSecureStorage();
-    final token = await storage.read(key: "token") ?? "";
+    var token = await storage.read(key: "token") ?? "";
     if (token != "") {
       headers["Authorization"] = "Bearer $token";
     }
@@ -55,6 +56,9 @@ class Request {
     if (response.statusCode == 417) {
       var refreshResult = await refresh(context);
       if (refreshResult == true) {
+        if (refreshUpdate != null) {
+          body = await refreshUpdate!();
+        }
         return await send();
       }
       await reset();
@@ -86,7 +90,7 @@ class Request {
     var response = await Request.post(context: context, url: "/verification/refresh/",
       body: <String, String>{"refreshToken": refreshToken}).send();
     var responseBody = jsonDecode(response.body);
-    if (responseBody["success"] == false) {
+    if (responseBody["success"] == "false") {
       return false;
     }
     await storage.write(key: "token", value: responseBody["productApiKey"]);
