@@ -81,7 +81,7 @@ class Request {
     const storage = FlutterSecureStorage();
     final refreshToken = await storage.read(key: "refreshToken") ?? "";
     if (refreshToken == "") {
-      return;
+      return false;
     }
     var response = await Request.post(context: context, url: "/verification/refresh/",
       body: <String, String>{"refreshToken": refreshToken}).send();
