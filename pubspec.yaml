@@ -38,7 +38,7 @@ dependencies:
   android_id: ^0.4.0
   local_notifier: ^0.1.6
   firebase_core: ^2.28.0
-  firebase_messaging: ^14.8.0
+  firebase_messaging: ^15.0.0
   accordion: ^2.6.0
   web_socket_channel: ^3.0.1
   provider: ^6.1.2
