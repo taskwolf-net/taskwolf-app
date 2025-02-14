@@ -1,0 +1,22 @@
+server {
+  server_name app.dulno.com;
+
+  location /version/ {
+    default_type application/json;
+    add_header X-Robots-Tag "noindex, nofollow, nosnippet, noarchive";
+    return 200 '{"version": "1.0.0"}';
+  }
+
+  location /download/linux/dulno.deb {
+    alias /home/dulno/app/linux/dulno.deb;
+    add_header X-Robots-Tag "noindex, nofollow, nosnippet, noarchive";
+  }
+
+  location /download/windows/dulno.exe {
+    alias /home/dulno/app/windows/dulno.exe;
+    add_header X-Robots-Tag "noindex, nofollow, nosnippet, noarchive";
+  }
+
+  listen 443;
+  server_tokens off;
+}
