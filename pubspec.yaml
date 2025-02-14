@@ -55,6 +55,7 @@ dependencies:
 
 dependency_overrides:
   intl: any
+  get: 4.7.1
 
 dev_dependencies:
   flutter_launcher_icons: "^0.14.0"
