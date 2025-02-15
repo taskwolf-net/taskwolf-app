@@ -35,11 +35,11 @@ build_android:
   script:
     - yes | flutter doctor --android-licenses || true
     - flutter pub run flutter_native_splash:create
-    - flutter build apk --release
-    - mv build/app/outputs/flutter-apk/app-release.apk android/dulno.apk
+    - flutter build appbundle --release
+    - mv build/app/outputs/bundle/release/app-release.aab android/dulno.aab
   artifacts:
     paths:
-      - android/dulno.apk
+      - android/dulno.aab
     expire_in: 1 day
   only:
     - master
