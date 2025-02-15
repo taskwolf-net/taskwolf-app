@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:dulno/request/request.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:dulno/firebase_options.dart';
@@ -22,8 +23,10 @@ import 'package:dulno/product/home/home.dart';
 import 'package:dulno/settings/language/language-state.dart';
 import 'package:dulno/settings/theme/theme-state.dart';
 import 'package:system_tray/system_tray.dart';
+import 'package:updat/updat_window_manager.dart';
 import 'package:watcher/watcher.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:http/http.dart' as http;
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -169,7 +172,12 @@ class DulnoApp extends StatelessWidget {
                           background: Color(0xFF121212)),
                       ),
                       themeMode: Provider.of<ThemeState>(context).getTheme,
-                      home: home,
+                      home: FutureBuilder<Widget>(
+                        future: updateApp(home),
+                        builder: (context, AsyncSnapshot<Widget> updateSnapshot) {
+                          return updateSnapshot.data ?? Container();
+                        }
+                      ),
                       debugShowCheckedModeBanner: false,
                       localizationsDelegates: Locales.delegates,
                       supportedLocales: Locales.supportedLocales,
@@ -183,6 +191,37 @@ class DulnoApp extends StatelessWidget {
         );
       }
     );
+  }
+
+  Future<Widget> updateApp(child) async {
+    if (!(Platform.isWindows || Platform.isLinux)) {
+      return child;
+    }
+    var packageInfo = await PackageInfo.fromPlatform();
+    return UpdatWindowManager(
+      currentVersion: "${packageInfo.version}+${packageInfo.buildNumber}",
+      getLatestVersion: () async {
+        final data = await http.get(Uri.parse(
+          "https://app.dulno.com/version/",
+        ));
+        return jsonDecode(data.body)["version"];
+      },
+      getBinaryUrl: (version) async {
+        return findAppDownloadLink(version);
+      },
+      appName: "Dulno",
+      child: child,
+      closeOnInstall: true
+    );
+  }
+
+  String findAppDownloadLink(version) {
+    if (Platform.isWindows) {
+      return "https://app.dulno.com/download/windows/dulno.exe";
+    } else if (Platform.isLinux) {
+      return "https://app.dulno.com/download/linux/dulno.deb";
+    }
+    return "";
   }
 
   Future<ThemeMode> findTheme() async {
