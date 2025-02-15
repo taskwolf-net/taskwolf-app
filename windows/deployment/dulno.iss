@@ -36,7 +36,7 @@ DisableProgramGroupPage=yes
 ;PrivilegesRequired=lowest
 OutputBaseFilename=mysetup
 Compression=zip
-SolidCompression=yes
+SolidCompression=no
 WizardStyle=modern
 
 [Languages]
