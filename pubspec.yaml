@@ -43,7 +43,7 @@ dependencies:
   web_socket_channel: ^3.0.1
   provider: ^6.1.2
   rflutter_alert: ^2.0.7
-  file_picker: ^8.0.3
+  file_picker: ^9.0.0
   connectivity_plus: ^6.1.0
   pin_code_fields: ^8.0.1
   system_tray: ^2.0.3
