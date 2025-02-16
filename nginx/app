@@ -4,7 +4,7 @@ server {
   location /version/ {
     default_type application/json;
     add_header X-Robots-Tag "noindex, nofollow, nosnippet, noarchive";
-    return 200 '{"version": "1.1.0+11"}';
+    return 200 '{"version": "1.1.0+12"}';
   }
 
   location /download/linux/dulno.deb {
