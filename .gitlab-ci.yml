@@ -114,8 +114,8 @@ scan_staging:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
     DOCKER_DRIVER: overlay2
-    TRIVY_USERNAME: $DOCKER_USERNAME
-    TRIVY_PASSWORD: $DOCKER_PASSWORD
+    TRIVY_USERNAME: $STAGING_DOCKER_USERNAME
+    TRIVY_PASSWORD: $STAGING_DOCKER_PASSWORD
   script:
     - trivy --version
     - time trivy clean --scan-cache
@@ -139,8 +139,8 @@ scan_productive:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
     DOCKER_DRIVER: overlay2
-    TRIVY_USERNAME: $DOCKER_USERNAME
-    TRIVY_PASSWORD: $DOCKER_PASSWORD
+    TRIVY_USERNAME: $PRODUCTIVE_DOCKER_USERNAME
+    TRIVY_PASSWORD: $PRODUCTIVE_DOCKER_PASSWORD
   script:
     - trivy --version
     - time trivy clean --scan-cache
