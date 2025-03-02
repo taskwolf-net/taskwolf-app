@@ -1,5 +1,5 @@
 server {
-  server_name app.dulno.com;
+  server_name ${SERVER_NAME};
 
   location /version/ {
     default_type application/json;
@@ -17,6 +17,6 @@ server {
     add_header X-Robots-Tag "noindex, nofollow, nosnippet, noarchive";
   }
 
-  listen 443;
+  listen 80;
   server_tokens off;
 }
