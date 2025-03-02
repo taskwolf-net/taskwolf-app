@@ -78,7 +78,7 @@ assemble_staging:
     DOCKER_DRIVER: overlay2
   script:
     - echo $STAGING_DOCKER_PASSWORD | docker login -u $STAGING_DOCKER_USERNAME --password-stdin $STAGING_DOCKER_REGISTRY
-    - docker buildx build -t $STAGING_DOCKER_REGISTRY/$DOCKER_IMAGE:test -f nginx/Dockerfile .
+    - docker buildx build --build-arg SERVER_NAME="10.96.0.13" -t $STAGING_DOCKER_REGISTRY/$DOCKER_IMAGE:test -f nginx/Dockerfile .
     - docker push $STAGING_DOCKER_REGISTRY/$DOCKER_IMAGE:test
   only:
     - dev
@@ -97,7 +97,7 @@ assemble_productive:
     DOCKER_DRIVER: overlay2
   script:
     - echo $PRODUCTIVE_DOCKER_PASSWORD | docker login -u $PRODUCTIVE_DOCKER_USERNAME --password-stdin $PRODUCTIVE_DOCKER_REGISTRY
-    - docker buildx build -t $PRODUCTIVE_DOCKER_REGISTRY/$DOCKER_IMAGE:test -f nginx/Dockerfile .
+    - docker buildx build --build-arg SERVER_NAME="app.dulno.com" -t $PRODUCTIVE_DOCKER_REGISTRY/$DOCKER_IMAGE:test -f nginx/Dockerfile .
     - docker push $PRODUCTIVE_DOCKER_REGISTRY/$DOCKER_IMAGE:test
   only:
     - main
