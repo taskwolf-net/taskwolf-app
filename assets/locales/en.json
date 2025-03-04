@@ -103,6 +103,12 @@
   "settings": "Settings",
 
   "settings.device.title": "Device",
+  "settings.device.name.headline": "Rename device",
+  "settings.device.name.name": "Name",
+  "settings.device.rename.execute": "Rename",
+  "settings.device.rename.successful.title": "Renamed!",
+  "settings.device.rename.successful.body": "The device has been successfully renamed",
+  "settings.device.rename.successful.acknowledged": "OK",
   "settings.device.account.headline": "Change account",
   "settings.device.account.email": "Email",
   "settings.device.account.password": "Password",
