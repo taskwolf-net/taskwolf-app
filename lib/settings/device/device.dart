@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
@@ -13,106 +14,168 @@ import 'package:dulno/settings/theme/theme-state.dart';
 class DevicePage extends StatelessWidget {
   DevicePage({super.key});
 
+  final TextEditingController nameController = TextEditingController();
   final TextEditingController changeEmailController = TextEditingController();
   final TextEditingController changePasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     var isLight = Provider.of<ThemeState>(context).getTheme == ThemeMode.light;
-    return SettingsPage(name: Locales.string(context, "settings.device.title"),
-      content: Center(
-        child: Container(
-          width: 750,
-          margin: const EdgeInsets.symmetric(horizontal: 20),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(top: 20),
-                  alignment: Alignment.topLeft,
-                  child: const LocaleText("settings.device.account.headline",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
-                ),
-                new Divider(
-                  color: isLight ? Colors.black12 : Colors.white10,
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  child: TextField(
-                    controller: changeEmailController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.email),
-                      labelText: Locales.string(context, "settings.device.account.email"))
+    return FutureBuilder<dynamic>(
+      future: findDeviceName(context),
+      builder: (context, AsyncSnapshot<dynamic> nameSnapshot) {
+        nameController.text = nameSnapshot.data ?? "";
+        return SettingsPage(name: Locales.string(context, "settings.device.title"),
+          content: Center(
+            child: Container(
+              width: 750,
+              margin: const EdgeInsets.only(left: 20, right: 5),
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.only(right: 15),
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(top: 20),
+                        alignment: Alignment.topLeft,
+                        child: const LocaleText("settings.device.name.headline",
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
+                      ),
+                      new Divider(
+                        color: isLight ? Colors.black12 : Colors.white10,
+                      ),
+                      Container(
+                        margin: const EdgeInsets.symmetric(vertical: 10),
+                        child: TextField(
+                          controller: nameController,
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(64),
+                          ],
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.edit),
+                            labelText: Locales.string(context, "settings.device.name.name"))
+                        ),
+                      ),
+                      Container(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            foregroundColor: Colors.white),
+                          onPressed: () {
+                            submitDeviceAccountRename(isLight, context);
+                          },
+                          child: const LocaleText("settings.device.rename.execute"),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 20),
+                        alignment: Alignment.topLeft,
+                        child: const LocaleText("settings.device.account.headline",
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
+                      ),
+                      new Divider(
+                        color: isLight ? Colors.black12 : Colors.white10,
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 10),
+                        child: TextField(
+                          controller: changeEmailController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.email),
+                            labelText: Locales.string(context, "settings.device.account.email"))
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 20),
+                        child: TextField(
+                          controller: changePasswordController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.lock),
+                            labelText: Locales.string(context, "settings.device.account.password")),
+                          obscureText: true
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.symmetric(vertical: 20),
+                        child: LocaleText("settings.device.account.disclaimer",
+                          textAlign: TextAlign.left, style:
+                          TextStyle(color: isLight ? Colors.black38 : Colors.white24))
+                      ),
+                      Container(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            foregroundColor: Colors.white),
+                          onPressed: () {
+                            passwordAlert("settings.device.account.title",
+                              "settings.device.account.body", "settings.device.account.change",
+                                (password) => submitDeviceAccountChange(password, isLight,
+                                context), isLight, context);
+                          },
+                          child: const LocaleText("settings.device.account.change"),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 20),
+                        alignment: Alignment.topLeft,
+                        child: const LocaleText("settings.device.delete.headline",
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,
+                            color: Colors.red))
+                      ),
+                      new Divider(
+                        color: isLight ? Colors.black12 : Colors.white10,
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(bottom: 20),
+                        child: LocaleText("settings.device.delete.disclaimer",
+                          textAlign: TextAlign.left, style:
+                          TextStyle(color: isLight ? Colors.black38 : Colors.white24))
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(bottom: 20),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            foregroundColor: Colors.white),
+                          onPressed: () {
+                            passwordAlert("settings.device.delete.title",
+                              "settings.device.delete.body", "settings.device.delete",
+                                (password) => submitDeviceDelete(password, isLight, context),
+                              isLight, context);
+                          },
+                          child: const LocaleText("settings.device.delete"),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.only(top: 20),
-                  child: TextField(
-                    controller: changePasswordController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.lock),
-                      labelText: Locales.string(context, "settings.device.account.password")),
-                    obscureText: true
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 20),
-                  child: LocaleText("settings.device.account.disclaimer",
-                    textAlign: TextAlign.left, style:
-                    TextStyle(color: isLight ? Colors.black38 : Colors.white24))
-                ),
-                Container(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white),
-                    onPressed: () {
-                      passwordAlert("settings.device.account.title",
-                        "settings.device.account.body", "settings.device.account.change",
-                        (password) => submitDeviceAccountChange(password, isLight,
-                          context), isLight, context);
-                    },
-                    child: const LocaleText("settings.device.account.change"),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 20),
-                  alignment: Alignment.topLeft,
-                  child: const LocaleText("settings.device.delete.headline",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,
-                      color: Colors.red))
-                ),
-                new Divider(
-                  color: isLight ? Colors.black12 : Colors.white10,
-                ),
-                Container(
-                  margin: EdgeInsets.only(bottom: 20),
-                  child: LocaleText("settings.device.delete.disclaimer",
-                    textAlign: TextAlign.left, style:
-                    TextStyle(color: isLight ? Colors.black38 : Colors.white24))
-                ),
-                Container(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      foregroundColor: Colors.white),
-                    onPressed: () {
-                      passwordAlert("settings.device.delete.title",
-                        "settings.device.delete.body", "settings.device.delete",
-                        (password) => submitDeviceDelete(password, isLight, context),
-                        isLight, context);
-                    },
-                    child: const LocaleText("settings.device.delete"),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        )
-      )
+              ),
+            )
+          )
+        );
+      }
     );
+  }
+
+  findDeviceName(context) async {
+    var response = await Request.post(context: context,
+      url: "/device/find/", devicePreset: true).send();
+    return jsonDecode(response.body)["information"];
+  }
+
+  void submitDeviceAccountRename(isLight, context) async {
+    var body = <String, String>{
+      "information": nameController.text
+    };
+    await Request.post(context: context,
+      url: "/device/rename/", devicePreset: true, body: body).send();
+    alert("settings.device.rename.successful.title",
+      "settings.device.rename.successful.body",
+      AlertType.success, "settings.device.rename.successful.acknowledged",
+        () => {}, isLight, context);
   }
 
   void submitDeviceAccountChange(password, isLight, context) async {
