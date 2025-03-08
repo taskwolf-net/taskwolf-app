@@ -12,7 +12,7 @@ variables:
 
 build_linux:
   stage: build
-  image: instrumentisto/flutter:3.29.0
+  image: instrumentisto/flutter:3.29.1
   script:
     - apt-get update && apt-get install -y libsecret-1-dev libnotify-dev libayatana-appindicator3-dev dpkg-dev gnupg apt-utils gzip
     - flutter config --enable-linux-desktop
