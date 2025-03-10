@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 
+import 'package:app_links/app_links.dart';
 import 'package:dulno/product/file/file-delete.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:dulno/request/request.dart';
@@ -111,7 +113,7 @@ void exitApp() async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Locales.init(["en", "de"]);
-  runApp(const DulnoApp());
+  runApp(DulnoApp());
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     checkWindowLock();
     await DeviceConnection().establish();
@@ -129,11 +131,46 @@ void main() async {
   }
 }
 
-class DulnoApp extends StatelessWidget {
-  const DulnoApp({super.key});
+class DulnoApp extends StatefulWidget {
+  @override
+  DulnoAppState createState() => DulnoAppState();
+}
+
+class DulnoAppState extends State<DulnoApp> {
+  final AppLinks _appLinks = AppLinks();
+  String? scanData;
+  String? tokenData;
+
+  @override
+  void initState() {
+    super.initState();
+    _initDeepLinks();
+  }
+
+  void _initDeepLinks() async {
+    final Uri? initialLink = await _appLinks.getInitialLink();
+    if (initialLink != null) {
+      _handleDeepLink(initialLink);
+    }
+    _appLinks.uriLinkStream.listen((Uri uri) {
+      _handleDeepLink(uri);
+    });
+  }
+
+  void _handleDeepLink(Uri uri) async {
+    setState(() {
+      scanData = uri.queryParameters['scan'];
+      tokenData = uri.queryParameters['token'];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (scanData != null && tokenData != null) {
+      const storage = FlutterSecureStorage();
+      storage.write(key: "scanId", value: "$scanData");
+      storage.write(key: "scanToken", value: "$tokenData");
+    }
     return FutureBuilder<ThemeMode>(
       future: findTheme(),
       builder: (context, AsyncSnapshot<ThemeMode> themeSnapshot) {
@@ -158,7 +195,8 @@ class DulnoApp extends StatelessWidget {
                   }
                   var home = tokenSnapshot.data == true ? HomePage() : LoginPage();
                   return LocaleBuilder(
-                    builder: (locale) => MaterialApp( title: 'Dulno',
+                    builder: (locale) => MaterialApp(
+                      title: 'Dulno',
                       theme: ThemeData(
                         useMaterial3: true,
                         primaryColor: Colors.black,
