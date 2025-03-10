@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/command/command.dart';
@@ -17,6 +18,9 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const storage = FlutterSecureStorage();
+    storage.delete(key: "scanId");
+    storage.delete(key: "scanToken");
     var isLight = Provider.of<ThemeState>(context).getTheme == ThemeMode.light;
     return FutureBuilder<dynamic>(
       future: findUsername(context),

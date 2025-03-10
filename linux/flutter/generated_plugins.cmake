@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   flutter_secure_storage_linux
+  gtk
   local_notifier
   screen_retriever
   system_tray
