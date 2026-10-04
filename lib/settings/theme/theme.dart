@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
-import 'package:dulno/settings/base/page.dart';
-import 'package:dulno/settings/theme/theme-state.dart';
+import 'package:taskwolf/settings/base/page.dart';
+import 'package:taskwolf/settings/theme/theme-state.dart';
 
 class ThemePage extends StatelessWidget {
   ThemePage({super.key});

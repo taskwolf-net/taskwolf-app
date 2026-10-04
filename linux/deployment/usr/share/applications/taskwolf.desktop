@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Taskwolf
+Exec=/usr/bin/taskwolf/Taskwolf
+Icon=/usr/share/taskwolf/icon.png
+Type=Application
+Categories=Utility;

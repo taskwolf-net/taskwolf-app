@@ -1,6 +1,6 @@
 {
-    "name": "dulno_app",
-    "short_name": "dulno_app",
+    "name": "taskwolf_app",
+    "short_name": "taskwolf_app",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

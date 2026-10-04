@@ -5,7 +5,7 @@ import 'dart:math';
 
 import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:dulno/product/connection/device-connection.dart';
+import 'package:taskwolf/product/connection/device-connection.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
@@ -16,10 +16,10 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:pin_code_fields/pin_code_fields.dart' as code;
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:dulno/firebase_options.dart';
-import 'package:dulno/product/home/home.dart';
-import 'package:dulno/request/request.dart';
-import 'package:dulno/settings/theme/theme-state.dart';
+import 'package:taskwolf/firebase_options.dart';
+import 'package:taskwolf/product/home/home.dart';
+import 'package:taskwolf/request/request.dart';
+import 'package:taskwolf/settings/theme/theme-state.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
@@ -219,7 +219,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                                     style: TextStyle(color: Colors.blue),
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () async => await launchUrl(
-                                          Uri.parse("https://dulno.com/pricing/"),
+                                          Uri.parse("https://taskwolf.net/pricing/"),
                                           mode: LaunchMode.externalApplication),
                                   ),
                                 ],
@@ -677,7 +677,7 @@ class ScanPage extends StatelessWidget {
         if (value == null) {
           return;
         }
-        var regex = RegExp(r"https://dulno\.com/device/scan/([^/]+)/([^/]+)/");
+        var regex = RegExp(r"https://taskwolf\.com/device/scan/([^/]+)/([^/]+)/");
         var match = regex.firstMatch(value);
         if (match != null) {
           var scanData = match.group(1)!;

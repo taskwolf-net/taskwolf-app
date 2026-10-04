@@ -1,8 +1,8 @@
-Package: dulno-app
+Package: taskwolf-app
 Version: 1.0.0
 Section: base
 Priority: optional
 Architecture: amd64
 Depends: libnotify-dev, libayatana-appindicator3-dev
-Maintainer: Dulno <support@dulno.com>
-Description: Dulno App
+Maintainer: Taskwolf <support@taskwolf.net>
+Description: Taskwolf App

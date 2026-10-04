@@ -92,13 +92,13 @@
   "product.help.title": "Hilfe",
   "product.help.frequently.questions": "Häufig gestellte Fragen",
   "product.help.question.support.question": "Wo und wie kann ich Unterstützung erhalten?",
-  "product.help.question.support.answer": "Wenn Sie Fragen haben, können Sie sich jederzeit an unsere E-Mail support@dulno.com wenden. Wir bieten auch ein Ticketsystem an, über das Sie Fragen stellen und Fehler melden können. Sie finden es unter https://dulno.com/tickets/. Unsere Mitarbeiter werden sich um jede Anfrage so schnell wie möglich kümmern.",
+  "product.help.question.support.answer": "Wenn Sie Fragen haben, können Sie sich jederzeit an unsere E-Mail support@taskwolf.net wenden. Wir bieten auch ein Ticketsystem an, über das Sie Fragen stellen und Fehler melden können. Sie finden es unter https://taskwolf.net/tickets/. Unsere Mitarbeiter werden sich um jede Anfrage so schnell wie möglich kümmern.",
   "product.help.question.purpose.question": "Was ist der Zweck dieser App?",
-  "product.help.question.purpose.answer": "Wir bieten diese App an, um Ihre lokalen Geräte zu automatisieren. Verschiedene gerätebezogene Funktionen können in Workflows integriert und zur Automatisierung genutzt werden. Alle verknüpften Geräte sind unter https://dulno.com/devices/ zu finden.",
+  "product.help.question.purpose.answer": "Wir bieten diese App an, um Ihre lokalen Geräte zu automatisieren. Verschiedene gerätebezogene Funktionen können in Workflows integriert und zur Automatisierung genutzt werden. Alle verknüpften Geräte sind unter https://taskwolf.net/devices/ zu finden.",
   "product.help.question.required.question": "Brauche ich diese App wirklich?",
-  "product.help.question.required.answer": "Wir bieten diese App als eine Erweiterung der bestehenden Dulno-Funktionen an. Sie können Dulno auch ohne diese App verwenden, aber viele der Funktionen der App sind sehr nützlich für die Verwendung von Dulno.",
-  "product.help.question.delete.question": "Wie kann ich das Gerät aus Dulno entfernen?",
-  "product.help.question.delete.answer": "Um das Gerät aus Dulno zu entfernen, klicken Sie auf das Banner oben rechts, wählen Sie dann \"Einstellungen\" und gehen Sie zu \"Gerät\". Dort finden Sie die Option zum Entfernen des Geräts aus Dulno.",
+  "product.help.question.required.answer": "Wir bieten diese App als eine Erweiterung der bestehenden Taskwolf-Funktionen an. Sie können Taskwolf auch ohne diese App verwenden, aber viele der Funktionen der App sind sehr nützlich für die Verwendung von Taskwolf.",
+  "product.help.question.delete.question": "Wie kann ich das Gerät aus Taskwolf entfernen?",
+  "product.help.question.delete.answer": "Um das Gerät aus Taskwolf zu entfernen, klicken Sie auf das Banner oben rechts, wählen Sie dann \"Einstellungen\" und gehen Sie zu \"Gerät\". Dort finden Sie die Option zum Entfernen des Geräts aus Taskwolf.",
 
   "settings": "Einstellungen",
 

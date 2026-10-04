@@ -1,7 +1,7 @@
 [Desktop Entry]
-Name=Dulno
-Exec=/usr/bin/dulno/Dulno
-Icon=/usr/share/dulno/icon.png
+Name=Taskwolf
+Exec=/usr/bin/taskwolf/Taskwolf
+Icon=/usr/share/taskwolf/icon.png
 Type=Application
 Categories=Utility;
 X-GNOME-Autostart-enabled=true

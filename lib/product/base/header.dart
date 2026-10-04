@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
-import 'package:dulno/login/login.dart';
-import 'package:dulno/request/request.dart';
-import 'package:dulno/settings/device/device.dart';
-import 'package:dulno/settings/theme/theme-state.dart';
+import 'package:taskwolf/login/login.dart';
+import 'package:taskwolf/request/request.dart';
+import 'package:taskwolf/settings/device/device.dart';
+import 'package:taskwolf/settings/theme/theme-state.dart';
 
 class ProductHeader extends StatelessWidget implements PreferredSizeWidget {
   ProductHeader({super.key, required this.page});

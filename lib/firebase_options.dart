@@ -53,16 +53,16 @@ class DefaultFirebaseOptions {
     apiKey: '***REMOVED***',
     appId: '1:402643689386:android:5706460ba721d9da1b95d3',
     messagingSenderId: '402643689386',
-    projectId: 'dulno-e5482',
-    storageBucket: 'dulno-e5482.appspot.com',
+    projectId: 'taskwolf-e5482',
+    storageBucket: 'taskwolf-e5482.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: '***REMOVED***',
     appId: '1:402643689386:ios:7b7e3eb8bf7f06031b95d3',
     messagingSenderId: '402643689386',
-    projectId: 'dulno-e5482',
-    storageBucket: 'dulno-e5482.appspot.com',
-    iosBundleId: 'com.dulno.app',
+    projectId: 'taskwolf-e5482',
+    storageBucket: 'taskwolf-e5482.appspot.com',
+    iosBundleId: 'net.taskwolf.app',
   );
 }

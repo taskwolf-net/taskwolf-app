@@ -3,27 +3,27 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:app_links/app_links.dart';
-import 'package:dulno/product/file/file-delete.dart';
+import 'package:taskwolf/product/file/file-delete.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:dulno/request/request.dart';
+import 'package:taskwolf/request/request.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:dulno/firebase_options.dart';
-import 'package:dulno/login/login.dart';
-import 'package:dulno/product/command/command-execution.dart';
-import 'package:dulno/product/connection/device-connection.dart';
-import 'package:dulno/product/file/file-info.dart';
-import 'package:dulno/product/file/file-storage.dart';
-import 'package:dulno/product/file/workspace-monitor-compound.dart';
-import 'package:dulno/product/home/home.dart';
-import 'package:dulno/settings/language/language-state.dart';
-import 'package:dulno/settings/theme/theme-state.dart';
+import 'package:taskwolf/firebase_options.dart';
+import 'package:taskwolf/login/login.dart';
+import 'package:taskwolf/product/command/command-execution.dart';
+import 'package:taskwolf/product/connection/device-connection.dart';
+import 'package:taskwolf/product/file/file-info.dart';
+import 'package:taskwolf/product/file/file-storage.dart';
+import 'package:taskwolf/product/file/workspace-monitor-compound.dart';
+import 'package:taskwolf/product/home/home.dart';
+import 'package:taskwolf/settings/language/language-state.dart';
+import 'package:taskwolf/settings/theme/theme-state.dart';
 import 'package:system_tray/system_tray.dart';
 import 'package:updat/updat_window_manager.dart';
 import 'package:watcher/watcher.dart';
@@ -47,7 +47,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 void checkWindowLock() async {
-  final lockFile = File("${Directory.current.path}/dulno.lock");
+  final lockFile = File("${Directory.current.path}/taskwolf.lock");
   if (await lockFile.exists()) {
     await lockFile.delete();
   }
@@ -69,13 +69,13 @@ void setupWindowManager() async {
     await windowManager.focus();
   });
   windowManager.setPreventClose(true);
-  windowManager.addListener(DulnoListener());
+  windowManager.addListener(TaskwolfListener());
 }
 
 void setupSystemTray() async {
   var tray = SystemTray();
   await tray.initSystemTray(
-    title: "Dulno",
+    title: "Taskwolf",
     iconPath: Platform.isWindows ? "assets/images/logo-light.ico" :
       "assets/images/logo-light.webp",
   );
@@ -89,11 +89,11 @@ void setupSystemTray() async {
   final menu = Menu();
   await menu.buildFrom([
     MenuItemLabel(
-      label: 'Open Dulno',
+      label: 'Open Taskwolf',
       onClicked: (menuItem) => restoreWindow(),
     ),
     MenuItemLabel(
-      label: 'Quit Dulno',
+      label: 'Quit Taskwolf',
       onClicked: (menuItem) => exitApp(),
     ),
   ]);
@@ -106,14 +106,14 @@ void restoreWindow() async {
 }
 
 void exitApp() async {
-  await File("${Directory.current.path}/dulno.lock").delete();
+  await File("${Directory.current.path}/taskwolf.lock").delete();
   exit(0);
 }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Locales.init(["en", "de"]);
-  runApp(DulnoApp());
+  runApp(TaskwolfApp());
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     checkWindowLock();
     await DeviceConnection().establish();
@@ -127,16 +127,16 @@ void main() async {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     FirebaseMessaging.onMessage.listen(firebaseMessagingBackgroundHandler);
-    FirebaseMessaging.instance.subscribeToTopic("dulno-workspace-monitor");
+    FirebaseMessaging.instance.subscribeToTopic("taskwolf-workspace-monitor");
   }
 }
 
-class DulnoApp extends StatefulWidget {
+class TaskwolfApp extends StatefulWidget {
   @override
-  DulnoAppState createState() => DulnoAppState();
+  TaskwolfAppState createState() => TaskwolfAppState();
 }
 
-class DulnoAppState extends State<DulnoApp> {
+class TaskwolfAppState extends State<TaskwolfApp> {
   final AppLinks _appLinks = AppLinks();
   String? scanData;
   String? tokenData;
@@ -196,7 +196,7 @@ class DulnoAppState extends State<DulnoApp> {
                   var home = tokenSnapshot.data == true ? HomePage() : LoginPage();
                   return LocaleBuilder(
                     builder: (locale) => MaterialApp(
-                      title: 'Dulno',
+                      title: 'Taskwolf',
                       theme: ThemeData(
                         useMaterial3: true,
                         primaryColor: Colors.black,
@@ -240,14 +240,14 @@ class DulnoAppState extends State<DulnoApp> {
       currentVersion: "${packageInfo.version}+${packageInfo.buildNumber}",
       getLatestVersion: () async {
         final data = await http.get(Uri.parse(
-          "https://app.dulno.com/version/",
+          "https://app.taskwolf.net/version/",
         ));
         return jsonDecode(data.body)["version"];
       },
       getBinaryUrl: (version) async {
         return findAppDownloadLink(version);
       },
-      appName: "Dulno",
+      appName: "Taskwolf",
       child: child,
       closeOnInstall: true
     );
@@ -255,9 +255,9 @@ class DulnoAppState extends State<DulnoApp> {
 
   String findAppDownloadLink(version) {
     if (Platform.isWindows) {
-      return "https://app.dulno.com/download/windows/dulno.exe";
+      return "https://app.taskwolf.net/download/windows/taskwolf.exe";
     } else if (Platform.isLinux) {
-      return "https://app.dulno.com/download/linux/dulno.deb";
+      return "https://app.taskwolf.net/download/linux/taskwolf.deb";
     }
     return "";
   }
@@ -289,7 +289,7 @@ class DulnoAppState extends State<DulnoApp> {
   }
 }
 
-class DulnoListener extends WindowListener {
+class TaskwolfListener extends WindowListener {
   @override
   void onWindowClose() {
     windowManager.hide();

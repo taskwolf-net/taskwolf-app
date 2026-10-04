@@ -3,8 +3,8 @@ import 'package:accordion/controllers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:provider/provider.dart';
-import 'package:dulno/product/base/page.dart';
-import 'package:dulno/settings/theme/theme-state.dart';
+import 'package:taskwolf/product/base/page.dart';
+import 'package:taskwolf/settings/theme/theme-state.dart';
 
 class HelpPage extends StatelessWidget {
   HelpPage({super.key});

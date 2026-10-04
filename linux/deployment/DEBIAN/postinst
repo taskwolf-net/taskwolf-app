@@ -1,5 +1,5 @@
 for DIR in /home/* ; do
   mkdir -p "$DIR/.config/autostart"
-  cp /usr/share/applications/dulno-autostart.desktop "$DIR/.config/autostart/dulno.desktop"
+  cp /usr/share/applications/taskwolf-autostart.desktop "$DIR/.config/autostart/taskwolf.desktop"
 done
-rm /usr/share/applications/dulno-autostart.desktop
+rm /usr/share/applications/taskwolf-autostart.desktop

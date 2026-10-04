@@ -1,12 +1,12 @@
-import 'package:dulno/settings/theme/theme-state.dart';
+import 'package:taskwolf/settings/theme/theme-state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
-import 'package:dulno/product/command/command.dart';
-import 'package:dulno/product/file/file.dart';
-import 'package:dulno/product/help/help.dart';
-import 'package:dulno/product/home/home.dart';
-import 'package:dulno/product/notification/notification.dart';
-import 'package:dulno/product/organization/organization.dart';
+import 'package:taskwolf/product/command/command.dart';
+import 'package:taskwolf/product/file/file.dart';
+import 'package:taskwolf/product/help/help.dart';
+import 'package:taskwolf/product/home/home.dart';
+import 'package:taskwolf/product/notification/notification.dart';
+import 'package:taskwolf/product/organization/organization.dart';
 import 'package:provider/provider.dart';
 
 class ProductSidebar extends StatelessWidget {

@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.dulno" "\0"
-            VALUE "FileDescription", "dulno_app" "\0"
+            VALUE "CompanyName", "net.taskwolf" "\0"
+            VALUE "FileDescription", "taskwolf_app" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "dulno_app" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2024 com.dulno. All rights reserved." "\0"
-            VALUE "OriginalFilename", "dulno_app.exe" "\0"
-            VALUE "ProductName", "dulno_app" "\0"
+            VALUE "InternalName", "taskwolf_app" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2024 net.taskwolf. All rights reserved." "\0"
+            VALUE "OriginalFilename", "taskwolf_app.exe" "\0"
+            VALUE "ProductName", "taskwolf_app" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

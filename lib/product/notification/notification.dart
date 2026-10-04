@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
-import 'package:dulno/product/base/page.dart';
-import 'package:dulno/request/request.dart';
+import 'package:taskwolf/product/base/page.dart';
+import 'package:taskwolf/request/request.dart';
 
 class NotificationPage extends StatelessWidget {
   NotificationPage({super.key});

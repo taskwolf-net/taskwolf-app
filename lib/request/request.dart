@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:dulno/login/login.dart';
-import 'package:dulno/whitelist_options.dart';
+import 'package:taskwolf/login/login.dart';
+import 'package:taskwolf/whitelist_options.dart';
 
 class Request {
   var context;
@@ -20,7 +20,7 @@ class Request {
     this.context, required url, Map<String, String> this.headers = const {},
     this.checkAuthorization = true, this.refreshUpdate
   }) {
-    this.url = "https://api.dulno.com/v1$url";
+    this.url = "https://api.taskwolf.net/v1$url";
     method = "GET";
     devicePreset = false;
   }
@@ -30,7 +30,7 @@ class Request {
     Map<String, String> this.body = const {}, this.devicePreset = false,
     this.checkAuthorization = true, this.refreshUpdate
   }) {
-    this.url = "https://api.dulno.com/v1$url";
+    this.url = "https://api.taskwolf.net/v1$url";
     method = "POST";
   }
 

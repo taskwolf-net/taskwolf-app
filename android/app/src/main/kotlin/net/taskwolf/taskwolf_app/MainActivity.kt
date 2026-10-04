@@ -1,4 +1,4 @@
-package com.dulno.app
+package net.taskwolf.app
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
-import 'package:dulno/product/base/page.dart';
-import 'package:dulno/request/request.dart';
-import 'package:dulno/settings/theme/theme-state.dart';
+import 'package:taskwolf/product/base/page.dart';
+import 'package:taskwolf/request/request.dart';
+import 'package:taskwolf/settings/theme/theme-state.dart';
 
 class CommandPage extends StatelessWidget {
   CommandPage({super.key});

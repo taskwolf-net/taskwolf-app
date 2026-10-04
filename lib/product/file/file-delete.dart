@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:dulno/request/request.dart';
+import 'package:taskwolf/request/request.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class FileDelete {

@@ -3,8 +3,8 @@ FROM nginx
 ARG SERVER_NAME
 ENV SERVER_NAME=${SERVER_NAME}
 
-COPY linux/dulno.deb /home/dulno/app/linux/dulno.deb
-COPY windows/dulno.exe /home/dulno/app/windows/dulno.exe
+COPY linux/taskwolf.deb /home/taskwolf/app/linux/taskwolf.deb
+COPY windows/taskwolf.exe /home/taskwolf/app/windows/taskwolf.exe
 
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
 COPY nginx/app /etc/nginx/sites-available/app

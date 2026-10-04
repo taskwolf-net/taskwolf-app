@@ -7,13 +7,13 @@ server {
     return 200 '{"version": "1.1.0+14"}';
   }
 
-  location /download/linux/dulno.deb {
-    alias /home/dulno/app/linux/dulno.deb;
+  location /download/linux/taskwolf.deb {
+    alias /home/taskwolf/app/linux/taskwolf.deb;
     add_header X-Robots-Tag "noindex, nofollow, nosnippet, noarchive";
   }
 
-  location /download/windows/dulno.exe {
-    alias /home/dulno/app/windows/dulno.exe;
+  location /download/windows/taskwolf.exe {
+    alias /home/taskwolf/app/windows/taskwolf.exe;
     add_header X-Robots-Tag "noindex, nofollow, nosnippet, noarchive";
   }
 
