@@ -39,7 +39,7 @@ class FileWorkspaceAddPage extends StatelessWidget {
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.folder),
                     onPressed: () async {
-                      String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+                      String? selectedDirectory = await FilePicker.getDirectoryPath();
                       if (selectedDirectory != null) {
                         workspacePathController.text = selectedDirectory ?? "";
                       }

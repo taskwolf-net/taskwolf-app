@@ -7,6 +7,10 @@ updates:
     groups:
       pub:
         patterns: ["*"]
+    ignore:
+      # ponytail: 10.x requires migrating the app to material_ui
+      - dependency-name: pin_code_fields
+        versions: [">=10"]
   - package-ecosystem: github-actions
     directory: /
     schedule:
