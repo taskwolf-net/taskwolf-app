@@ -45,7 +45,7 @@ dependencies:
   rflutter_alert: ^2.0.7
   file_picker: ^13.1.0
   connectivity_plus: ^7.3.2
-  pin_code_fields: ^10.1.1
+  pin_code_fields: ^9.4.0
   system_tray: ^2.0.3
   window_manager: ^0.5.2
   watcher: ^1.1.0

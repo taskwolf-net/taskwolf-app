@@ -32,7 +32,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final FocusNode passwordNode = FocusNode();
-  TextEditingController multiFactorController = TextEditingController();
+  code.PinInputController multiFactorController = code.PinInputController();
   bool _obscurePassword = true;
   late AnimationController _controller;
   late Animation<Offset> _circleAnimation1;
@@ -473,7 +473,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
   }
 
   multiFactorAuthentication(isLight, context) {
-    multiFactorController = TextEditingController();
+    multiFactorController = code.PinInputController();
     Alert(
       context: context,
       content: GestureDetector(
@@ -485,29 +485,26 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
               padding: const EdgeInsets.symmetric(
                   vertical: 30
               ),
-              child: code.PinCodeTextField(
-                appContext: context,
+              child: code.MaterialPinField(
                 length: 6,
-                animationType: code.AnimationType.scale,
-                pinTheme: code.PinTheme(
-                  shape: code.PinCodeFieldShape.box,
+                theme: code.MaterialPinTheme(
+                  shape: code.MaterialPinShape.outlined,
                   borderRadius: BorderRadius.circular(5),
-                  fieldHeight: 50,
-                  fieldWidth: 40,
-                  fieldOuterPadding: EdgeInsets.symmetric(horizontal: 5),
-                  inactiveFillColor: Colors.transparent,
-                  inactiveColor: isLight ? Colors.black : Colors.white,
-                  selectedFillColor: Colors.transparent,
-                  selectedColor: isLight ? Colors.black : Colors.white,
-                  activeFillColor: Colors.transparent,
-                  activeColor: isLight ? Colors.black : Colors.white,
+                  cellSize: const Size(40, 50),
+                  spacing: 10,
+                  fillColor: Colors.transparent,
+                  focusedFillColor: Colors.transparent,
+                  filledFillColor: Colors.transparent,
+                  borderColor: isLight ? Colors.black : Colors.white,
+                  focusedBorderColor: isLight ? Colors.black : Colors.white,
+                  filledBorderColor: isLight ? Colors.black : Colors.white,
+                  cursorColor: isLight ? Colors.black : Colors.white,
+                  entryAnimation: code.MaterialPinAnimation.scale,
+                  animationDuration: const Duration(milliseconds: 100),
                 ),
-                cursorColor: isLight ? Colors.black : Colors.white,
-                animationDuration: const Duration(milliseconds: 100),
-                enableActiveFill: true,
                 autoFocus: true,
                 mainAxisAlignment: MainAxisAlignment.center,
-                controller: multiFactorController,
+                pinController: multiFactorController,
                 keyboardType: TextInputType.datetime,
                 inputFormatters: <TextInputFormatter>[
                   FilteringTextInputFormatter.digitsOnly
